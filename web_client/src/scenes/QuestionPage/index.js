@@ -1,24 +1,27 @@
 import React from 'react';
 import styled, { keyframes } from 'react-emotion';
+import { isMobile } from 'react-device-detect';
+import api from 'services/api';
 import colors from 'theme';
+import AutocompleteDropdown from 'components/AutocompleteDropdownInput';
+import SongTile from 'components/SongTile';
 import SvgSun from './SvgSun';
+import ClearButtonSvg from 'components/ClearButtonSvg';
 
 const Question = styled('div')`
   width: 70%;
   margin: 0 auto;
   text-align: center;
-  padding: 1.5em 0 0;
-`;
+  padding: .5em 0 0;
 
-const CenterContainer = styled('div')`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @media (min-width: 35em) {
+    padding: 1.5em 0 0;
+  }
 `;
 
 const SongInput = styled('input')`
   width: 70%;
-  margin: .5em auto;
+  margin: .5em auto .25em;
   padding-left: .5em;
   padding-right: .5em;
   font-family: inherit;
@@ -39,12 +42,54 @@ const SunContainer = styled('div')`
   z-index: -1;
 `;
 
+const Song = styled(SongTile)`
+  width: 70%;
+  margin: 0 auto;
+  padding: .25em;
+  border-radius: .1em;
+  transition: background .5s linear;
+
+  &:hover {
+    background: white;
+    cursor: pointer;
+  }
+`;
+
+// TODO: figure out a less hacky width. maybe it's the scaling option on the svg?
+// or the different input component on my phone?
+const LoadingContainer = styled('div')`
+  position: absolute;
+  width: ${isMobile ? '1.5em' : '1em'};
+  top: .7em;
+  right: 16%;
+`;
+
+
+const spinning = keyframes`
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+`;
+
+const SpinningSun = styled(SvgSun)`
+  animation: ${spinning} 5s linear infinite;
+`;
+
+const ClearButton = styled(ClearButtonSvg)`
+  cursor: pointer;
+`;
+
+
+const Loading = () => <LoadingContainer><SpinningSun fill={colors.orange}/></LoadingContainer>;
+const Clear = ({ onClick }) => <LoadingContainer><ClearButton onClick={onClick}/></LoadingContainer>;
+
+const SongSelect = (props) => <AutocompleteDropdown LoadingComponent={Loading} InputComponent={SongInput} OptionComponent={Song} ClearButtonComponent={Clear} { ...props } />;
+
+
+
 const QuestionPage = props => (
   <div>
     <Question>What was the first piece of music you listened to this morning?</Question>
-    <CenterContainer>
-      <SongInput type='text' spellCheck={false} />
-    </CenterContainer>
+    <SongSelect fetchOptions={api.searchTracks} onOptionSelected={option => alert(JSON.stringify(option))}/>
     <SunContainer>
       <SvgSun fill={colors.orange} />
     </SunContainer>
