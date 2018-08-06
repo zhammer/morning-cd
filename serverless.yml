@@ -1,0 +1,25 @@
+service: morning-cd
+
+provider:
+  name: aws
+  runtime: python3.6
+
+package:
+  include:
+    - morning_cd/**
+
+functions:
+  spotify-access-token:
+    description: Fetch spotify access token
+    handler:
+      morning_cd/delivery/lambda/spotify_access_token.handler
+    events:
+      - http:
+          path: /accesstoken
+          method: get
+    environment:
+      SPOTIFY_CLIENT_ID: 87734dfae0b7432488270b2fc1ff2e30
+      SPOTIFY_CLIENT_SECRET: 42ad3ab71bd648fa9725879fc4ec61e2
+
+plugins:
+  - serverless-python-requirements
