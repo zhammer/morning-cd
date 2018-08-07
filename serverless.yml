@@ -21,5 +21,12 @@ functions:
       SPOTIFY_CLIENT_ID: 87734dfae0b7432488270b2fc1ff2e30
       SPOTIFY_CLIENT_SECRET: 42ad3ab71bd648fa9725879fc4ec61e2
 
+custom:
+  client:
+    bucketName: morning.cd
+    distributionFolder: web_client/build
+    errorDocument: index.html
+
 plugins:
   - serverless-python-requirements
+  - serverless-finch

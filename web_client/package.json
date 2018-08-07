@@ -16,6 +16,5 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "proxy": "https://yvle78zis6.execute-api.us-east-1.amazonaws.com/dev/"
+  }
 }

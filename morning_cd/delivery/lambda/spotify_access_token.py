@@ -18,5 +18,6 @@ def handler(event, context):
     access_token = fetch_access_token(client_id, client_secret)
     return {
         'statusCode': 200,
-        'body': json.dumps({'accessToken': access_token})
+        'body': json.dumps({'accessToken': access_token}),
+        'headers': {'Access-Control-Allow-Origin': '*'}
     }
