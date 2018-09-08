@@ -5,7 +5,7 @@ import api from 'services/api';
 import colors from 'theme';
 import AutocompleteDropdown from 'components/AutocompleteDropdownInput';
 import SongTile from 'components/SongTile';
-import SvgSun from './SvgSun';
+import Sun from 'components/Sun';
 import ClearButtonSvg from 'components/ClearButtonSvg';
 
 const Question = styled('div')`
@@ -27,19 +27,6 @@ const SongInput = styled('input')`
   font-family: inherit;
   font-size: 1rem;
   color: ${colors.darkGray};
-`;
-
-const rise = keyframes`
-  from { transform: translateY(.5em); }
-  to   { transform: translateY(0em); }
-`;
-
-const SunContainer = styled('div')`
-  position: fixed;
-  width: 100%;
-  bottom: -50vw;
-  animation: ${rise} 3s ease-in 0s both;
-  z-index: -1;
 `;
 
 const Song = styled(SongTile)`
@@ -64,13 +51,12 @@ const LoadingContainer = styled('div')`
   right: 16%;
 `;
 
-
 const spinning = keyframes`
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 `;
 
-const SpinningSun = styled(SvgSun)`
+const SpinningSun = styled(Sun)`
   animation: ${spinning} 5s linear infinite;
 `;
 
@@ -90,9 +76,6 @@ const QuestionPage = props => (
   <div>
     <Question>What was the first piece of music you listened to this morning?</Question>
     <SongSelect fetchOptions={api.searchTracks} onOptionSelected={option => alert(JSON.stringify(option))}/>
-    <SunContainer>
-      <SvgSun fill={colors.orange} />
-    </SunContainer>
   </div>
 );
 
