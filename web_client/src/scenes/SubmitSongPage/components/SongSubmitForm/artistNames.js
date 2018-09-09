@@ -1,0 +1,25 @@
+const artistNames = [
+  'Mac M.',
+  'Jimi H.',
+  'Erykah B.',
+  'Lauryn H.',
+  'Bessie S.',
+  'Yo-Yo M.',
+  'Otis R.',
+  'Claude D.',
+  'Andre 3.',
+  'Kanye W.',
+  'Norah J.',
+  'Nina S.',
+  'Charlie P.',
+  'Louis A.',
+  'Cardi B.',
+  'Frank O.',
+  'Earl S.',
+  'Joan B.',
+  'Johnny C.',
+  'Frank S.',
+  'Ray C.',
+];
+
+export default artistNames;

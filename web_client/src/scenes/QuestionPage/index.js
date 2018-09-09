@@ -72,10 +72,10 @@ const SongSelect = (props) => <AutocompleteDropdown LoadingComponent={Loading} I
 
 
 
-const QuestionPage = props => (
+const QuestionPage = ({ onSongSelected }) => (
   <div>
     <Question>What was the first piece of music you listened to this morning?</Question>
-    <SongSelect fetchOptions={api.searchTracks} onOptionSelected={option => alert(JSON.stringify(option))}/>
+    <SongSelect fetchOptions={api.searchTracks} onOptionSelected={option => onSongSelected(option)}/>
   </div>
 );
 
