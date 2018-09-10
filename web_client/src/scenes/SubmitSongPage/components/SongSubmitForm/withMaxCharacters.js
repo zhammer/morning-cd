@@ -1,18 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'react-emotion';
-import colors from 'theme';
-
-const Container = styled('div')`
-  position: relative;
-`;
-
-const Counter = styled('div')`
-  position: absolute;
-  right: .15rem;
-  bottom: .25rem;
-  font-size: .5rem;
-  color: ${colors.lightGray};
-`;
+import { Container, Counter } from './withMaxCharacters.styles';
 
 const withMaxCharacters = (InputComponent, maxCharacters) => (
   class extends Component {

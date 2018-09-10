@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'react-emotion';
-
-const FlexColumn = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-`;
+import { FlexColumn } from './AutocompleteDropdownInput.styles';
 
 const AutocompleteDropdown = ({
   ClearButtonComponent,
