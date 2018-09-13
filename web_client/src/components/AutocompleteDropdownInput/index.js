@@ -1,32 +1,7 @@
 import React, { Component } from 'react';
-import { FlexColumn } from './AutocompleteDropdownInput.styles';
+import AutocompleteDropdownInput from './AutocompleteDropdownInput';
 
-const AutocompleteDropdown = ({
-  ClearButtonComponent,
-  InputComponent,
-  OptionComponent,
-  LoadingComponent,
-  options,
-  onInputChange,
-  inputValue,
-  className,
-  onOptionSelected,
-  onClearButtonClicked,
-  loading
-}) => (
-  <FlexColumn className={className}>
-    <InputComponent
-      value={inputValue}
-      onChange={e => onInputChange(e.target.value)}
-      spellCheck={false} /* <-- temporary */ >
-    </InputComponent>
-    {loading && <LoadingComponent />}
-    {inputValue && !loading && <ClearButtonComponent onClick={onClearButtonClicked} />}
-    {options.map((option, index) => <OptionComponent key={index} onClick={() => onOptionSelected(option)} {...option} />)}
-  </FlexColumn>
-);
-
-class AutocompleteDropdownInput extends Component {
+class AutocompleteDropdownInputContainer extends Component {
   state = {
     options: [],
     value: '',
@@ -54,10 +29,18 @@ class AutocompleteDropdownInput extends Component {
   };
 
   render = () => {
-    const { ClearButtonComponent, InputComponent, OptionComponent, LoadingComponent, className, onOptionSelected } = this.props;
+    const {
+      ClearButtonComponent,
+      InputComponent,
+      OptionComponent,
+      LoadingComponent,
+      className,
+      onOptionSelected,
+      mapOptionToProps = option => option
+    } = this.props;
     const { options, value, loading } = this.state;
     return (
-      <AutocompleteDropdown
+      <AutocompleteDropdownInput
         ClearButtonComponent={ClearButtonComponent}
         InputComponent={InputComponent}
         OptionComponent={OptionComponent}
@@ -68,10 +51,11 @@ class AutocompleteDropdownInput extends Component {
         className={className}
         onClearButtonClicked={this.handleClearButtonClicked}
         onOptionSelected={onOptionSelected}
+        mapOptionToProps={mapOptionToProps}
         loading={loading}
         />
     );
   }
 }
 
-export default AutocompleteDropdownInput;
+export default AutocompleteDropdownInputContainer;
