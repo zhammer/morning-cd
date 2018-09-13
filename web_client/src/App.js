@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import DayFrame from 'scenes/DayFrame';
 import QuestionPage from 'scenes/QuestionPage';
 import SubmitSongPage from 'scenes/SubmitSongPage';
+import WindLoadingPage from 'scenes/WindLoadingPage';
 
 class App extends Component {
   state = {
-    selectedSong: null
+    selectedSong: null,
+    loading: false
   }
 
   handleSongSelected = song => { this.setState({ selectedSong: song }); }
@@ -16,11 +18,11 @@ class App extends Component {
   }
 
   render() {
-    const { selectedSong } = this.state;
+    const { loading, selectedSong } = this.state;
     return (
       <div>
         <DayFrame>
-          {!selectedSong ? <QuestionPage onSongSelected={this.handleSongSelected} />
+          {loading ? <WindLoadingPage /> : !selectedSong ? <QuestionPage onSongSelected={this.handleSongSelected} />
           : <SubmitSongPage song={selectedSong} onSongSubmitted={this.handleSongSubmitted} />}
         </DayFrame>
       </div>
