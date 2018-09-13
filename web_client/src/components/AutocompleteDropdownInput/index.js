@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import AutocompleteDropdownInput from './AutocompleteDropdownInput';
 
 class AutocompleteDropdownInputContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.inputRef = React.createRef();
+  }
+
   state = {
     options: [],
     value: '',
@@ -26,6 +31,7 @@ class AutocompleteDropdownInputContainer extends Component {
 
   handleClearButtonClicked = () => {
     this.handleInputChange('');
+    this.inputRef.current.focus();
   };
 
   render = () => {
@@ -53,6 +59,7 @@ class AutocompleteDropdownInputContainer extends Component {
         onOptionSelected={onOptionSelected}
         mapOptionToProps={mapOptionToProps}
         loading={loading}
+        inputRef={this.inputRef}
         />
     );
   }
