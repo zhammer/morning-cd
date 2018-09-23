@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Dict, Optional
 
 import requests
 
+from morning_cd.definitions import Song
 from morning_cd.gateways.music import MusicGatewayABC
 
 
@@ -24,16 +25,36 @@ class SpotifyGateway(MusicGatewayABC):
             raise ValueError('SpotifyGateway requires either a `bearer_token` or (`client_id`, '
                              '`client_secret`) for auth.')
 
-    def song_exists(self, song_id: str) -> bool:
+    def fetch_song(self, song_id: str) -> Song:
         r = requests.get(
             self.base_url + '/tracks/' + song_id,
             headers={'Authorization': 'Bearer ' + self.bearer_token}
         )
 
-        if r.status_code == requests.codes.unauthorized:
-            raise PermissionError('Spotify authentication failed.')
+        if r.status_code == requests.codes.ok:
+            return SpotifyGateway._pluck_song(r.json())
 
-        return r.status_code == requests.codes.ok
+        else:
+            if r.status_code == requests.codes.unauthorized:
+                raise PermissionError('Spotify authentication failed.')
+
+            elif r.status_code == requests.codes.bad_request:
+                raise ValueError(r.json()['error']['message'])
+
+            elif r.status_code == requests.codes.not_found:
+                raise LookupError(r.json()['error']['message'])
+
+            else:
+                raise RuntimeError('Unexpected error code from spotify. "{}"'.format(r.json()))
+
+    def song_exists(self, song_id: str) -> bool:
+        try:
+            self.fetch_song(song_id)
+        except (ValueError, LookupError):
+            return False
+        else:
+            return True
+
 
     @staticmethod
     def fetch_bearer_token(client_id: str, client_secret: str) -> str:
@@ -44,3 +65,18 @@ class SpotifyGateway(MusicGatewayABC):
         )
 
         return r.json()['access_token']
+
+    @staticmethod
+    def _pluck_song(raw_song: Dict) -> Song:
+        return Song(
+            id=raw_song['id'],
+            name=raw_song['name'],
+            artist_name=raw_song['artists'][0]['name'],
+            album_name=raw_song['album']['name'],
+            image_url_by_size={
+                'large': raw_song['album']['images'][0]['url'],
+                'medium': raw_song['album']['images'][1]['url'],
+                'small': raw_song['album']['images'][2]['url']
+            },
+            vendor='spotify'
+        )
