@@ -13,8 +13,8 @@ class DbGatewayABC(ABC):
 
     @abstractmethod
     def fetch_listens(self,
-                      before_utc: datetime,
-                      after_utc: datetime,
-                      sort_time: SortOrder,
-                      limit: int) -> List[Listen]:
+                    before_utc: datetime,
+                    after_utc: datetime,
+                    sort_time: SortOrder,
+                    limit: int) -> List[Listen]:
         ...
