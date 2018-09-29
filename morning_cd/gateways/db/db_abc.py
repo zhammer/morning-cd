@@ -12,6 +12,10 @@ class DbGatewayABC(ABC):
         ...
 
     @abstractmethod
+    def fetch_listen(self, listen_id: str) -> Listen:
+        ...
+
+    @abstractmethod
     def fetch_listens(self,
                     before_utc: datetime,
                     after_utc: datetime,

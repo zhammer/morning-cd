@@ -23,6 +23,14 @@ class SqlAlchemyDbGateway(DbGatewayABC):
 
         return SqlAlchemyDbGateway._pluck_listen(sql_listen)
 
+    def fetch_listen(self, listen_id: str) -> Listen:
+        query = self.session.query(SqlListen)
+        query = query.filter(SqlListen.id == listen_id)
+
+        sql_listen = query.one()
+
+        return SqlAlchemyDbGateway._pluck_listen(sql_listen)
+
     def fetch_listens(self,
                       before_utc: datetime,
                       after_utc: datetime,
