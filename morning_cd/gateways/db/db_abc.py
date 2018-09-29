@@ -8,7 +8,7 @@ from morning_cd.definitions import Listen, SortOrder
 class DbGatewayABC(ABC):
 
     @abstractmethod
-    def add_listen(self, listen: Listen) -> None:
+    def add_listen(self, listen: Listen) -> Listen:
         ...
 
     @abstractmethod

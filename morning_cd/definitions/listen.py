@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 
 class Listen(NamedTuple):
@@ -9,3 +9,5 @@ class Listen(NamedTuple):
     listen_time_utc: datetime
     note: str
     iana_timezone: str
+
+    id: Optional[str] = None

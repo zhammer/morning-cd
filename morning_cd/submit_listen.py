@@ -3,7 +3,7 @@ from morning_cd.context import Context
 from morning_cd.definitions import Listen
 
 
-def submit_listen(context: Context, listen: Listen) -> None:
+def submit_listen(context: Context, listen: Listen) -> Listen:
     """Submit a Listen to the database."""
     if not context.music_gateway.song_exists(listen.song_id):
         raise ValueError('Song doesnt exist.')
@@ -18,4 +18,4 @@ def submit_listen(context: Context, listen: Listen) -> None:
     if not day_entity.is_day(listen.listen_time_utc, sunlight_info):
         raise ValueError('Users can only submit listens during the day.')
 
-    context.db_gateway.add_listen(listen)
+    return context.db_gateway.add_listen(listen)

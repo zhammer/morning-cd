@@ -16,10 +16,12 @@ class SqlAlchemyDbGateway(DbGatewayABC):
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
-    def add_listen(self, listen: Listen) -> None:
+    def add_listen(self, listen: Listen) -> Listen:
         sql_listen = SqlAlchemyDbGateway._build_sql_listen(listen)
         self.session.add(sql_listen)
         self.session.commit()
+
+        return SqlAlchemyDbGateway._pluck_listen(sql_listen)
 
     def fetch_listens(self,
                       before_utc: datetime,
@@ -55,6 +57,7 @@ class SqlAlchemyDbGateway(DbGatewayABC):
     @staticmethod
     def _pluck_listen(sql_listen: SqlListen) -> Listen:
         return Listen(
+            id=sql_listen.id,
             song_id=sql_listen.song_id,
             song_vendor=sql_listen.song_vendor,
             listener_name=sql_listen.listener_name,
