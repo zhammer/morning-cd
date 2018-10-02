@@ -2,13 +2,17 @@ from datetime import timedelta
 from typing import Dict
 
 from morning_cd.definitions import Coordinates, GeoTimezone
+from morning_cd.definitions.exceptions import InvalidIanaTimezoneError
 from morning_cd.gateways.geo_timezone import GeoTimezoneGatewayABC
 
 
 class MockGeoTimezoneGateway(GeoTimezoneGatewayABC):
 
     def fetch_geo_timezone(self, iana_name: str) -> GeoTimezone:
-        return _geo_timezone_by_iana_name[iana_name]
+        try:
+            return _geo_timezone_by_iana_name[iana_name]
+        except LookupError:
+            raise InvalidIanaTimezoneError(f'{iana_name} is not a known iana timezone.')
 
 
 _geo_timezone_by_iana_name: Dict[str, GeoTimezone] = {

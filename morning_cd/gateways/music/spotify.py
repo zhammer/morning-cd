@@ -3,6 +3,7 @@ from typing import cast, Dict, Optional
 import requests
 
 from morning_cd.definitions import Listen, Song, Vendor
+from morning_cd.definitions.exceptions import InvalidSongError
 from morning_cd.gateways.music import MusicGatewayABC
 
 
@@ -41,11 +42,9 @@ class SpotifyGateway(MusicGatewayABC):
             if r.status_code == requests.codes.unauthorized:
                 raise PermissionError('Spotify authentication failed.')
 
-            elif r.status_code == requests.codes.bad_request:
-                raise ValueError(r.json()['error']['message'])
-
-            elif r.status_code == requests.codes.not_found:
-                raise LookupError(r.json()['error']['message'])
+            elif (r.status_code == requests.codes.bad_request
+                  or r.status_code == requests.codes.not_found):
+                raise InvalidSongError(r.json()['error']['message'])
 
             else:
                 raise RuntimeError('Unexpected error code from spotify. "{}"'.format(r.json()))
@@ -53,7 +52,7 @@ class SpotifyGateway(MusicGatewayABC):
     def song_exists(self, song_id: str) -> bool:
         try:
             self.fetch_song(song_id)
-        except (ValueError, LookupError):
+        except InvalidSongError:
             return False
         else:
             return True
