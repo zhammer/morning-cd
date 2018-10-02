@@ -77,10 +77,10 @@ class SqlAlchemyDbGateway(DbGatewayABC):
     @staticmethod
     def _sql_order_function(sort_order: SortOrder) -> Callable:
         if sort_order == SortOrder.ASCENDING:
-            return asc
+            return cast(Callable, asc)
 
         elif sort_order == SortOrder.DESCENDING:
-            return desc
+            return cast(Callable, desc)
 
         else:
             raise LookupError('Invalid sort_order')

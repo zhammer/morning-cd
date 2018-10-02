@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import Enum, Table, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -9,7 +10,7 @@ from morning_cd.definitions.vendor import Vendor
 Base = declarative_base()
 
 
-class SqlListen(Base):
+class SqlListen(Base): # type: ignore
     __tablename__ = 'listens'
 
     id = Column(Integer(), primary_key=True)

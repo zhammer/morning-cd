@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import cast, Dict, Optional
 
 import requests
 
@@ -67,7 +67,7 @@ class SpotifyGateway(MusicGatewayABC):
             data={'grant_type': 'client_credentials'}
         )
 
-        return r.json()['access_token']
+        return cast(str, r.json()['access_token'])
 
     @staticmethod
     def _pluck_song(raw_song: Dict) -> Song:
