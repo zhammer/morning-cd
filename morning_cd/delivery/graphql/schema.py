@@ -1,11 +1,17 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import List
 
 import graphene
 from graphql import ResolveInfo
 
-from morning_cd import get_song_of_listen, get_listen, get_listens, submit_listen
-from morning_cd.definitions import Listen, Song, SortOrder, Vendor
+from morning_cd import (
+    get_song_of_listen,
+    get_listen,
+    get_listens,
+    get_sunlight_window,
+    submit_listen
+)
+from morning_cd.definitions import Listen, Song, SortOrder, SunlightWindow, Vendor
 
 
 GraphQlSortOrder = graphene.Enum.from_enum(SortOrder)
@@ -55,6 +61,12 @@ class GraphQlListen(graphene.ObjectType):
         return get_listen(info.context, id)
 
 
+class GraphQlSunlightWindow(graphene.ObjectType):
+
+    sunrise_utc = graphene.DateTime()
+    sunset_utc = graphene.DateTime()
+
+
 class Query(graphene.ObjectType):
 
     node = graphene.relay.Node.Field()
@@ -64,6 +76,9 @@ class Query(graphene.ObjectType):
         'after_utc': graphene.DateTime(),
         'limit': graphene.Int(),
         'sort_order': graphene.Argument(GraphQlSortOrder, default_value=SortOrder.ASCENDING)
+    })
+    today_sunlight_window = graphene.Field(GraphQlSunlightWindow, args={
+        'iana_timezone': graphene.String()
     })
 
     def resolve_listen(self, info: ResolveInfo, id: str) -> Listen:
@@ -76,6 +91,11 @@ class Query(graphene.ObjectType):
                             limit: int,
                             sort_order: SortOrder) -> List[Listen]:
         return get_listens(info.context, before_utc, after_utc, SortOrder(sort_order), limit)
+
+    def resolve_today_sunlight_window(self,
+                                      info: ResolveInfo,
+                                      iana_timezone: str) -> SunlightWindow:
+        return get_sunlight_window(info.context, iana_timezone, date.today())
 
 
 class GraphQlListenInput(graphene.InputObjectType):
