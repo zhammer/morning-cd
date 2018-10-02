@@ -96,7 +96,7 @@ class SubmitListen(graphene.Mutation):
             song_id=listen_data.song_id,
             song_vendor=Vendor(listen_data.song_vendor),
             listener_name=listen_data.listener_name,
-            listen_time_utc=datetime.datetime.now(datetime.timezone.utc),
+            listen_time_utc=datetime.datetime.utcnow(),
             note=listen_data.note,
             iana_timezone=listen_data.iana_timezone
         )

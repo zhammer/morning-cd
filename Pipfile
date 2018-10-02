@@ -10,6 +10,8 @@ graphene = "*"
 
 [dev-packages]
 mypy = "*"
+pytest = "*"
+pytest-hammertime = "*"
 
 [requires]
 python_version = "3.6"
