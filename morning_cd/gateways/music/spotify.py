@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 import requests
 
-from morning_cd.definitions import Song, Vendor
+from morning_cd.definitions import Listen, Song, Vendor
 from morning_cd.gateways.music import MusicGatewayABC
 
 
@@ -24,6 +24,9 @@ class SpotifyGateway(MusicGatewayABC):
         else:
             raise ValueError('SpotifyGateway requires either a `bearer_token` or (`client_id`, '
                              '`client_secret`) for auth.')
+
+    def fetch_song_of_listen(self, listen: Listen) -> Song:
+        return self.fetch_song(listen.song_id)
 
     def fetch_song(self, song_id: str) -> Song:
         r = requests.get(

@@ -2,7 +2,7 @@ import datetime
 
 import graphene
 
-from morning_cd import get_song, get_listen, get_listens, submit_listen
+from morning_cd import get_song_of_listen, get_listen, get_listens, submit_listen
 from morning_cd.definitions import Listen, SortOrder, Vendor
 
 
@@ -50,7 +50,7 @@ class GraphQlListen(graphene.ObjectType):
     iana_timezone = graphene.String()
 
     def resolve_song(self, info):
-        return get_song(info.context, self.song_id)
+        return get_song_of_listen(info.context, self)
 
     @classmethod
     def get_node(cls, info, id):

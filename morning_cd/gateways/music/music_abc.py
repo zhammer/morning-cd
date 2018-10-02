@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from morning_cd.definitions import Song
+from morning_cd.definitions import Listen, Song
 
 
 class MusicGatewayABC(ABC):
 
     @abstractmethod
-    def fetch_song(self, song_id: str) -> Song:
+    def fetch_song_of_listen(self, listen: Listen) -> Song:
         ...
 
 
