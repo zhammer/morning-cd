@@ -12,6 +12,7 @@ graphene = "*"
 mypy = "*"
 pytest = "*"
 pytest-hammertime = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.6"
