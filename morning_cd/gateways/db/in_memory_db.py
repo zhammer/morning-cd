@@ -14,7 +14,6 @@ class InMemoryDbGateway(DbGatewayABC):
         self.listens.append(listen)
         return listen
 
-
     def fetch_listens(self,
                       before_utc: datetime,
                       after_utc: datetime,

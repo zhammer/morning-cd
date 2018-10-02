@@ -13,6 +13,8 @@ mypy = "*"
 pytest = "*"
 pytest-hammertime = "*"
 pytest-cov = "*"
+"flake8" = "*"
+"flake8-per-file-ignores" = "*"
 
 [requires]
 python_version = "3.6"

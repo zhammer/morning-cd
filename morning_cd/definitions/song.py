@@ -2,6 +2,7 @@ from typing import Dict, NamedTuple
 
 from morning_cd.definitions import Vendor
 
+
 class Song(NamedTuple):
     id: str
     vendor: Vendor

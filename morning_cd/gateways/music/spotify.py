@@ -58,7 +58,6 @@ class SpotifyGateway(MusicGatewayABC):
         else:
             return True
 
-
     @staticmethod
     def fetch_bearer_token(client_id: str, client_secret: str) -> str:
         r = requests.post(

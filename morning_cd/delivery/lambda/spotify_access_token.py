@@ -4,8 +4,6 @@ import json
 import os
 from typing import Any, Dict
 
-import requests
-
 from morning_cd.gateways.music import SpotifyGateway
 
 

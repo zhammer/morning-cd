@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Enum, Table, Column, DateTime, Integer, String
+from sqlalchemy import Enum, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 from morning_cd.definitions.vendor import Vendor

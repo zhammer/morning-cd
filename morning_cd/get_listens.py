@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from morning_cd.context import Context
 from morning_cd.definitions import Listen, SortOrder

@@ -24,10 +24,14 @@ class SunriseSunsetApiGateway(SunlightGatewayABC):
         return self._pluck_sunlight_info(raw_sunlight_response, coordinates)
 
     @staticmethod
-    def _pluck_sunlight_info(raw_sunlight_response: Dict, coordinates: Coordinates) -> SunlightWindow:
+    def _pluck_sunlight_info(raw_sunlight_response: Dict,
+                             coordinates: Coordinates) -> SunlightWindow:
+
+        sunrise_dt_str = raw_sunlight_response['results']['sunrise']
+        sunset_dt_str = raw_sunlight_response['results']['sunset']
         return SunlightWindow(
-            sunrise_utc=SunriseSunsetApiGateway._pluck_datetime(raw_sunlight_response['results']['sunrise']),
-            sunset_utc=SunriseSunsetApiGateway._pluck_datetime(raw_sunlight_response['results']['sunset']),
+            sunrise_utc=SunriseSunsetApiGateway._pluck_datetime(sunrise_dt_str),
+            sunset_utc=SunriseSunsetApiGateway._pluck_datetime(sunset_dt_str),
             coordinates=coordinates
         )
 

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Callable, cast, Iterable, List
 
 from sqlalchemy import asc, create_engine, desc
-from sqlalchemy.orm import Query, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 from morning_cd.definitions import Listen, SortOrder
 from morning_cd.gateways.db import DbGatewayABC
