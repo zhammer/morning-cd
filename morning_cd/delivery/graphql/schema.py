@@ -1,9 +1,11 @@
-import datetime
+from datetime import datetime
+from typing import List
 
 import graphene
+from graphql import ResolveInfo
 
 from morning_cd import get_song_of_listen, get_listen, get_listens, submit_listen
-from morning_cd.definitions import Listen, SortOrder, Vendor
+from morning_cd.definitions import Listen, Song, SortOrder, Vendor
 
 
 GraphQlSortOrder = graphene.Enum.from_enum(SortOrder)
@@ -24,17 +26,13 @@ class GraphQlSong(graphene.ObjectType):
     image_medium_url = graphene.String()
     image_small_url = graphene.String()
 
-    @classmethod
-    def get_node(cls, info, id):
-        return get_song(info.context, id)
-
-    def resolve_image_large_url(self, info):
+    def resolve_image_large_url(self: Song, info: ResolveInfo) -> str:
         return self.image_url_by_size['large']
 
-    def resolve_image_medium_url(self, info):
+    def resolve_image_medium_url(self: Song, info: ResolveInfo) -> str:
         return self.image_url_by_size['medium']
 
-    def resolve_image_small_url(self, info):
+    def resolve_image_small_url(self: Song, info: ResolveInfo) -> str:
         return self.image_url_by_size['small']
 
 
@@ -49,11 +47,11 @@ class GraphQlListen(graphene.ObjectType):
     note = graphene.String()
     iana_timezone = graphene.String()
 
-    def resolve_song(self, info):
+    def resolve_song(self: Listen, info: ResolveInfo) -> Song:
         return get_song_of_listen(info.context, self)
 
     @classmethod
-    def get_node(cls, info, id):
+    def get_node(cls, info: ResolveInfo, id: str) -> Listen:
         return get_listen(info.context, id)
 
 
@@ -68,10 +66,15 @@ class Query(graphene.ObjectType):
         'sort_order': graphene.Argument(GraphQlSortOrder, default_value=SortOrder.ASCENDING)
     })
 
-    def resolve_listen(self, info, id):
+    def resolve_listen(self, info: ResolveInfo, id: str) -> Listen:
         return get_listen(info.context, id)
 
-    def resolve_all_listens(self, info, before_utc, after_utc, limit, sort_order):
+    def resolve_all_listens(self,
+                            info: ResolveInfo,
+                            before_utc: datetime,
+                            after_utc: datetime,
+                            limit: int,
+                            sort_order: SortOrder) -> List[Listen]:
         return get_listens(info.context, before_utc, after_utc, SortOrder(sort_order), limit)
 
 
@@ -91,12 +94,12 @@ class SubmitListen(graphene.Mutation):
 
     Output = GraphQlListen
 
-    def mutate(self, info, listen_data):
+    def mutate(self, info: ResolveInfo, listen_data: GraphQlListenInput) -> Listen:
         listen = Listen(
             song_id=listen_data.song_id,
             song_vendor=Vendor(listen_data.song_vendor),
             listener_name=listen_data.listener_name,
-            listen_time_utc=datetime.datetime.utcnow(),
+            listen_time_utc=datetime.utcnow(),
             note=listen_data.note,
             iana_timezone=listen_data.iana_timezone
         )

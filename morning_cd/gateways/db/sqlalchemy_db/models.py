@@ -7,10 +7,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from morning_cd.definitions.vendor import Vendor
 
 
-Base = declarative_base()
+Base: Any = declarative_base()
 
 
-class SqlListen(Base): # type: ignore
+class SqlListen(Base):
     __tablename__ = 'listens'
 
     id = Column(Integer(), primary_key=True)
