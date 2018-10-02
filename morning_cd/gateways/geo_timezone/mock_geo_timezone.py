@@ -5,7 +5,7 @@ from morning_cd.definitions import Coordinates, GeoTimezone
 from morning_cd.gateways.geo_timezone import GeoTimezoneGatewayABC
 
 
-class MockGeoTimezone(GeoTimezoneGatewayABC):
+class MockGeoTimezoneGateway(GeoTimezoneGatewayABC):
 
     def fetch(self, iana_name: str) -> GeoTimezone:
         return _geo_timezone_by_iana_name[iana_name]

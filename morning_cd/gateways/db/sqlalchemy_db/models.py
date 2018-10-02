@@ -1,19 +1,21 @@
 from datetime import datetime
 
-from sqlalchemy import Table, Column, DateTime, Integer, String
+from sqlalchemy import Enum, Table, Column, DateTime, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+
+from morning_cd.definitions.vendor import Vendor
 
 
 Base = declarative_base()
 
 
-class Listen(Base):
+class SqlListen(Base):
     __tablename__ = 'listens'
 
     id = Column(Integer(), primary_key=True)
 
     song_id = Column(String(50), nullable=False)
-    song_vendor = Column(String(10), nullable=False)
+    song_vendor = Column(Enum(Vendor), nullable=False)
 
     listener_name = Column(String(30), nullable=False)
     note = Column(String(100), nullable=True)

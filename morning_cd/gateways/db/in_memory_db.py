@@ -10,8 +10,10 @@ class InMemoryDbGateway(DbGatewayABC):
     def __init__(self, listens: Optional[List[Listen]] = None) -> None:
         self.listens: List[Listen] = listens or []
 
-    def add_listen(self, listen: Listen) -> None:
+    def add_listen(self, listen: Listen) -> Listen:
         self.listens.append(listen)
+        return listen
+
 
     def fetch_listens(self,
                       before_utc: datetime,

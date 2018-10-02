@@ -1,9 +1,10 @@
 from typing import Dict, NamedTuple
 
+from morning_cd.definitions import Vendor
 
 class Song(NamedTuple):
     id: str
-    vendor: str
+    vendor: Vendor
     name: str
     artist_name: str
     album_name: str

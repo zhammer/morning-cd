@@ -8,7 +8,7 @@ from morning_cd.gateways.sunlight import SunlightGatewayABC
 from morning_cd.helpers import fromisoformat
 
 
-class SunriseSunsetApi(SunlightGatewayABC):
+class SunriseSunsetApiGateway(SunlightGatewayABC):
     url = 'http://api.sunrise-sunset.org/json'
 
     def fetch(self, coordinates: Coordinates, on_day: date) -> SunlightInfo:

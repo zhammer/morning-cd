@@ -6,7 +6,7 @@ from sqlalchemy.orm import Query, sessionmaker
 
 from morning_cd.definitions import Listen, SortOrder
 from morning_cd.gateways.db import DbGatewayABC
-from morning_cd.gateways.db.sqlalchemy_db.listen import Base, Listen as SqlListen
+from morning_cd.gateways.db.sqlalchemy_db.models import Base, SqlListen
 
 
 class SqlAlchemyDbGateway(DbGatewayABC):
@@ -45,7 +45,7 @@ class SqlAlchemyDbGateway(DbGatewayABC):
 
         query = query.limit(limit)
 
-        return SqlAlchemyDbGateway._pluck_listens(cast(Iterable[Listen], query))
+        return SqlAlchemyDbGateway._pluck_listens(cast(Iterable[SqlListen], query))
 
     @staticmethod
     def _build_sql_listen(listen: Listen) -> SqlListen:

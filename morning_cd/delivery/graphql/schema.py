@@ -3,7 +3,12 @@ import datetime
 import graphene
 
 from morning_cd import get_song, get_listen, get_listens, submit_listen
-from morning_cd.definitions import Listen, SortOrder
+from morning_cd.definitions import Listen, SortOrder, Vendor
+
+
+GraphQlSortOrder = graphene.Enum.from_enum(SortOrder)
+GraphQlVendor = graphene.Enum.from_enum(Vendor)
+
 
 class GraphQlSong(graphene.ObjectType):
 
@@ -11,7 +16,7 @@ class GraphQlSong(graphene.ObjectType):
         interfaces = (graphene.relay.Node,)
 
     name = graphene.String()
-    vendor = graphene.String()
+    vendor = GraphQlVendor()
     artist_name = graphene.String()
     album_name = graphene.String()
 
@@ -52,9 +57,6 @@ class GraphQlListen(graphene.ObjectType):
         return get_listen(info.context, id)
 
 
-GraphQlSortOrder = graphene.Enum.from_enum(SortOrder)
-
-
 class Query(graphene.ObjectType):
 
     node = graphene.relay.Node.Field()
@@ -72,15 +74,18 @@ class Query(graphene.ObjectType):
     def resolve_all_listens(self, info, before_utc, after_utc, limit, sort_order):
         return get_listens(info.context, before_utc, after_utc, SortOrder(sort_order), limit)
 
+
 class GraphQlListenInput(graphene.InputObjectType):
+
     song_id = graphene.String(required=True)
-    song_vendor = graphene.String(required=True)
+    song_vendor = GraphQlVendor(default_value=Vendor.SPOTIFY)
     listener_name = graphene.String(required=True)
     note = graphene.String(required=True)
     iana_timezone = graphene.String(required=True)
 
 
 class SubmitListen(graphene.Mutation):
+
     class Arguments:
         listen_data = GraphQlListenInput(required=True)
 
@@ -88,8 +93,12 @@ class SubmitListen(graphene.Mutation):
 
     def mutate(self, info, listen_data):
         listen = Listen(
-            **listen_data,
-            listen_time_utc=datetime.datetime.now(datetime.timezone.utc)
+            song_id=listen_data.song_id,
+            song_vendor=Vendor(listen_data.song_vendor),
+            listener_name=listen_data.listener_name,
+            listen_time_utc=datetime.datetime.now(datetime.timezone.utc),
+            note=listen_data.note,
+            iana_timezone=listen_data.iana_timezone
         )
         return submit_listen(info.context, listen)
 

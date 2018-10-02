@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 import requests
 
-from morning_cd.definitions import Song
+from morning_cd.definitions import Song, Vendor
 from morning_cd.gateways.music import MusicGatewayABC
 
 
@@ -78,5 +78,5 @@ class SpotifyGateway(MusicGatewayABC):
                 'medium': raw_song['album']['images'][1]['url'],
                 'small': raw_song['album']['images'][2]['url']
             },
-            vendor='spotify'
+            vendor=Vendor.SPOTIFY
         )
