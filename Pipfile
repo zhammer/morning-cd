@@ -15,9 +15,12 @@ pytest-hammertime = "*"
 pytest-cov = "*"
 "flake8" = "*"
 "flake8-per-file-ignores" = "*"
+flask = "*"
+flask-graphql = "*"
 
 [requires]
 python_version = "3.6"
 
 [scripts]
 check = "sh -c 'mypy morning_cd/ && flake8 morning_cd/ && pytest -q'"
+playground = "sh -c 'FLASK_APP=morning_cd/delivery/flask/playground.py FLASK_DEBUG=1 flask run --eager-loading --without-threads'"
