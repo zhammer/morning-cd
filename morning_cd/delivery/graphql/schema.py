@@ -75,7 +75,10 @@ class Query(graphene.ObjectType):
         'before_utc': graphene.DateTime(),
         'after_utc': graphene.DateTime(),
         'limit': graphene.Int(),
-        'sort_order': graphene.Argument(GraphQlSortOrder, default_value=SortOrder.ASCENDING)
+        'sort_order': graphene.Argument(
+            GraphQlSortOrder,
+            default_value=GraphQlSortOrder.ASCENDING.value
+        )
     })
     today_sunlight_window = graphene.Field(GraphQlSunlightWindow, args={
         'iana_timezone': graphene.String()
@@ -101,7 +104,7 @@ class Query(graphene.ObjectType):
 class GraphQlListenInput(graphene.InputObjectType):
 
     song_id = graphene.String(required=True)
-    song_vendor = GraphQlVendor(default_value=Vendor.SPOTIFY)
+    song_vendor = GraphQlVendor(default_value=GraphQlVendor.SPOTIFY.value)
     listener_name = graphene.String(required=True)
     note = graphene.String(required=True)
     iana_timezone = graphene.String(required=True)
