@@ -1,9 +1,9 @@
 from typing import NamedTuple
 
-from morning_cd.gateways.sunlight import SunlightGatewayABC
 from morning_cd.gateways.db import DbGatewayABC
 from morning_cd.gateways.geo_timezone import GeoTimezoneGatewayABC
 from morning_cd.gateways.music import MusicGatewayABC
+from morning_cd.gateways.sunlight import SunlightGatewayABC
 
 
 class Context(NamedTuple):

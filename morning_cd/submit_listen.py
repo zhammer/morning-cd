@@ -1,10 +1,10 @@
-from morning_cd.entities import day as day_entity
 from morning_cd.context import Context
 from morning_cd.definitions import Listen
 from morning_cd.definitions.exceptions import (
     InvalidSongError,
     SunlightError
 )
+from morning_cd.entities import day as day_entity
 
 
 def submit_listen(context: Context, listen: Listen) -> Listen:

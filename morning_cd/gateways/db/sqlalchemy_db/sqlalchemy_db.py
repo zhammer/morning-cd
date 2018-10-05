@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, cast, Iterable, List
+from typing import Callable, Iterable, List, cast
 
 from sqlalchemy import asc, create_engine, desc
 from sqlalchemy.orm import sessionmaker

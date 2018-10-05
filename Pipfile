@@ -17,6 +17,7 @@ pytest-cov = "*"
 "flake8-per-file-ignores" = "*"
 flask = "*"
 flask-graphql = "*"
+"flake8-import-order" = "*"
 
 [requires]
 python_version = "3.6"

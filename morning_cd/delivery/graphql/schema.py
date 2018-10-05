@@ -2,12 +2,13 @@ from datetime import date, datetime
 from typing import List
 
 import graphene
+
 from graphql import ResolveInfo
 
 from morning_cd import (
-    get_song_of_listen,
     get_listen,
     get_listens,
+    get_song_of_listen,
     get_sunlight_window,
     submit_listen
 )

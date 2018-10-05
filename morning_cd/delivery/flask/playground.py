@@ -2,6 +2,7 @@ import os
 import webbrowser
 
 from flask import Flask
+
 from flask_graphql import GraphQLView
 
 from morning_cd.context import Context
