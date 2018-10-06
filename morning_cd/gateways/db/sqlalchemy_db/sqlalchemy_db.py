@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Callable, Iterable, List, cast
+from typing import Callable, Iterable, List, Optional, cast
 
 from sqlalchemy import asc, create_engine, desc
 from sqlalchemy.orm import sessionmaker
@@ -32,13 +32,17 @@ class SqlAlchemyDbGateway(DbGatewayABC):
         return SqlAlchemyDbGateway._pluck_listen(sql_listen)
 
     def fetch_listens(self,
-                      before_utc: datetime,
-                      after_utc: datetime,
+                      limit: int,
                       sort_time: SortOrder,
-                      limit: int) -> List[Listen]:
+                      before_utc: Optional[datetime] = None,
+                      after_utc: Optional[datetime] = None) -> List[Listen]:
         query = self.session.query(SqlListen)
 
-        query = query.filter(SqlListen.listen_time_utc.between(after_utc, before_utc))
+        if after_utc:
+            query = query.filter(SqlListen.listen_time_utc > after_utc)
+
+        if before_utc:
+            query = query.filter(SqlListen.listen_time_utc < before_utc)
 
         sql_order_function = SqlAlchemyDbGateway._sql_order_function(sort_time)
         query = query.order_by(sql_order_function(SqlListen.listen_time_utc))

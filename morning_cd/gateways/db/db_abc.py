@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from morning_cd.definitions import Listen, SortOrder
 
@@ -17,8 +17,8 @@ class DbGatewayABC(ABC):
 
     @abstractmethod
     def fetch_listens(self,
-                      before_utc: datetime,
-                      after_utc: datetime,
+                      limit: int,
                       sort_time: SortOrder,
-                      limit: int) -> List[Listen]:
+                      before_utc: Optional[datetime],
+                      after_utc: Optional[datetime]) -> List[Listen]:
         ...
