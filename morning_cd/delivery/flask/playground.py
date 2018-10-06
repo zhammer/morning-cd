@@ -25,7 +25,8 @@ context = Context(
     geo_timezone_gateway=MockGeoTimezoneGateway(),
     music_gateway=SpotifyGateway(
         client_id=spotify_client_id,
-        client_secret=spotify_client_secret
+        client_secret=spotify_client_secret,
+        attempt_refetch_client_credentials=True
     ),
     sunlight_gateway=SunriseSunsetApiGateway()
 )

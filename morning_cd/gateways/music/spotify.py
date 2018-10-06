@@ -5,22 +5,30 @@ import requests
 from morning_cd.definitions import Listen, Song, Vendor
 from morning_cd.definitions.exceptions import InvalidSongError
 from morning_cd.gateways.music import MusicGatewayABC
+from morning_cd.gateways.music.util import with_attempt_refresh_client_credentials
 
 
 class SpotifyGateway(MusicGatewayABC):
     base_url = 'https://api.spotify.com/v1'
     auth_url = 'https://accounts.spotify.com/api/token'
 
-    def __init__(self, *, bearer_token: Optional[str] = None,
-                 client_id: Optional[str] = None, client_secret: Optional[str] = None) -> None:
+    def __init__(self, *,
+                 bearer_token: Optional[str] = None,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None,
+                 attempt_refetch_client_credentials: bool = False) -> None:
         """C'tor for the SpotifyGateway. Requires either a valid `bearer_token` or a `client_id`,
         `client_secret` pairing for authentication.
         """
         if bearer_token:
             self.bearer_token = bearer_token
+            self.attempt_refetch_client_credentials = False  # cant refresh without id and secret
 
         elif client_id and client_secret:
             self.bearer_token = SpotifyGateway.fetch_bearer_token(client_id, client_secret)
+            self.client_id = client_id
+            self.client_secret = client_secret
+            self.attempt_refetch_client_credentials = attempt_refetch_client_credentials
 
         else:
             raise ValueError('SpotifyGateway requires either a `bearer_token` or (`client_id`, '
@@ -29,6 +37,7 @@ class SpotifyGateway(MusicGatewayABC):
     def fetch_song_of_listen(self, listen: Listen) -> Song:
         return self.fetch_song(listen.song_id)
 
+    @with_attempt_refresh_client_credentials
     def fetch_song(self, song_id: str) -> Song:
         r = requests.get(
             self.base_url + '/tracks/' + song_id,
