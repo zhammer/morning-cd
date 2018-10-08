@@ -1,4 +1,3 @@
-from datetime import timedelta
 from typing import Dict
 
 from morning_cd.definitions import Coordinates, GeoTimezone
@@ -18,7 +17,6 @@ class MockGeoTimezoneGateway(GeoTimezoneGatewayABC):
 _geo_timezone_by_iana_name: Dict[str, GeoTimezone] = {
     'America/New_York': GeoTimezone(
         iana_name='American/New_York',
-        utc_offset=timedelta(hours=-5),
         coordinates=Coordinates(
             latitude=40.4251,
             longitude=-74.0023
@@ -26,7 +24,6 @@ _geo_timezone_by_iana_name: Dict[str, GeoTimezone] = {
     ),
     'Asia/Tokyo': GeoTimezone(
         iana_name='Asia/Tokyo',
-        utc_offset=timedelta(hours=9),
         coordinates=Coordinates(
             latitude=35.3916,
             longitude=139.4441
@@ -34,7 +31,6 @@ _geo_timezone_by_iana_name: Dict[str, GeoTimezone] = {
     ),
     'Europe/Moscow': GeoTimezone(
         iana_name='Europe/Moscow',
-        utc_offset=timedelta(hours=3),
         coordinates=Coordinates(
             latitude=55.4521,
             longitude=37.3704

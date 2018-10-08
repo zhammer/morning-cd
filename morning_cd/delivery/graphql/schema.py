@@ -30,7 +30,7 @@ staticmethods, so the first argument to the resolver method self (or root) need 
 actual instance of the ObjectType.' But it still is a little funky, and even moreso for
 the relay connection classes.
 """
-from datetime import date, datetime
+from datetime import datetime
 from typing import List, Optional
 
 import graphene
@@ -177,7 +177,11 @@ class Query(graphene.ObjectType):
     def resolve_today_sunlight_window(self,
                                       info: ResolveInfo,
                                       iana_timezone: str) -> SunlightWindow:
-        return get_sunlight_window(info.context, iana_timezone, date.today())
+        return get_sunlight_window(
+            info.context,
+            iana_timezone,
+            at=datetime.utcnow()
+        )
 
 
 class GraphQlListenInput(graphene.InputObjectType):
