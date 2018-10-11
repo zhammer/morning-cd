@@ -2,20 +2,17 @@
 
 import json
 import os
-import requests
+from typing import Any, Dict
 
-def fetch_access_token(client_id, client_secret):
-    response = requests.post(
-        'https://accounts.spotify.com/api/token',
-        auth=(client_id, client_secret),
-        data={'grant_type': 'client_credentials'}
-    )
-    return response.json()['access_token']
+from morning_cd.gateways.music import SpotifyGateway
 
-def handler(event, context):
-    client_id = os.environ['SPOTIFY_CLIENT_ID']
-    client_secret = os.environ['SPOTIFY_CLIENT_SECRET']
-    access_token = fetch_access_token(client_id, client_secret)
+
+def handler(event: Dict, context: Any) -> Dict:
+    client_id: str = os.environ['SPOTIFY_CLIENT_ID']
+    client_secret: str = os.environ['SPOTIFY_CLIENT_SECRET']
+
+    access_token = SpotifyGateway.fetch_bearer_token(client_id, client_secret)
+
     return {
         'statusCode': 200,
         'body': json.dumps({'accessToken': access_token}),
