@@ -12,7 +12,6 @@ injectGlobal`
     margin: 0;
     padding: 0;
     font-family: 'Amatic SC', cursive;
-    background: ${colors.eggWhite};
   }
   :root {
     font-size: 2rem;
