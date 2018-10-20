@@ -9,7 +9,7 @@ from morning_cd.context import Context
 from morning_cd.delivery.flask.util import is_flask_reload
 from morning_cd.delivery.graphql import schema
 from morning_cd.gateways.db import SqlAlchemyDbGateway
-from morning_cd.gateways.geo_timezone import MockGeoTimezoneGateway
+from morning_cd.gateways.geo_timezone import GeoTimezoneGateway
 from morning_cd.gateways.music import SpotifyGateway
 from morning_cd.gateways.sunlight import SunriseSunsetApiGateway
 
@@ -22,7 +22,7 @@ sqlalchemy_db.persist_schema()
 
 context = Context(
     db_gateway=sqlalchemy_db,
-    geo_timezone_gateway=MockGeoTimezoneGateway(),
+    geo_timezone_gateway=GeoTimezoneGateway(),
     music_gateway=SpotifyGateway(
         client_id=spotify_client_id,
         client_secret=spotify_client_secret,
