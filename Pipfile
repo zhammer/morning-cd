@@ -8,6 +8,7 @@ requests = "*"
 sqlalchemy = "*"
 graphene = "*"
 pytz = "*"
+iana-tz-coord = "*"
 
 [dev-packages]
 mypy = "*"
