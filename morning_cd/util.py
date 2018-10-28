@@ -3,6 +3,8 @@ from typing import cast
 
 import pytz
 
+from morning_cd.definitions.exceptions import InvalidIanaTimezoneError
+
 
 def local_date(datetime_utc: datetime, iana_timezone: str) -> date:
     """Return the local date of an iana_timezone at the specified datetime_utc.
@@ -16,6 +18,10 @@ def local_date(datetime_utc: datetime, iana_timezone: str) -> date:
     datetime.date(2018, 10, 7)
     """
     # there must be a better way to do this.
-    timezone = pytz.timezone(iana_timezone)
+    try:
+        timezone = pytz.timezone(iana_timezone)
+    except pytz.UnknownTimeZoneError:  # type: ignore
+        raise InvalidIanaTimezoneError(f'{iana_timezone} is not a known iana timezone.')
+
     local_dt = datetime_utc + timezone._utcoffset  # type: ignore
     return cast(date, local_dt.date())
