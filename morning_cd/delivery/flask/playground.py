@@ -17,7 +17,10 @@ from morning_cd.gateways.sunlight import SunriseSunsetApiGateway
 spotify_client_id = os.environ['SPOTIFY_CLIENT_ID']
 spotify_client_secret = os.environ['SPOTIFY_CLIENT_SECRET']
 
-sqlalchemy_db = SqlAlchemyDbGateway('sqlite:///localmorningcd.db', echo=True)
+# to use a local postgres instance, set this environment variable to 'postgresql://localhost:5432'
+morning_cd_playground_db = os.environ.get('MORNING_CD_PLAYGROUND_DB', 'sqlite:///localmorningcd.db')
+
+sqlalchemy_db = SqlAlchemyDbGateway(morning_cd_playground_db, echo=True)
 sqlalchemy_db.persist_schema()
 
 context = Context(

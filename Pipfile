@@ -9,6 +9,7 @@ sqlalchemy = "*"
 graphene = "*"
 pytz = "*"
 iana-tz-coord = "*"
+"psycopg2-binary" = "*"
 
 [dev-packages]
 mypy = "*"
