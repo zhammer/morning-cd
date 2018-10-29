@@ -18,7 +18,7 @@ const AutocompleteDropdownInput = ({
 }) => (
   <FlexColumn className={className}>
     <InputComponent
-      innerRef={inputRef}
+      ref={inputRef}
       value={inputValue}
       onChange={e => onInputChange(e.target.value)}
       spellCheck={false} /* <-- temporary */ >

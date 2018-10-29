@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled/macro';
 
 export const FlexColumn = styled('div')`
   display: flex;

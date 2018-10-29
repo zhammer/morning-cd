@@ -1,4 +1,5 @@
-import styled, { css } from 'react-emotion';
+import styled from '@emotion/styled/macro';
+import css from '@emotion/css/macro';
 import colors from 'theme';
 
 export const QuestionContainer = styled('div')`

@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled/macro';
 import SongTile from 'components/SongTile';
 
 export const Column = styled('div')`

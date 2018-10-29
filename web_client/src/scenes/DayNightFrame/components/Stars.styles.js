@@ -1,10 +1,8 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled/macro';
 import withIsDaySundialConsumer from 'components/util/withIsDaySundialConsumer';
 import Star from 'components/Star';
 
 const NightStar = withIsDaySundialConsumer(styled(Star)`
-  label: night-star;
-
   opacity: ${props => props.isDay ? '0' : '1'};
   transition: opacity 5s linear;
   height: 5%;

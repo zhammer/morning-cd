@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { injectGlobal } from 'emotion';
+import { Global, css } from '@emotion/core';
 import colors from 'theme';
 import App from './App';
 
-injectGlobal`
+const globalStyles = css`
   * {
     box-sizing: border-box;
   }
@@ -24,5 +24,12 @@ injectGlobal`
   }
 `;
 
+const AppWithGlobalStyles = () => (
+  <>
+    <Global styles={globalStyles} />
+    <App />
+  </>
+);
 
-ReactDOM.render(<App />, document.getElementById('root'));
+
+ReactDOM.render(<AppWithGlobalStyles />, document.getElementById('root'));

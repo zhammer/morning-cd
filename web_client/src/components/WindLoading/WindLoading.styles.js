@@ -1,4 +1,5 @@
-import styled, { keyframes } from 'react-emotion';
+import styled from '@emotion/styled/macro';
+import { keyframes } from '@emotion/core';
 import WindSvg from './WindSvg';
 
 const fadeinfadeout = keyframes`
