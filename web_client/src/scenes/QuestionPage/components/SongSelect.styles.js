@@ -1,4 +1,5 @@
-import styled, { keyframes } from 'react-emotion';
+import styled from '@emotion/styled/macro';
+import { keyframes } from '@emotion/core';
 import { isMobile } from 'react-device-detect';
 import ClearButtonSvg from 'components/ClearButtonSvg';
 import SongTile from 'components/SongTile';

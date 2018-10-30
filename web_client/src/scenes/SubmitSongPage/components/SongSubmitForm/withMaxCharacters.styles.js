@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled/macro';
 import colors from 'theme';
 
 export const Container = styled('div')`
