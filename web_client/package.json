@@ -4,11 +4,14 @@
   "private": true,
   "dependencies": {
     "emotion": "^9.2.6",
+    "graphql-request": "^1.8.2",
     "react": "^16.4.2",
     "react-device-detect": "^1.5.9",
     "react-dom": "^16.4.2",
     "react-emotion": "^9.2.6",
     "react-scripts": "1.1.4",
+    "react-spring": "^5.9.2",
+    "react-visibility-sensor": "^5.0.2",
     "superagent": "^3.8.3"
   },
   "scripts": {
