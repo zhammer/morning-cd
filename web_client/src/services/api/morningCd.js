@@ -108,7 +108,8 @@ query sunlightWindows (
   }
 }`;
 
-const localDateString = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+const twoDigits = number => `0${number}`.slice(-2);
+const localDateString = date => `${date.getFullYear()}-${twoDigits(date.getMonth() + 1)}-${twoDigits(date.getDate())}`;
 const utcIsoDateString = date => date.toISOString().slice(0, -1);
 
 export const buildFetchSunlightWindowsVariables = (today, ianaTimezone) => {
