@@ -1,7 +1,7 @@
 import os
 import webbrowser
 
-from flask import Flask
+from flask import Flask, jsonify
 
 from flask_graphql import GraphQLView
 
@@ -36,7 +36,7 @@ context = Context(
 
 app = Flask(__name__)
 app.add_url_rule(
-    '/graphql',
+    '/api/graphql',
     view_func=GraphQLView.as_view(
         'graphql',
         schema=schema,
@@ -45,5 +45,13 @@ app.add_url_rule(
     )
 )
 
+
+@app.route('/api/accesstoken')
+def access_token():  # type: ignore
+    access_token = SpotifyGateway.fetch_bearer_token(spotify_client_id, spotify_client_secret)
+    body = {'accessToken': access_token}
+    return jsonify(body)
+
+
 if is_flask_reload(os.environ):
-    webbrowser.open('http://localhost:5000/graphql')
+    webbrowser.open('http://localhost:5000/api/graphql')
