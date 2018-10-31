@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { keyframes } from '@emotion/core';
+import { keyframes } from 'emotion';
 import colors from 'theme';
 import withIsDaySundialConsumer from 'components/util/withIsDaySundialConsumer';
 
