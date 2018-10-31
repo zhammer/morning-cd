@@ -37,13 +37,7 @@ import graphene
 
 from graphql import ResolveInfo
 
-from morning_cd import (
-    get_listen,
-    get_listens,
-    get_song_of_listen,
-    get_sunlight_window,
-    submit_listen
-)
+from morning_cd import use_listens, use_sunlight_windows
 from morning_cd.definitions import Listen, Song, SortOrder, SunlightWindow, Vendor
 from morning_cd.delivery.graphql.util import RelayPaginationArguments, build_page_info
 
@@ -83,7 +77,7 @@ class GraphQlListen(graphene.ObjectType):
     iana_timezone = graphene.String()
 
     def resolve_song(self: Listen, info: ResolveInfo) -> Song:
-        return get_song_of_listen(info.context, self)
+        return use_listens.get_song_of_listen(info.context, self)
 
 
 class ListenConnection(graphene.relay.Connection):
@@ -123,7 +117,7 @@ class Query(graphene.ObjectType):
     })
 
     def resolve_listen(self, info: ResolveInfo, id: str) -> Listen:
-        return get_listen(info.context, id)
+        return use_listens.get_listen(info.context, id)
 
     def resolve_all_listens(self,
                             info: ResolveInfo,
@@ -148,7 +142,7 @@ class Query(graphene.ObjectType):
         sort_order = SortOrder.DESCENDING if pagination_args.last_is_set else SortOrder.ASCENDING
         limit = pagination_args.first if pagination_args.first_is_set else pagination_args.last
 
-        listens_plus_one = get_listens(
+        listens_plus_one = use_listens.get_listens(
             info.context,
             before_utc=before,
             after_utc=after,
@@ -179,7 +173,7 @@ class Query(graphene.ObjectType):
                                 info: ResolveInfo,
                                 iana_timezone: str,
                                 on_date: date) -> SunlightWindow:
-        return get_sunlight_window(
+        return use_sunlight_windows.get_sunlight_window(
             info.context,
             iana_timezone,
             on_day=on_date
@@ -211,7 +205,7 @@ class SubmitListen(graphene.Mutation):
             note=input.note,
             iana_timezone=input.iana_timezone
         )
-        return submit_listen(info.context, listen)
+        return use_listens.submit_listen(info.context, listen)
 
 
 class Mutation(graphene.ObjectType):
