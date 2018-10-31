@@ -1,10 +1,8 @@
 import { request as graphQlRequest } from 'graphql-request';
 import request from 'superagent';
 
-// TODO: fix this
-const BASE = 'https://yvle78zis6.execute-api.us-east-1.amazonaws.com/dev';
-const GRAPHQL_BASE = '/graphql';
-
+const BASE = '/api';
+const GRAPHQL_BASE = BASE + '/graphql';
 
 export async function fetchSpotifyAccessToken () {
   const response = await request.get(BASE + '/accesstoken');
