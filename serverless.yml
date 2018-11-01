@@ -12,7 +12,7 @@ functions:
   spotify-access-token:
     description: Fetch spotify access token
     handler:
-      morning_cd/delivery/lambda/spotify_access_token.handler
+      morning_cd/delivery/aws_lambda/spotify_access_token.handler
     events:
       - http:
           path: /accesstoken
