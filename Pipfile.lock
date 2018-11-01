@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "30ad9a224a1d2eab302fff3a55d991931c6b090380668f1d9b112550427c1cfb"
+            "sha256": "29627d9e8f6cd76595f85546af9a74176be178436ffc58764838b786d759d8e1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -57,6 +57,13 @@
                 "sha256:2716b7245d97091af21abf096fabafac576905096d21ba7118fba722596f65db"
             ],
             "version": "==0.4.5"
+        },
+        "graphql-server-core": {
+            "hashes": [
+                "sha256:e5f82add4b3d5580aa1f1e7d9f00e944ad3abe1b65eb337e611d6a77cc20f231"
+            ],
+            "index": "pypi",
+            "version": "==1.1.1"
         },
         "iana-tz-coord": {
             "hashes": [
@@ -118,11 +125,11 @@
         },
         "pytz": {
             "hashes": [
-                "sha256:642253af8eae734d1509fc6ac9c1aee5e5b69d76392660889979b9870610a46b",
-                "sha256:91e3ccf2c344ffaa6defba1ce7f38f97026943f675b7703f44789768e4cb0ece"
+                "sha256:31cb35c89bd7d333cd32c5f278fca91b523b0834369e757f4c5641ea252236ca",
+                "sha256:8e0f8568c118d3077b46be7d654cc8167fa916092e28320cde048e54bfc9f1e6"
             ],
             "index": "pypi",
-            "version": "==2018.6"
+            "version": "==2018.7"
         },
         "requests": {
             "hashes": [
@@ -148,10 +155,10 @@
         },
         "sqlalchemy": {
             "hashes": [
-                "sha256:c5951d9ef1d5404ed04bae5a16b60a0779087378928f997a294d1229c6ca4d3e"
+                "sha256:84412de3794acee05630e7788f25e80e81f78eb4837e7b71d0499129f660486a"
             ],
             "index": "pypi",
-            "version": "==1.2.12"
+            "version": "==1.2.13"
         },
         "urllib3": {
             "hashes": [
@@ -271,6 +278,7 @@
             "hashes": [
                 "sha256:e5f82add4b3d5580aa1f1e7d9f00e944ad3abe1b65eb337e611d6a77cc20f231"
             ],
+            "index": "pypi",
             "version": "==1.1.1"
         },
         "itsdangerous": {
