@@ -15,7 +15,7 @@ functions:
       morning_cd/delivery/aws_lambda/spotify_access_token.handler
     events:
       - http:
-          path: /accesstoken
+          path: /api/accesstoken
           method: get
     environment:
       SPOTIFY_CLIENT_ID: 87734dfae0b7432488270b2fc1ff2e30
