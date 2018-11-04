@@ -15,7 +15,7 @@ functions:
       morning_cd/delivery/aws_lambda/spotify_access_token.handler
     events:
       - http:
-          path: /api/accesstoken
+          path: /accesstoken
           method: get
     environment:
       SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
@@ -27,7 +27,7 @@ functions:
       morning_cd/delivery/aws_lambda/graphql.handler
     events:
       - http:
-          path: /api/graphql
+          path: /graphql
           method: post
     environment:
       DATABASE_CONNECTION_STRING: ${self:custom.secrets.DATABASE_CONNECTION_STRING}
