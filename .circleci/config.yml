@@ -34,8 +34,7 @@ jobs:
 
       - run:
           name: Run pytest
-          command: pipenv run pytest --cov --cov-report html:pytest_coverage_html
+          command: pipenv run pytest --junitxml=test-results/pytest/results.xml
 
-      - store_artifacts:
-          path: pytest_coverage_html
-          destination: pytest_coverage_html
+      - store_test_results:
+          path: test-results
