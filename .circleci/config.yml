@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  installPythonDependencies:
+  install-python-dependencies:
     description: "Install python dependencies from Pipfile.lock and cache results."
     steps:
       - restore_cache:
@@ -17,7 +17,7 @@ commands:
             - ~/.local
             - ~/.cache
 
-  installJsDependencies:
+  install-js-dependencies:
     steps:
       - restore_cache:
           keys:
@@ -43,7 +43,7 @@ jobs:
     steps:
       - checkout
 
-      - installPythonDependencies
+      - install-python-dependencies
 
       - run:
           name: Run mypy
@@ -69,7 +69,7 @@ jobs:
     steps:
       - checkout
 
-      - installJsDependencies
+      - install-js-dependencies
 
       - run:
           name: Run tests
