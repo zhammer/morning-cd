@@ -57,6 +57,9 @@ custom:
     bucketName: ${self:custom.config.WEBSITE_DOMAIN_NAME}
     distributionFolder: web_client/build
     errorDocument: index.html
+  customDomain:
+    domainName: api.${self:custom.config.WEBSITE_DOMAIN_NAME}
+    certificateName: "*.${self:custom.config.WEBSITE_DOMAIN_NAME}"
   secrets:
     DATABASE_CONNECTION_STRING: ${env:DATABASE_CONNECTION_STRING}
     SPOTIFY_CLIENT_ID: ${env:SPOTIFY_CLIENT_ID}
@@ -67,3 +70,4 @@ custom:
 plugins:
   - serverless-python-requirements
   - serverless-finch
+  - serverless-domain-manager
