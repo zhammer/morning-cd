@@ -12,21 +12,62 @@ functions:
   spotify-access-token:
     description: Fetch spotify access token
     handler:
-      morning_cd/delivery/lambda/spotify_access_token.handler
+      morning_cd/delivery/aws_lambda/spotify_access_token.handler
     events:
       - http:
           path: /accesstoken
           method: get
+          cors:
+            origin: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
     environment:
-      SPOTIFY_CLIENT_ID: 87734dfae0b7432488270b2fc1ff2e30
-      SPOTIFY_CLIENT_SECRET: 42ad3ab71bd648fa9725879fc4ec61e2
+      SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
+
+  graphql:
+    description: Universal graphql endpoint
+    handler:
+      morning_cd/delivery/aws_lambda/graphql.handler
+    events:
+      - http:
+          path: /graphql
+          method: post
+          cors:
+            origin: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
+    environment:
+      DATABASE_CONNECTION_STRING: ${self:custom.secrets.DATABASE_CONNECTION_STRING}
+      SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
+    vpc:
+      securityGroupIds:
+        - sg-0adf9c7c69d863eb5
+      subnetIds:
+        - subnet-09a25d5f1adcc44c7
+        - subnet-0d40a6ff68c401dd5
+        - subnet-047fe21bec462bcc5
+        - subnet-038478ac6e33b3974
+        - subnet-06c744148461a661c
 
 custom:
+  config:
+    WEBSITE_DOMAIN_NAME: morningcd.com
+    ACCESS_CONTROL_ALLOW_ORIGIN: https://${self:custom.config.WEBSITE_DOMAIN_NAME}
   client:
-    bucketName: morning.cd
+    bucketName: ${self:custom.config.WEBSITE_DOMAIN_NAME}
     distributionFolder: web_client/build
     errorDocument: index.html
+  customDomain:
+    domainName: api.${self:custom.config.WEBSITE_DOMAIN_NAME}
+    certificateName: "*.${self:custom.config.WEBSITE_DOMAIN_NAME}"
+  secrets:
+    DATABASE_CONNECTION_STRING: ${env:DATABASE_CONNECTION_STRING}
+    SPOTIFY_CLIENT_ID: ${env:SPOTIFY_CLIENT_ID}
+    SPOTIFY_CLIENT_SECRET: ${env:SPOTIFY_CLIENT_SECRET}
+  pythonRequirements:
+    dockerizePip: non-linux
 
 plugins:
   - serverless-python-requirements
   - serverless-finch
+  - serverless-domain-manager
