@@ -32,5 +32,8 @@ def handler(event: Dict, context: Dict) -> Dict:
 
     return {
         'statusCode': 200,
-        'body': json.dumps(results[0].to_dict())
+        'body': json.dumps(results[0].to_dict()),
+        'headers': {
+            'Access-Control-Allow-Origin': os.environ.get('ACCESS_CONTROL_ALLOW_ORIGIN', '*')
+        }
     }

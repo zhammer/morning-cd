@@ -17,9 +17,12 @@ functions:
       - http:
           path: /accesstoken
           method: get
+          cors:
+            origin: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
     environment:
       SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
       SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
 
   graphql:
     description: Universal graphql endpoint
@@ -29,10 +32,13 @@ functions:
       - http:
           path: /graphql
           method: post
+          cors:
+            origin: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
     environment:
       DATABASE_CONNECTION_STRING: ${self:custom.secrets.DATABASE_CONNECTION_STRING}
       SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
       SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${self:custom.config.ACCESS_CONTROL_ALLOW_ORIGIN}
     vpc:
       securityGroupIds:
         - sg-0adf9c7c69d863eb5
@@ -44,8 +50,11 @@ functions:
         - subnet-06c744148461a661c
 
 custom:
+  config:
+    WEBSITE_DOMAIN_NAME: morningcd.com
+    ACCESS_CONTROL_ALLOW_ORIGIN: https://${self:custom.config.WEBSITE_DOMAIN_NAME}
   client:
-    bucketName: morning.cd
+    bucketName: ${self:custom.config.WEBSITE_DOMAIN_NAME}
     distributionFolder: web_client/build
     errorDocument: index.html
   secrets:
