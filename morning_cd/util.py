@@ -20,7 +20,7 @@ def local_date(datetime_utc: datetime, iana_timezone: str) -> date:
     # there must be a better way to do this.
     try:
         timezone = pytz.timezone(iana_timezone)
-    except pytz.UnknownTimeZoneError:  # type: ignore
+    except pytz.UnknownTimeZoneError:
         raise InvalidIanaTimezoneError(f'{iana_timezone} is not a known iana timezone.')
 
     local_dt = datetime_utc + timezone._utcoffset  # type: ignore
