@@ -1,18 +1,14 @@
 version: 2
-jobs:
-  test-python:
-    docker:
-      - image: circleci/python:3.6.7-stretch
 
-    working_directory: ~/repo
+commands:
+  installPythonDependencies:
+    description: "Install python dependencies from Pipfile.lock and cache results."
 
     steps:
-      - checkout
-
       - restore_cache:
           keys:
-          - pipenv-cache-{{ checksum "Pipfile.lock" }}
-          - pipenv-cache-
+            - pipenv-cache-{{ checksum "Pipfile.lock" }}
+            - pipenv-cache-
 
       - run:
           name: Install dependencies
@@ -23,6 +19,35 @@ jobs:
           paths:
             - ~/.local
             - ~/.cache
+
+  installJsDependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - js-cache-{{ checksum "web_client/yarn.lock" }}
+            - js-cache-
+
+      - run:
+          name: Install dependencies
+          working_directory: web_client
+          command: yarn install
+
+      - save_cache:
+          key: js-cache-{{ checksum "web_client/yarn.lock" }}
+          paths: node_modules
+
+
+jobs:
+  test-python:
+    docker:
+      - image: circleci/python:3.6.7-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - installPythonDependencies
 
       - run:
           name: Run mypy
@@ -48,18 +73,7 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - js-cache-{{ checksum "web_client/yarn.lock" }}
-            - js-cache-
-
-      - run:
-          name: Install dependencies
-          command: cd web_client && yarn install
-
-      - save_cache:
-          key: js-cache-{{ checksum "web_client/yarn.lock" }}
-          paths: node_modules
+      - installJsDependencies
 
       - run:
           name: Run tests
