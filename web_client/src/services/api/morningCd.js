@@ -1,7 +1,7 @@
 import { request as graphQlRequest } from 'graphql-request';
 import request from 'superagent';
 
-const BASE = '/api';
+const BASE = process.env.REACT_APP_API_ENDPOINT;
 const GRAPHQL_BASE = BASE + '/graphql';
 
 export async function fetchSpotifyAccessToken () {
