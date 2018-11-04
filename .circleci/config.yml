@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.7-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - cache-{{ checksum "Pipfile.lock" }}
+          - cache-
+
+      - run:
+          name: Install dependencies
+          command: pipenv sync --dev
+
+      - save_cache:
+          key: cache-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ~/.local
+            - ~/.cache
+
+      - run:
+          name: Run mypy
+          command: pipenv run mypy morning_cd/
+
+      - run:
+          name: Run flake8
+          command: pipenv run flake8 morning_cd/
+
+      - run:
+          name: Run pytest
+          command: pipenv run pytest --cov --cov-report html:pytest_coverage_html
+
+      - store_artifacts:
+          path: pytest_coverage_html
+          destination: pytest_coverage_html

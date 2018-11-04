@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+sqlalchemy = "*"
+graphene = "*"
+pytz = "*"
+iana-tz-coord = "*"
+"psycopg2-binary" = "*"
+graphql-server-core = "*"
+
+[dev-packages]
+mypy = "*"
+pytest = "*"
+pytest-hammertime = "*"
+pytest-cov = "*"
+"flake8" = "*"
+"flake8-per-file-ignores" = "*"
+flask = "*"
+flask-graphql = "*"
+"flake8-import-order" = "*"
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+check = "sh -c 'mypy morning_cd/ && flake8 morning_cd/ && pytest -q'"
+playground = "sh -c 'FLASK_APP=morning_cd/delivery/flask/playground.py FLASK_DEBUG=1 flask run --eager-loading --without-threads'"
