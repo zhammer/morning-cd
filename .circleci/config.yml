@@ -1,19 +1,16 @@
-version: 2
+version: 2.1
 
 commands:
   installPythonDependencies:
     description: "Install python dependencies from Pipfile.lock and cache results."
-
     steps:
       - restore_cache:
           keys:
             - pipenv-cache-{{ checksum "Pipfile.lock" }}
             - pipenv-cache-
-
       - run:
           name: Install dependencies
           command: pipenv sync --dev
-
       - save_cache:
           key: pipenv-cache-{{ checksum "Pipfile.lock" }}
           paths:
@@ -35,7 +32,6 @@ commands:
       - save_cache:
           key: js-cache-{{ checksum "web_client/yarn.lock" }}
           paths: node_modules
-
 
 jobs:
   test-python:
