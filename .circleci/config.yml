@@ -182,7 +182,7 @@ commands:
           command: yarn install
       - save_cache:
           key: js-cache-{{ checksum "web_client/yarn.lock" }}
-          paths: node_modules
+          paths: web_client/node_modules
 
   install-sls-dependencies:
     steps:
