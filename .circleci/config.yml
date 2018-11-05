@@ -59,7 +59,8 @@ jobs:
           command: sls package -p serverless_build/package
       - persist_to_workspace:
           root: serverless_build
-          path: package
+          paths:
+            - package
 
   deploy-client:
     executor: js-executor
