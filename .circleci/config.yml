@@ -23,12 +23,10 @@ commands:
           keys:
             - js-cache-{{ checksum "web_client/yarn.lock" }}
             - js-cache-
-
       - run:
           name: Install dependencies
           working_directory: web_client
           command: yarn install
-
       - save_cache:
           key: js-cache-{{ checksum "web_client/yarn.lock" }}
           paths: node_modules
@@ -37,49 +35,43 @@ jobs:
   test-python:
     docker:
       - image: circleci/python:3.6.7-stretch
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
       - install-python-dependencies
-
       - run:
           name: Run mypy
           command: pipenv run mypy morning_cd/
-
       - run:
           name: Run flake8
           command: pipenv run flake8 morning_cd/
-
       - run:
           name: Run pytest
           command: pipenv run pytest --junitxml=test-results/pytest/results.xml
-
       - store_test_results:
           path: test-results
 
   test-js:
     docker:
       - image: circleci/node:10
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
       - install-js-dependencies
-
       - run:
           name: Run tests
           working_directory: web_client
           environment:
             JEST_JUNIT_OUTPUT: "../test-results/jest/results.xml"
           command: yarn test:ci
-
+      - run:
+          name: Build js client
+          working_directory: web_client
+          command: yarn build
       - store_test_results:
           path: test-results
+
+
 
 workflows:
   version: 2
