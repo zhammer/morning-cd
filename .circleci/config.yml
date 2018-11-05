@@ -147,7 +147,7 @@ executors:
     working_directory: ~/repo
   python-sls-executor:
     docker:
-      - image: nikolaik/nodejs-python:latest
+      - image: nikolaik/python-nodejs:latest
     working_directory: ~/repo
 
 ############
