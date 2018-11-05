@@ -118,7 +118,7 @@ workflows:
             - build-client
             - build-service
 
-      - deploy-server:
+      - deploy-service:
           filters:
             branches:
               only: master
