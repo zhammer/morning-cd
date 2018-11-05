@@ -71,7 +71,7 @@ jobs:
           at: web_client
       - run:
           name: Deploy client to s3 bucket
-          command: sls client deploy
+          command: sls client deploy --no-confirm
       - store_artifacts:
           path: web_client/build
           destination: client_build
