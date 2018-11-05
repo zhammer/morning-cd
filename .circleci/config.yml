@@ -106,12 +106,12 @@ workflows:
       - build-service:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
 
       - deploy-hold:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
           type: approval
           requires:
             - test-client
@@ -122,14 +122,14 @@ workflows:
       - deploy-service:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
           requires:
             - deploy-hold
 
       - deploy-client:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
           requires:
             - deploy-hold
 
