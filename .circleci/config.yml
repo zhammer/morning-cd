@@ -1,5 +1,16 @@
 version: 2.1
 
+executors:
+  python-executor:
+    docker:
+      - image: circleci/python:3.6.7-stretch
+    working_directory: ~/repo
+  js-executor:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+
+
 commands:
   install-python-dependencies:
     description: "Install python dependencies from Pipfile.lock and cache results."
@@ -33,9 +44,7 @@ commands:
 
 jobs:
   test-python:
-    docker:
-      - image: circleci/python:3.6.7-stretch
-    working_directory: ~/repo
+    executor: python-executor
     steps:
       - checkout
       - install-python-dependencies
@@ -52,9 +61,7 @@ jobs:
           path: test-results
 
   test-js:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/repo
+    executor: js-executor
     steps:
       - checkout
       - install-js-dependencies
@@ -64,12 +71,18 @@ jobs:
           environment:
             JEST_JUNIT_OUTPUT: "../test-results/jest/results.xml"
           command: yarn test:ci
+      - store_test_results:
+          path: test-results
+
+  build-js:
+    executor: js-executor
+    steps:
+      - checkout
+      - install-js-dependencies
       - run:
           name: Build js client
           working_directory: web_client
           command: yarn build
-      - store_test_results:
-          path: test-results
 
 
 
