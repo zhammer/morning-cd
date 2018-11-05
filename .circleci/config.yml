@@ -50,10 +50,11 @@ jobs:
             - build
 
   build-service:
-    executor: python-executor
+    executor: python-sls-executor
     steps:
       - checkout
-      - install-js-dependencies
+      - install-python-dependencies
+      - install-sls-dependencies
       - run:
           name: Build serverless package
           command: sls package -p serverless_build/package
@@ -76,7 +77,7 @@ jobs:
           destination: client_build
 
   deploy-service:
-    executor: sls-executor
+    executor: js-executor
     steps:
       - checkout
       - install-sls-dependencies
@@ -143,6 +144,10 @@ executors:
   js-executor:
     docker:
       - image: circleci/node:10
+    working_directory: ~/repo
+  python-sls-executor:
+    docker:
+      - image: nikolaik/nodejs-python:latest
     working_directory: ~/repo
 
 ############
