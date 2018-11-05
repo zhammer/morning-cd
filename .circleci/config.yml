@@ -49,7 +49,7 @@ jobs:
           paths:
             - build
 
-  build-service:
+  build-serverless-package:
     executor: python-sls-executor
     steps:
       - checkout
@@ -62,33 +62,28 @@ jobs:
           paths:
             - package
 
-  deploy-client:
+  deploy:
     executor: python-sls-executor
     steps:
       - checkout
       - install-sls-dependencies
       - attach_workspace:
           at: web_client
+      - attach_workspace:
+          at: serverless_build
+      - run:
+          name: Deploy serverless package
+          command: sls deploy -p serverless_build/package
       - run:
           name: Deploy client to s3 bucket
           command: sls client deploy --no-confirm
       - store_artifacts:
           path: web_client/build
           destination: client_build
-
-  deploy-service:
-    executor: python-sls-executor
-    steps:
-      - checkout
-      - install-sls-dependencies
-      - attach_workspace:
-          at: serverless_build
-      - run:
-          name: Deploy serverless package
-          command: sls deploy -p serverless_build/package
       - store_artifacts:
           path: serverless_build/package
           destination: serverless_package
+
 
 #############
 # WORKFLOWS #
@@ -103,33 +98,26 @@ workflows:
       - build-client
 
       # master jobs
-      - build-service:
+      - build-serverless-package:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
 
       - deploy-hold:
           filters:
             branches:
-              only: master
+              only: zh-improve-circle-ci
           type: approval
           requires:
             - test-client
             - test-service
             - build-client
-            - build-service
+            - build-serverless-package
 
-      - deploy-service:
+      - deploy:
           filters:
             branches:
-              only: master
-          requires:
-            - deploy-hold
-
-      - deploy-client:
-          filters:
-            branches:
-              only: master
+              only: zh-improve-circle-ci
           requires:
             - deploy-hold
 
