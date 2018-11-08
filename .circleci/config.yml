@@ -89,13 +89,9 @@ workflows:
       - test-service
       - test-client
       - build-client
+      - build-serverless-package:
 
       # master jobs
-      - build-serverless-package:
-          filters:
-            branches:
-              only: master
-
       - deploy-hold:
           filters:
             branches:
