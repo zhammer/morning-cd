@@ -78,7 +78,7 @@ jobs:
           name: Deploy client to s3 bucket
           command: sls client deploy --no-confirm
 
-#############
+ #############
 # WORKFLOWS #
 #############
 workflows:
@@ -94,12 +94,12 @@ workflows:
       - build-serverless-package:
           filters:
             branches:
-              only: zh-improve-circle-ci
+              only: master
 
       - deploy-hold:
           filters:
             branches:
-              only: zh-improve-circle-ci
+              only: master
           type: approval
           requires:
             - test-client
@@ -110,7 +110,7 @@ workflows:
       - deploy:
           filters:
             branches:
-              only: zh-improve-circle-ci
+              only: master
           requires:
             - deploy-hold
 
