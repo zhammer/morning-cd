@@ -1,41 +1,183 @@
-version: 2
+version: 2.1
+
+########
+# JOBS #
+########
 jobs:
-  build:
-    docker:
-      - image: circleci/python:3.6.7-stretch
-
-    working_directory: ~/repo
-
+  test-service:
+    executor: python-executor
     steps:
       - checkout
+      - install-python-dependencies
+      - run:
+          name: Run mypy
+          command: pipenv run mypy morning_cd/
+      - run:
+          name: Run flake8
+          command: pipenv run flake8 morning_cd/
+      - run:
+          name: Run pytest
+          command: pipenv run pytest --junitxml=test-results/pytest/results.xml
+      - store_test_results:
+          path: test-results
 
+  test-client:
+    executor: js-executor
+    steps:
+      - checkout
+      - install-js-dependencies
+      - run:
+          name: Run tests
+          working_directory: web_client
+          environment:
+            JEST_JUNIT_OUTPUT: "../test-results/jest/results.xml"
+          command: yarn test:ci
+      - store_test_results:
+          path: test-results
+
+  build-client:
+    executor: js-executor
+    steps:
+      - checkout
+      - install-js-dependencies
+      - run:
+          name: Build js client
+          working_directory: web_client
+          command: yarn build
+      - persist_to_workspace:
+          root: web_client
+          paths:
+            - build
+
+  build-serverless-package:
+    executor: python-sls-executor
+    steps:
+      - checkout
+      - install-sls-dependencies
+      - run:
+          name: Build serverless package
+          command: sls package -p serverless_build/package
+      - persist_to_workspace:
+          root: serverless_build
+          paths:
+            - package
+
+  deploy:
+    executor: python-sls-executor
+    steps:
+      - checkout
+      - install-sls-dependencies
+      - attach_workspace:
+          at: web_client
+      - attach_workspace:
+          at: serverless_build
+      - run:
+          name: Deploy serverless package
+          command: sls deploy -p serverless_build/package
+      - run:
+          name: Deploy client to s3 bucket
+          command: sls client deploy --no-confirm
+
+ #############
+# WORKFLOWS #
+#############
+workflows:
+  version: 2
+  build:
+    jobs:
+      # universal jobs
+      - test-service
+      - test-client
+      - build-client
+
+      # master jobs
+      - build-serverless-package:
+          filters:
+            branches:
+              only: master
+
+      - deploy-hold:
+          filters:
+            branches:
+              only: master
+          type: approval
+          requires:
+            - test-client
+            - test-service
+            - build-client
+            - build-serverless-package
+
+      - deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - deploy-hold
+
+#############
+# EXECUTORS #
+#############
+executors:
+  python-executor:
+    docker:
+      - image: circleci/python:3.6.7-stretch
+    working_directory: ~/repo
+  js-executor:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+  python-sls-executor:
+    docker:
+      - image: lucascosta/serverless-python3.6
+    working_directory: ~/repo
+
+############
+# COMMANDS #
+############
+commands:
+  install-python-dependencies:
+    description: "Install python dependencies from Pipfile.lock and cache results."
+    steps:
       - restore_cache:
           keys:
-          - cache-{{ checksum "Pipfile.lock" }}
-          - cache-
-
+            - pipenv-cache-{{ checksum "Pipfile.lock" }}
+            - pipenv-cache-
       - run:
           name: Install dependencies
           command: pipenv sync --dev
-
       - save_cache:
-          key: cache-{{ checksum "Pipfile.lock" }}
+          key: pipenv-cache-{{ checksum "Pipfile.lock" }}
           paths:
             - ~/.local
             - ~/.cache
 
+  install-js-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - js-cache-{{ checksum "web_client/yarn.lock" }}
+            - js-cache-
       - run:
-          name: Run mypy
-          command: pipenv run mypy morning_cd/
+          name: Install dependencies
+          working_directory: web_client
+          command: yarn install
+      - save_cache:
+          key: js-cache-{{ checksum "web_client/yarn.lock" }}
+          paths: web_client/node_modules
 
+  install-sls-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - sls-cache-{{ checksum "package.json" }}
+            - sls-cache-
       - run:
-          name: Run flake8
-          command: pipenv run flake8 morning_cd/
-
+          name: Install serverless dependencies
+          command: yarn install
       - run:
-          name: Run pytest
-          command: pipenv run pytest --cov --cov-report html:pytest_coverage_html
-
-      - store_artifacts:
-          path: pytest_coverage_html
-          destination: pytest_coverage_html
+          # this will be redundant once i find a docker image w/ python pipenv and node
+          name: Install pipenv
+          command: pip install pipenv
+      - save_cache:
+          key: sls-cache-{{ checksum "package.json" }}
+          paths: node_modules
