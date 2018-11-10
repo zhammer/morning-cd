@@ -48,6 +48,10 @@ functions:
         - subnet-047fe21bec462bcc5
         - subnet-038478ac6e33b3974
         - subnet-06c744148461a661c
+    warmup:
+      schedule: rate(30 minutes)
+      prewarm: true
+
 
 custom:
   config:
@@ -71,3 +75,4 @@ plugins:
   - serverless-python-requirements
   - serverless-finch
   - serverless-domain-manager
+  - serverless-plugin-warmup

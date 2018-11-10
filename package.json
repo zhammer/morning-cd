@@ -4,6 +4,7 @@
     "serverless": "^1.32.0",
     "serverless-domain-manager": "^2.6.5",
     "serverless-finch": "^2.2.0",
+    "serverless-plugin-warmup": "^4.0.0-rc.1",
     "serverless-python-requirements": "^4.1.1"
   }
 }
