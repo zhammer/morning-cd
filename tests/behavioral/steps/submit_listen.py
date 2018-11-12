@@ -32,11 +32,13 @@ def step_impl(context: behave.runner.Context):
 @given('It\'s daytime at 10:30am on November 12th 2018')  # noqa: F811
 def step_impl(context: behave.runner.Context):
     context.current_time_utc = datetime(2018, 11, 12, 15, 30)  # utc time
+    context.is_day = True
 
 
 @given('it\'s nighttime at 6pm on November 12th 2018')  # noqa: F811
 def step_impl(context: behave.runner.Context):
     context.current_time_utc = datetime(2018, 11, 12, 23, 0)  # utc time
+    context.is_day = False
 
 
 @given('The first song I listened to today was \'Whispers\' by DAP The Contract')  # noqa: F811
@@ -164,16 +166,25 @@ def step_impl(context: behave.runner.Context, error_message: str):
 @contextmanager
 def submit_listen_mock_network(context: behave.runner.Context):
     """Is there any good way to do fixtures?"""
-    with responses.RequestsMock(assert_all_requests_are_fired=False) as mock_responses:
+    with responses.RequestsMock() as mock_responses:
+        # We get our access token from spotify
         mock_responses.add(spotify_fixtures.make_post_client_credentials())
 
+        # We fetch the track from spotify to make sure it's valid. If not, this is the last request.
         if context.using_invalid_id:
             mock_responses.add(spotify_fixtures.make_get_track_invalid_id(context.song_id))
+            yield mock_responses
+            return
+        mock_responses.add(spotify_fixtures.make_get_track_whispers())
 
-        else:
-            mock_responses.add(spotify_fixtures.make_get_track_whispers())
-            mock_responses.add(sunrise_sunset_fixtures.make_get_sunrise_sunset())
-            mock_responses.add(spotify_fixtures.make_get_track_whispers())
+        # We fetch the sunrise and sunset hours for today. If it's night, this is the last request.
+        mock_responses.add(sunrise_sunset_fixtures.make_get_sunrise_sunset())
+        if not context.is_day:
+            yield mock_responses
+            return
+
+        # We fetch the track again to get info for our listen response.
+        mock_responses.add(spotify_fixtures.make_get_track_whispers())
 
         yield mock_responses
 
