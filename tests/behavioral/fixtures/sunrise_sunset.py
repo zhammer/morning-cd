@@ -2,6 +2,9 @@ from responses import Response
 
 
 def make_get_sunrise_sunset() -> Response:
+    """Makes the requests 'Response' for fetching sunrise/sunset info from api.sunrise-sunset.org
+    for new york coordinates on November 12th, 2018.
+    """
     lat = 40.714166666666664
     lng = -74.00638888888889
     date = '2018-11-12'
