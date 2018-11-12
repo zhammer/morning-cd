@@ -11,6 +11,7 @@ pytz = "*"
 iana-tz-coord = "*"
 "psycopg2-binary" = "*"
 graphql-server-core = "*"
+behave = "*"
 
 [dev-packages]
 mypy = "*"
@@ -22,10 +23,12 @@ pytest-cov = "*"
 flask = "*"
 flask-graphql = "*"
 "flake8-import-order" = "*"
+responses = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.6"
 
 [scripts]
-check = "sh -c 'mypy morning_cd/ && flake8 morning_cd/ && pytest -q'"
+check = "sh -c 'mypy morning_cd/ tests/ && flake8 morning_cd/ tests/ && pytest -q && behave --format progress'"
 playground = "sh -c 'FLASK_APP=morning_cd/delivery/flask/playground.py FLASK_DEBUG=1 flask run --eager-loading --without-threads'"
