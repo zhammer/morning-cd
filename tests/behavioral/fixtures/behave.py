@@ -27,13 +27,6 @@ def with_aws_lambda_environment_variables(context: behave.runner.Context) -> Gen
 
 @behave.fixture  # type: ignore
 def with_empty_db(context: behave.runner.Context) -> Generator:
-    if TEST_DATABASE_CONNECTION_STRING.endswith('.db'):
-        db_file = TEST_DATABASE_CONNECTION_STRING.split('///')[1]
-        try:
-            os.remove(db_file)
-        except OSError:
-            pass
-
     sqlalchemy_db = SqlAlchemyDbGateway(TEST_DATABASE_CONNECTION_STRING)
     sqlalchemy_db.persist_schema()
 
