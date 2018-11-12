@@ -18,6 +18,9 @@ jobs:
       - run:
           name: Run pytest
           command: pipenv run pytest --junitxml=test-results/pytest/results.xml
+      - run:
+          name: Run behave
+          command: pipenv run behave --junit --junit-directory=test-results/behave
       - store_test_results:
           path: test-results
 
