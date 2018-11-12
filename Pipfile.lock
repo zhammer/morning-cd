@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f199348e298f92f1a03be0ccc3b0fc54147ba5563c58bcc4ea2fcf3171e53367"
+            "sha256": "2f4176664ed9cc11363c1238ca3d85e14f03a2ce39ae80a243c04c8475947973"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -302,6 +302,14 @@
             "index": "pypi",
             "version": "==2.0.0"
         },
+        "freezegun": {
+            "hashes": [
+                "sha256:6cb82b276f83f2acce67f121dc2656f4df26c71e32238334eb071170b892a278",
+                "sha256:e839b43bfbe8158b4d62bb97e6313d39f3586daf48e1314fb1083d2ef17700da"
+            ],
+            "index": "pypi",
+            "version": "==0.3.11"
+        },
         "graphql-core": {
             "hashes": [
                 "sha256:889e869be5574d02af77baf1f30b5db9ca2959f1c9f5be7b2863ead5a3ec6181",
@@ -464,6 +472,13 @@
             ],
             "index": "pypi",
             "version": "==1.1.1"
+        },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:063df5763652e21de43de7d9e00ccf239f953a832941e37be541614732cdfc93",
+                "sha256:88f9287c0174266bb0d8cedd395cfba9c58e87e5ad86b2ce58859bc11be3cf02"
+            ],
+            "version": "==2.7.5"
         },
         "requests": {
             "hashes": [
