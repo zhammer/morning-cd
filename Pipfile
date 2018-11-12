@@ -23,6 +23,7 @@ pytest-cov = "*"
 flask = "*"
 flask-graphql = "*"
 "flake8-import-order" = "*"
+responses = "*"
 
 [requires]
 python_version = "3.6"
