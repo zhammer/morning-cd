@@ -11,6 +11,7 @@ pytz = "*"
 iana-tz-coord = "*"
 "psycopg2-binary" = "*"
 graphql-server-core = "*"
+behave = "*"
 
 [dev-packages]
 mypy = "*"
