@@ -7,16 +7,11 @@ import behave
 from morning_cd.gateways.db import SqlAlchemyDbGateway
 
 
-TEST_DATABASE_CONNECTION_STRING = os.environ.get(
-    'TEST_DATABASE_CONNECTION_STRING',
-    'sqlite:///morning_cd_behave_tests.db'
-)
-
-
 @behave.fixture  # type: ignore
-def with_aws_lambda_environment_variables(context: behave.runner.Context) -> Generator:
+def with_aws_lambda_environment_variables(context: behave.runner.Context,
+                                          database_connection_string: str) -> Generator:
     mock_env = {
-        'DATABASE_CONNECTION_STRING': TEST_DATABASE_CONNECTION_STRING,
+        'DATABASE_CONNECTION_STRING': database_connection_string,
         'SPOTIFY_CLIENT_ID': 'mock spotify client id',
         'SPOTIFY_CLIENT_SECRET': 'mock spotify_client_secret'
     }
@@ -26,14 +21,14 @@ def with_aws_lambda_environment_variables(context: behave.runner.Context) -> Gen
 
 
 @behave.fixture  # type: ignore
-def with_empty_db(context: behave.runner.Context) -> Generator:
-    sqlalchemy_db = SqlAlchemyDbGateway(TEST_DATABASE_CONNECTION_STRING)
+def with_empty_db(context: behave.runner.Context, database_connection_string: str) -> Generator:
+    sqlalchemy_db = SqlAlchemyDbGateway(database_connection_string)
     sqlalchemy_db.persist_schema()
 
     context.session = sqlalchemy_db.session
 
     yield
 
-    if TEST_DATABASE_CONNECTION_STRING.endswith('.db'):
-        db_file = TEST_DATABASE_CONNECTION_STRING.split('///')[1]
+    if database_connection_string.endswith('.db'):
+        db_file = database_connection_string.split('///')[1]
         os.remove(db_file)
