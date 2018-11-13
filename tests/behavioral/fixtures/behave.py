@@ -31,4 +31,5 @@ def with_empty_db(context: behave.runner.Context, database_connection_string: st
 
     yield
 
+    context.session.close_all()
     models.Base.metadata.drop_all(engine)
