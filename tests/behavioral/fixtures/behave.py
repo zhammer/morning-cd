@@ -4,7 +4,10 @@ from unittest.mock import patch
 
 import behave
 
-from morning_cd.gateways.db import SqlAlchemyDbGateway
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from morning_cd.gateways.db.sqlalchemy_db import models
 
 
 @behave.fixture  # type: ignore
@@ -22,13 +25,11 @@ def with_aws_lambda_environment_variables(context: behave.runner.Context,
 
 @behave.fixture  # type: ignore
 def with_empty_db(context: behave.runner.Context, database_connection_string: str) -> Generator:
-    sqlalchemy_db = SqlAlchemyDbGateway(database_connection_string)
-    sqlalchemy_db.persist_schema()
-
-    context.session = sqlalchemy_db.session
+    engine = create_engine(database_connection_string)
+    models.Base.metadata.create_all(engine)
+    context.session = sessionmaker(bind=engine)()
 
     yield
 
-    if database_connection_string.endswith('.db'):
-        db_file = database_connection_string.split('///')[1]
-        os.remove(db_file)
+    context.session.close_all()
+    models.Base.metadata.drop_all(engine)
