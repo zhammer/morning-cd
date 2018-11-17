@@ -11,10 +11,10 @@ jobs:
       - install-python-dependencies
       - run:
           name: Run mypy
-          command: pipenv run mypy morning_cd/
+          command: pipenv run mypy morning_cd/ tests/
       - run:
           name: Run flake8
-          command: pipenv run flake8 morning_cd/
+          command: pipenv run flake8 morning_cd/ tests/
       - run:
           name: Run pytest
           command: pipenv run pytest --junitxml=test-results/pytest/results.xml
