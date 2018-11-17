@@ -99,7 +99,7 @@ def step_impl(context: behave.runner.Context):
     context.mock_network = mock_network
 
 
-@then('My listen is added to the morning.cd database')  # noqa: F811
+@then('I am able to find my listen on morning.cd')  # noqa: F811
 def step_impl(context: behave.runner.Context):
     sql_listen = context.session.query(SqlListen).one()
 
@@ -112,7 +112,7 @@ def step_impl(context: behave.runner.Context):
     assert sql_listen.iana_timezone == context.iana_timezone
 
 
-@then('My listen is NOT added to the database')  # noqa: F811
+@then('I am NOT able to find my listen on morning.cd')  # noqa: F811
 def step_impl(context):
     sql_listens = context.session.query(SqlListen).all()
     assert sql_listens == []
