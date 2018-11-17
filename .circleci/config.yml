@@ -20,7 +20,7 @@ jobs:
           command: pipenv run pytest --junitxml=test-results/pytest/results.xml
       - run:
           name: Run behave
-          command: pipenv run behave --junit --junit-directory=test-results/behave
+          command: pipenv run behave --junit --junit-directory=test-results/behave --no-color
       - store_test_results:
           path: test-results
 
