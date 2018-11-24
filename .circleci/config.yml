@@ -175,7 +175,7 @@ commands:
       - restore_cache:
           keys:
             - sls-cache-{{ checksum "yarn.lock" }}
-
+            - sls-cache-
       - run:
           name: Install serverless dependencies
           command: yarn install
