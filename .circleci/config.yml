@@ -119,11 +119,11 @@ workflows:
 executors:
   python-executor:
     docker:
-      - image: circleci/python:3.6.7-stretch
+      - image: circleci/python:3.7.1-stretch
     working_directory: ~/repo
   python-with-postgres-executor:
     docker:
-      - image: circleci/python:3.6.7-stretch
+      - image: circleci/python:3.7.1-stretch
         environment:
           TEST_DATABASE_CONNECTION_STRING: postgresql://root@localhost/circle_test
       - image: circleci/postgres:9.6.5-alpine-ram
