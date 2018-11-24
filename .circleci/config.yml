@@ -59,7 +59,7 @@ jobs:
       - install-sls-dependencies
       - run:
           name: Build serverless package
-          command: sls package -p serverless_build/package
+          command: yarn run sls package -p serverless_build/package
       - persist_to_workspace:
           root: serverless_build
           paths:
@@ -76,10 +76,10 @@ jobs:
           at: serverless_build
       - run:
           name: Deploy serverless package
-          command: sls deploy -p serverless_build/package
+          command: yarn run sls deploy -p serverless_build/package
       - run:
           name: Deploy client to s3 bucket
-          command: sls client deploy --no-confirm
+          command: yarn run sls client deploy --no-confirm
 
 #############
 # WORKFLOWS #
@@ -119,11 +119,11 @@ workflows:
 executors:
   python-executor:
     docker:
-      - image: circleci/python:3.6.7-stretch
+      - image: circleci/python:3.7.1-stretch
     working_directory: ~/repo
   python-with-postgres-executor:
     docker:
-      - image: circleci/python:3.6.7-stretch
+      - image: circleci/python:3.7.1-stretch
         environment:
           TEST_DATABASE_CONNECTION_STRING: postgresql://root@localhost/circle_test
       - image: circleci/postgres:9.6.5-alpine-ram
@@ -133,7 +133,7 @@ executors:
     working_directory: ~/repo
   python-sls-executor:
     docker:
-      - image: lucascosta/serverless-python3.6
+      - image: circleci/python:3.7.1-stretch-node
     working_directory: ~/repo
 
 ############
@@ -174,15 +174,11 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - sls-cache-{{ checksum "package.json" }}
+            - sls-cache-{{ checksum "yarn.lock" }}
             - sls-cache-
       - run:
           name: Install serverless dependencies
           command: yarn install
-      - run:
-          # this will be redundant once i find a docker image w/ python pipenv and node
-          name: Install pipenv
-          command: pip install pipenv
       - save_cache:
-          key: sls-cache-{{ checksum "package.json" }}
+          key: sls-cache-{{ checksum "yarn.lock" }}
           paths: node_modules

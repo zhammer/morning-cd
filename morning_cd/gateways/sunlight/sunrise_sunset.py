@@ -9,7 +9,6 @@ from morning_cd.gateways.sunlight import SunlightGatewayABC
 
 class SunriseSunsetApiGateway(SunlightGatewayABC):
     url = 'http://api.sunrise-sunset.org/json'
-    dt_fmt = '%Y-%m-%dT%H:%M:%S'
 
     def fetch_sunlight_window(self, coordinates: Coordinates, on_day: date) -> SunlightWindow:
         r = requests.get(self.url, params={
@@ -42,5 +41,4 @@ class SunriseSunsetApiGateway(SunlightGatewayABC):
         >>> SunriseSunsetApiGateway._pluck_datetime('2018-10-02T22:36:09+00:00')
         datetime.datetime(2018, 10, 2, 22, 36, 9)
         """
-        without_tz = dt_str.split('+')[0]
-        return datetime.strptime(without_tz, SunriseSunsetApiGateway.dt_fmt)
+        return datetime.fromisoformat(dt_str).replace(tzinfo=None)
