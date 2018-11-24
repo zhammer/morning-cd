@@ -179,10 +179,6 @@ commands:
       - run:
           name: Install serverless dependencies
           command: yarn install
-      - run:
-          # this will be redundant once i find a docker image w/ python pipenv and node
-          name: Install pipenv
-          command: pip install pipenv
       - save_cache:
           key: sls-cache-{{ checksum "yarn.lock" }}
           paths: node_modules
