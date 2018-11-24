@@ -174,7 +174,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - sls-cache-{{ checksum "package.json" }}
+            - sls-cache-{{ checksum "yarn.lock" }}
             - sls-cache-
       - run:
           name: Install serverless dependencies
@@ -184,5 +184,5 @@ commands:
           name: Install pipenv
           command: pip install pipenv
       - save_cache:
-          key: sls-cache-{{ checksum "package.json" }}
+          key: sls-cache-{{ checksum "yarn.lock" }}
           paths: node_modules
