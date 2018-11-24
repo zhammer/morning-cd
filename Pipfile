@@ -27,7 +27,7 @@ responses = "*"
 freezegun = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 [scripts]
 check = "sh -c 'mypy morning_cd/ tests/ && flake8 morning_cd/ tests/ && pytest -q && behave --format progress'"
