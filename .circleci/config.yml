@@ -59,7 +59,7 @@ jobs:
       - install-sls-dependencies
       - run:
           name: Build serverless package
-          command: sls package -p serverless_build/package
+          command: yarn run sls package -p serverless_build/package
       - persist_to_workspace:
           root: serverless_build
           paths:
@@ -76,10 +76,10 @@ jobs:
           at: serverless_build
       - run:
           name: Deploy serverless package
-          command: sls deploy -p serverless_build/package
+          command: yarn run sls deploy -p serverless_build/package
       - run:
           name: Deploy client to s3 bucket
-          command: sls client deploy --no-confirm
+          command: yarn run sls client deploy --no-confirm
 
 #############
 # WORKFLOWS #
