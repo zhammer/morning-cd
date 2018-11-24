@@ -133,7 +133,7 @@ executors:
     working_directory: ~/repo
   python-sls-executor:
     docker:
-      - image: lucascosta/serverless-python3.6
+      - image: circleci/python:3.7.1-stretch-node
     working_directory: ~/repo
 
 ############
