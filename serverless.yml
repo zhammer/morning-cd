@@ -2,7 +2,6 @@ service: morning-cd
 
 provider:
   name: aws
-  runtime: python3.7
 
 custom:
   client:
