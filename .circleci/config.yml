@@ -4,26 +4,6 @@ version: 2.1
 # JOBS #
 ########
 jobs:
-  test-service:
-    executor: python-with-postgres-executor
-    steps:
-      - checkout
-      - install-python-dependencies
-      - run:
-          name: Run mypy
-          command: pipenv run mypy morning_cd/ tests/
-      - run:
-          name: Run flake8
-          command: pipenv run flake8 morning_cd/ tests/
-      - run:
-          name: Run pytest
-          command: pipenv run pytest --junitxml=test-results/pytest/results.xml
-      - run:
-          name: Run behave
-          command: pipenv run behave --junit --junit-directory=test-results/behave --no-color
-      - store_test_results:
-          path: test-results
-
   test-client:
     executor: js-executor
     steps:
@@ -52,31 +32,13 @@ jobs:
           paths:
             - build
 
-  build-serverless-package:
-    executor: python-sls-executor
-    steps:
-      - checkout
-      - install-sls-dependencies
-      - run:
-          name: Build serverless package
-          command: yarn run sls package -p serverless_build/package
-      - persist_to_workspace:
-          root: serverless_build
-          paths:
-            - package
-
   deploy:
-    executor: python-sls-executor
+    executor: js-executor
     steps:
       - checkout
       - install-sls-dependencies
       - attach_workspace:
           at: web_client
-      - attach_workspace:
-          at: serverless_build
-      - run:
-          name: Deploy serverless package
-          command: yarn run sls deploy -p serverless_build/package
       - run:
           name: Deploy client to s3 bucket
           command: yarn run sls client deploy --no-confirm
@@ -88,11 +50,8 @@ workflows:
   version: 2
   build:
     jobs:
-      # universal jobs
-      - test-service
       - test-client
       - build-client
-      - build-serverless-package
 
       # master jobs
       - deploy-hold:
@@ -102,9 +61,7 @@ workflows:
           type: approval
           requires:
             - test-client
-            - test-service
             - build-client
-            - build-serverless-package
 
       - deploy:
           filters:
@@ -117,45 +74,15 @@ workflows:
 # EXECUTORS #
 #############
 executors:
-  python-executor:
-    docker:
-      - image: circleci/python:3.7.1-stretch
-    working_directory: ~/repo
-  python-with-postgres-executor:
-    docker:
-      - image: circleci/python:3.7.1-stretch
-        environment:
-          TEST_DATABASE_CONNECTION_STRING: postgresql://root@localhost/circle_test
-      - image: circleci/postgres:9.6.5-alpine-ram
   js-executor:
     docker:
       - image: circleci/node:10
-    working_directory: ~/repo
-  python-sls-executor:
-    docker:
-      - image: circleci/python:3.7.1-stretch-node
     working_directory: ~/repo
 
 ############
 # COMMANDS #
 ############
 commands:
-  install-python-dependencies:
-    description: "Install python dependencies from Pipfile.lock and cache results."
-    steps:
-      - restore_cache:
-          keys:
-            - pipenv-cache-{{ checksum "Pipfile.lock" }}
-            - pipenv-cache-
-      - run:
-          name: Install dependencies
-          command: pipenv sync --dev
-      - save_cache:
-          key: pipenv-cache-{{ checksum "Pipfile.lock" }}
-          paths:
-            - ~/.local
-            - ~/.cache
-
   install-js-dependencies:
     steps:
       - restore_cache:
