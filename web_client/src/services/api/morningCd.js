@@ -67,7 +67,7 @@ query allListens($after: DateTime, $before: DateTime, $last: Int) {
 
 
 export const SUBMIT_LISTEN_MUTATION = `
-mutation submit($listenInput: GraphQlListenInput!) {
+mutation submit($listenInput: ListenInput!) {
   submitListen(input: $listenInput) {
     id
     listenerName
