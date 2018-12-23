@@ -3,6 +3,7 @@ const colors = {
   lightGray: 'hsl(321, 13%, 75%)',
   eggWhite: 'hsl(47, 44%, 92%)',
   teal: 'hsl(169, 22%, 49%)',
+  strongTeal: 'hsl(169, 25%, 66%)',
   lightTeal: 'hsl(140, 10%, 66%)',
   orange: 'hsl(37, 81%, 64%)',
   deepTurquoise: 'hsl(197, 97%, 15%)',
