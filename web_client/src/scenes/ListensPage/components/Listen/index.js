@@ -8,7 +8,7 @@ import Person from './Person.svg';
 const Listen = ({ listen }) => (
   <Container>
     <SimpleRow>
-      <SongLink href={`spotify:track:${listen.song.id}`}>
+      <SongLink href={`https://open.spotify.com/track/${listen.song.id}`} target='_blank'>
         <SongTile {...listen.song} />
       </SongLink>
     </SimpleRow>
