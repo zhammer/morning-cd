@@ -1,4 +1,5 @@
 import styled from '@emotion/styled/macro';
+import { keyframes } from '@emotion/core';
 import colors from 'theme';
 import withIsDaySundialConsumer from 'components/util/withIsDaySundialConsumer';
 
@@ -16,24 +17,35 @@ export const Header = withIsDaySundialConsumer(styled('div')`
 `);
 
 
+const fadein = keyframes`
+  from { opacity: 0; }
+  to   { opacity: 1; }
+`;
+
+
 export const Sub = withIsDaySundialConsumer(styled('a')`
   color: ${props => props.isDay ? colors.teal : colors.lightTeal};
-  transition: color .2s linear;
+  transition: color 5s linear, text-decoration .5s linear;
   text-align: center;
   font-family: 'Open Sans Condensed', sans-serif;
-  font-size: .6em;
-  text-decoration: none;
-  display: block;
-  padding-bottom: .75em;
+  text-decoration: underline solid transparent;
+  animation: ${fadein} .5s ease-in 3s both;
 
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline solid ${props => props.isDay ? colors.darkGray : colors.white};
+  }
+`);
+
+
+export const SubRow = styled('div')`
+  font-size: .6rem;
+  padding-bottom: .75em;
+  display: flex;
+  justify-content: center;
 
   @media (min-width: 35em) {
     font-size: .5rem;
     padding-bottom: .9em;
   }
-
-  &:hover {
-    cursor: pointer;
-    color: ${props => props.isDay ? colors.strongTeal : colors.teal};
-  }
-`);
+`;
