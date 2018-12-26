@@ -10,10 +10,15 @@ export const Container = withIsDaySundialConsumer(styled.div`
   width: 2.5em;
   right: .5em;
   bottom: .5em;
+  opacity: .5;
   cursor: pointer;
   color: ${props => props.isDay ? colors.mediumGray : colors.lightGray};
   fill: ${props => props.isDay ? colors.mediumGray : colors.lightGray};
-  transition: color 5s linear, fill 5s linear;
+  transition: color 5s linear, fill 5s linear, opacity .5s linear;
+
+  &:hover {
+    opacity: 1;
+  }
 `);
 
 

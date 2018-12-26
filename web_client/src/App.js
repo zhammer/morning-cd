@@ -9,6 +9,7 @@ import {
   SUNDIAL_TURNED_TO_NIGHT_FROM_DAY,
   SUNDIAL_TURNED_TO_DAY_FROM_NIGHT
 } from 'components/withSundial/lifecycle';
+import HelpModal from 'components/HelpModal';
 import FadeInFadeOut from 'components/FadeInFadeOut';
 import DayNightFrame from 'scenes/DayNightFrame';
 import ListensPage from 'scenes/ListensPage';
@@ -100,7 +101,7 @@ class App extends Component {
 
   handleSongSubmitted = async ({ name, note }) => {
     this.setState({ loading: true });
-    const { sundial } = this.props;
+    const { ...sundial } = this.props;
     const song = this.state.selectedSong;
     const submittedListen = await api.submitListen(song.id, name, note, getTimezone());
     const { listens, hasPreviousPage } = await api.fetchListens(
@@ -151,6 +152,7 @@ class App extends Component {
       <div>
         <SundialProvider value={sundial}>
           <DayNightFrame>
+            <HelpModal />
             <FadeInFadeOut visible={this.showLoading()} >
               <WindLoadingPage />
             </FadeInFadeOut>
