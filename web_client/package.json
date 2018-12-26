@@ -6,15 +6,24 @@
   "dependencies": {
     "@emotion/core": "^10.0.0-beta.6",
     "@emotion/styled": "^10.0.0-beta.6",
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.18",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/reactstrap": "^6.4.3",
+    "bootstrap": "4",
     "emotion": "^9.2.12",
     "graphql-request": "^1.8.2",
-    "react": "^16.6.0",
+    "react": "^16.7.0-alpha.2",
     "react-device-detect": "^1.5.9",
-    "react-dom": "^16.4.2",
-    "react-scripts": "^2.0.5",
+    "react-dom": "^16.7.0-alpha.2",
+    "react-scripts": "^2.1.2",
+    "react-social-icons": "^3.1.0",
     "react-spring": "^5.9.2",
     "react-visibility-sensor": "^5.0.2",
-    "superagent": "^3.8.3"
+    "reactstrap": "^6.5.0",
+    "superagent": "^3.8.3",
+    "typescript": "^3.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
