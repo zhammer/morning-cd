@@ -1,5 +1,6 @@
 const colors = {
   darkGray: 'hsl(321, 13%, 25%)',
+  mediumGray: 'hsl(321, 13%, 50%)',
   lightGray: 'hsl(321, 13%, 75%)',
   eggWhite: 'hsl(47, 44%, 92%)',
   teal: 'hsl(169, 22%, 49%)',
