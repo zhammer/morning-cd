@@ -34,7 +34,7 @@ export const Song = styled(SongTile)`
 export const RightAbsolute = styled('div')`
   position: absolute;
   width: ${isMobile ? '1.5em' : '1em'};
-  top: .7em;
+  top: ${isMobile ? '.75em' : '.55em'};
   right: 16%;
 `;
 
