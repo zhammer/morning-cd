@@ -101,7 +101,7 @@ class App extends Component {
 
   handleSongSubmitted = async ({ name, note }) => {
     this.setState({ loading: true });
-    const { ...sundial } = this.props;
+    const { sundial } = this.props;
     const song = this.state.selectedSong;
     const submittedListen = await api.submitListen(song.id, name, note, getTimezone());
     const { listens, hasPreviousPage } = await api.fetchListens(
