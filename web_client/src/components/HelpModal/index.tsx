@@ -12,7 +12,7 @@ import {
 import { Modal, Button } from 'reactstrap';
 import { SocialIcon } from 'react-social-icons';
 
-const MORNING_CD_SPOTIFY = 'https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx?si=OPnFvfBoSCmCrbyxTmN5cg';
+const MORNING_CD_SPOTIFY = 'https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx';
 const SKETCHY = 'https://thenounproject.com/ralfschmitzer/collection/sketchy/';
 const JODY_TWEET_1 = 'https://twitter.com/jodyavirgan/status/1046021283488681984';
 const JODY_TWEET_2 = 'https://twitter.com/jodyavirgan/status/1063779363244654593';
@@ -71,7 +71,7 @@ const HelpModal = () => {
           <SocialButtons>
             <SocialIcon url='https://www.twitter.com/morningcd'/>
             <SocialIcon url='https://www.instagram.com/morningcd'/>
-            <SocialIcon url='https://www.facebook.com/morningcd1'/>
+            <SocialIcon url={MORNING_CD_SPOTIFY} />
             <SocialIcon url='https://www.github.com/zhammer/morning-cd' />
           </SocialButtons>
         </ModalBody>
