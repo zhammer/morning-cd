@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import util from './util';
 import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEventCallbacks } from './types';
 import usePrevious from '../usePrevious';
+import setTimedEvent from '../../util/setTimedEvent';
 
 export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
   const [sunlightWindows, setSunlightWindows] = useState<SunlightWindows>(initialSunlightWindows);
@@ -28,28 +29,28 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
     }
   }, [calibrated, timeOfDay])
 
-  function letThereBeLight() {
+  function letThereBeLight(sunlightWindows: SunlightWindows) {
     setTimeOfDay(TimeOfDay.Day);
     util.setTimedEvent(goGentlyIntoThatGoodNight, sunlightWindows.today.sunset);
   }
 
-  function goGentlyIntoThatGoodNight() {
+  function goGentlyIntoThatGoodNight(sunlightWindows: SunlightWindows) {
     setTimeOfDay(TimeOfDay.AfterSunset);
-    console.log(sunlightWindows);
-    util.setTimedEvent(brandNewDay, util.midnightAfter(sunlightWindows.today.sunset));
+    util.setTimedEvent(() => brandNewDay(sunlightWindows), util.midnightAfter(sunlightWindows.today.sunset));
   }
 
-  async function brandNewDay() {
+  async function brandNewDay(sunlightWindows: SunlightWindows) {
     const todaysDate = new Date();
-    const sunlightWindows = await fetchSunlightWindows(todaysDate);
-    setSunlightWindows(sunlightWindows);
+    const newSunlightWindows = await fetchSunlightWindows(todaysDate);
+    setSunlightWindows(newSunlightWindows);
     setTimeOfDay(TimeOfDay.BeforeSunrise);
+    setTimedEvent(() => letThereBeLight(newSunlightWindows), newSunlightWindows.today.sunrise);
   }
 
   async function calibrateSundial() {
     const now = new Date();
     const sunlightWindows = await fetchSunlightWindows(now);
-    sunlightWindows.today.sunset = new Date('December 29, 2018 18:33:50 GMT-0500')
+    sunlightWindows.today.sunset = new Date('December 29, 2018 18:50:50 GMT-0500')
     console.log(sunlightWindows);
     const timeOfDay = util.timeOfDay(now, sunlightWindows.today);
     setSunlightWindows(sunlightWindows);
@@ -57,13 +58,13 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
     setCalibrated(true);
     switch (timeOfDay) {
       case TimeOfDay.BeforeSunrise:
-        util.setTimedEvent(letThereBeLight, sunlightWindows.today.sunrise);
+        util.setTimedEvent(() => letThereBeLight(sunlightWindows), sunlightWindows.today.sunrise);
         break;
       case TimeOfDay.Day:
-        util.setTimedEvent(goGentlyIntoThatGoodNight, sunlightWindows.today.sunset);
+        util.setTimedEvent(() => goGentlyIntoThatGoodNight(sunlightWindows), sunlightWindows.today.sunset);
         break;
       case TimeOfDay.AfterSunset:
-        util.setTimedEvent(brandNewDay, util.midnightAfter(sunlightWindows.today.sunset));
+        util.setTimedEvent(() => brandNewDay(sunlightWindows), util.midnightAfter(sunlightWindows.today.sunset));
         break;
     }
   }
