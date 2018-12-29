@@ -9,6 +9,8 @@ type Callback = (...args: any[]) => void;
  */
 function setTimedEvent(callback: Callback, eventDatetime: Date) {
   const now = new Date();
+  console.log(now);
+  console.log(eventDatetime);
   const millisecondsUntilEvent = eventDatetime.getTime() - now.getTime();
   if (millisecondsUntilEvent <= 0) {
     throw new Error('Must set timed event for an `eventDateTime` in the future.');

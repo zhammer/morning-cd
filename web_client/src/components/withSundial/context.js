@@ -1,11 +1,8 @@
-import React, { createContext } from 'react';
-
-export const SundialContext = createContext();
-export const SundialConsumer = SundialContext.Consumer;
-export const SundialProvider = SundialContext.Provider;
+import React from 'react';
+import SundialContext from '../../hooks/useSundial/context';
 
 export const withSundialConsumer = mapSundialToProps => WrappedComponent => props => (
-  <SundialConsumer>
+  <SundialContext.Consumer>
     {sundial => <WrappedComponent {...mapSundialToProps(sundial)} {...props} />}
-  </SundialConsumer>
+  </SundialContext.Consumer>
 );

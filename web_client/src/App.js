@@ -8,8 +8,7 @@ import QuestionPage from 'scenes/QuestionPage';
 import SubmitSongPage from 'scenes/SubmitSongPage';
 import WindLoadingPage from 'scenes/WindLoadingPage';
 import useSundial from './hooks/useSundial';
-import { SundialProvider } from './components/withSundial/context';
-
+import SundialContext from './hooks/useSundial/context';
 
 const LISTENS_PAGE_SIZE = 10;
 const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -32,15 +31,18 @@ export default function App() {
 
   // sundial event handlers
   function handleSundialCalibratedToDay() {
-    userSubmittedListenToday() ? fetchListens() : setLoading(true);
+    userSubmittedListenToday() ? fetchListens() : setLoading(false);
   }
+  
   function handleSundialCalibratedToNight() {
     fetchListens();
   }
+
   function handleSundialSunrise() {
     setListens([]);
     setMoreListensToFetch(null);
   }
+
   function handleSundialSunset() {
     if (listens.length === 0) {
       fetchListens();
@@ -53,15 +55,17 @@ export default function App() {
     setLoadingWhileFetching && setLoading(true);
     const after = sundial.lastSunrise;
     const before = (listens.length > 0) ? listens[0].listenTimeUtc : new Date();
-    const { hasPreviousPage, fetchedListens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
+    const { hasPreviousPage, listens: fetchedListens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
     const nextListens = [ ...fetchedListens, ...(listens.length > 0 ? listens : []) ];
     setListens(nextListens);
     setLoading(false);
     setMoreListensToFetch(hasPreviousPage);
   }
+
   function handleSongSelected(song) {
     setSelectedSong(song);
   }
+
   async function handleSongSubmitted({ name, note }) {
     setLoading(true);
     const submittedListen = await api.submitListen(selectedSong.id, name, note, USER_TIMEZONE);
@@ -78,9 +82,11 @@ export default function App() {
     setLastSubmit(submitTime);
     localStorage.setItem('lastSubmit', submitTime);
   }
+
   function userSubmittedListenToday() {
     return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise;
   }
+
   function handleLastListenVisible() {
     if (moreListensToFetch) {
       fetchListens(false);
@@ -92,7 +98,7 @@ export default function App() {
     return loading || sundial.calibrating;
   }
   function showListensPage() {
-    return !showLoading() && (listens.length > 0 || sundial.isDay);
+    return !showLoading() && (listens.length > 0 || !sundial.isDay);
   }
   function showQuestionPage() {
     return !showLoading() && sundial.isDay && !selectedSong && listens.length === 0;
@@ -103,7 +109,7 @@ export default function App() {
 
   return (
     <div>
-      <SundialProvider value={sundial}>
+      <SundialContext.Provider value={sundial}>
         <DayNightFrame>
           <HelpModal />
           <FadeInFadeOut visible={showLoading()} >
@@ -122,7 +128,7 @@ export default function App() {
             />
           </FadeInFadeOut>
         </DayNightFrame>
-      </SundialProvider>
+      </SundialContext.Provider>
     </div>
   )
 }

@@ -10,8 +10,8 @@ export interface SunlightWindows {
 }
 
 export interface Sundial {
-  calibrating: Boolean;
-  isDay: Boolean;
+  calibrating: boolean;
+  isDay: boolean;
   lastSunrise: Date;
 }
 
