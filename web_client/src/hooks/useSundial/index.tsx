@@ -50,7 +50,6 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
   async function calibrateSundial() {
     const now = new Date();
     const sunlightWindows = await fetchSunlightWindows(now);
-    sunlightWindows.today.sunset = new Date('December 29, 2018 18:50:50 GMT-0500')
     console.log(sunlightWindows);
     const timeOfDay = util.timeOfDay(now, sunlightWindows.today);
     setSunlightWindows(sunlightWindows);
