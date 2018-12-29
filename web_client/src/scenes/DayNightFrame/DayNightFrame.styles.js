@@ -23,7 +23,7 @@ export const DayBackdrop = styled(Backdrop)`
 export const NightBackdrop = withIsDaySundialConsumer(styled(Backdrop)`
   background: ${nightBackgroundColor};
   opacity: ${props => props.isDay ? '0' : '1'};
-  transition: opacity 5s linear;4
+  transition: opacity 5s linear;
   z-index: -2;
 `);
 
@@ -34,4 +34,12 @@ export const SunContainer = withIsDaySundialConsumer(styled('div')`
   transform: ${props => props.isDay ? '' : 'translateY(50vw)'};
   transition: transform 5s linear;
   z-index: -1;
+`);
+
+export const DayNightStyles = withIsDaySundialConsumer(styled.div`
+  & > * {
+    *::selection {
+      background: ${props => props.isDay ? colors.yellow : colors.lightGray};
+    }
+  }
 `);

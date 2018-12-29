@@ -1,11 +1,11 @@
 import React from 'react';
 import colors from 'theme';
 import Sun from 'components/Sun';
-import { DayBackdrop, NightBackdrop, SunContainer } from './DayNightFrame.styles';
+import { DayBackdrop, NightBackdrop, SunContainer, DayNightStyles } from './DayNightFrame.styles';
 import Stars from './components/Stars';
 
 const DayFrame = ({ children }) => (
-  <div>
+  <DayNightStyles>
     <DayBackdrop />
     <NightBackdrop />
       <Stars />
@@ -13,7 +13,7 @@ const DayFrame = ({ children }) => (
         <Sun fill={colors.orange} />
       </SunContainer>
       {children}
-  </div>
+  </DayNightStyles>
 );
 
 export default DayFrame;
