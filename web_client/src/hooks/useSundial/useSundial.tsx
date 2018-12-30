@@ -35,7 +35,7 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
 
   function letThereBeLight(sunlightWindows: SunlightWindows) {
     setTimeOfDay(TimeOfDay.Day);
-    util.setTimedEvent(goGentlyIntoThatGoodNight, sunlightWindows.today.sunset);
+    util.setTimedEvent(() => goGentlyIntoThatGoodNight(sunlightWindows), sunlightWindows.today.sunset);
   }
 
   function goGentlyIntoThatGoodNight(sunlightWindows: SunlightWindows) {
