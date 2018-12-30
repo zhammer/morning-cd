@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import util from './util';
 import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEventCallbacks } from './types';
 import usePrevious from '../usePrevious';
-import setTimedEvent from '../../util/setTimedEvent';
 
 export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
   const [sunlightWindows, setSunlightWindows] = useState<SunlightWindows>(initialSunlightWindows);
@@ -48,7 +47,7 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
     const newSunlightWindows = await fetchSunlightWindows(todaysDate);
     setSunlightWindows(newSunlightWindows);
     setTimeOfDay(TimeOfDay.BeforeSunrise);
-    setTimedEvent(() => letThereBeLight(newSunlightWindows), newSunlightWindows.today.sunrise);
+    util.setTimedEvent(() => letThereBeLight(newSunlightWindows), newSunlightWindows.today.sunrise);
   }
 
   async function calibrateSundial() {
