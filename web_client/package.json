@@ -39,6 +39,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "jest-junit": "^5.2.0"
+    "@types/mockdate": "^2.0.0",
+    "jest-junit": "^5.2.0",
+    "mockdate": "^2.0.2",
+    "react-testing-library": "^5.4.2"
   }
 }
