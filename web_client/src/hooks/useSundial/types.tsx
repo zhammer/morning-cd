@@ -24,9 +24,9 @@ export interface SundialEventCallbacks {
 }
 
 export enum TimeOfDay {
-  BeforeSunrise,
-  Day,
-  AfterSunset
+  BeforeSunrise = 'BEFORE_SUNRISE',
+  Day = 'DAY',
+  AfterSunset = 'AFTER_SUNSET'
 }
 
 export type FetchSunlightWindows = (today: Date) => Promise<SunlightWindows>;
