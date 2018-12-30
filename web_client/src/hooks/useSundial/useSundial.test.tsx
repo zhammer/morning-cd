@@ -3,7 +3,6 @@ import { render, waitForElement, getByText } from 'react-testing-library';
 import MockDate from 'mockdate';
 import useSundial from './useSundial';
 import { FetchSunlightWindows, SundialEventCallbacks, SunlightWindows, SunlightWindow } from './types';
-import { timeout } from 'q';
 
 describe('component using useSundial', () => {
 
