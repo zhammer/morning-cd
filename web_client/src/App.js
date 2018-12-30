@@ -1,14 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import api from 'services/api';
-import withSundial from 'components/withSundial';
-import { SundialProvider } from 'components/withSundial/context';
-import {
-  sundialEventFromUpdate,
-  SUNDIAL_CALIBRATED_TO_DAY,
-  SUNDIAL_CALIBRATED_TO_NIGHT,
-  SUNDIAL_TURNED_TO_NIGHT_FROM_DAY,
-  SUNDIAL_TURNED_TO_DAY_FROM_NIGHT
-} from 'components/withSundial/lifecycle';
 import HelpModal from 'components/HelpModal';
 import FadeInFadeOut from 'components/FadeInFadeOut';
 import DayNightFrame from 'scenes/DayNightFrame';
@@ -16,168 +7,133 @@ import ListensPage from 'scenes/ListensPage';
 import QuestionPage from 'scenes/QuestionPage';
 import SubmitSongPage from 'scenes/SubmitSongPage';
 import WindLoadingPage from 'scenes/WindLoadingPage';
-
+import useSundial from './hooks/useSundial';
+import SundialContext from './hooks/useSundial/context';
 
 const LISTENS_PAGE_SIZE = 10;
-const LAST_SUBMIT_LOCAL_STORAGE = 'lastSubmit';
+const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-const getDateFromLocalStorage = fieldName => (localStorage.getItem(fieldName) &&
-                                              Date.parse(localStorage.getItem(fieldName)));
-
-const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-
-class App extends Component {
-  state = {
-    selectedSong: null,
-    listens: [],
-    loading: true,
-    lastSubmit: getDateFromLocalStorage(LAST_SUBMIT_LOCAL_STORAGE),
-    moreListensToFetch: null
-  };
-
-  fetchListens = async (setLoading = true) => {
-    this.setLoading && this.setState({ loading: true });
-    const after = this.props.sundial.lastSunrise;
-    const before = (this.state.listens.length > 0) ? this.state.listens[0].listenTimeUtc : new Date();
-    const { hasPreviousPage, listens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
-    const nextListens = [ ...listens, ...(this.state.listens.length > 0 ? this.state.listens : []) ];
-    this.setState({ listens: nextListens, loading: false, moreListensToFetch: hasPreviousPage });
-  }
-
-  sundialCalibratedToDay = () => {
-    if (!this.userSubmittedListenToday()) {
-      this.setState({ loading: false });
+export default function App() {
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [listens, setListens] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
+  const [moreListensToFetch, setMoreListensToFetch] = useState(null);
+  const sundial = useSundial(
+    date => api.fetchSunlightWindows(date, USER_TIMEZONE),
+    {
+      onSunrise: handleSundialSunrise,
+      onSunset: handleSundialSunset,
+      onCalibrateToDay: handleSundialCalibratedToDay,
+      onCalibrateToNight: handleSundialCalibratedToNight
     }
-    else {
-      this.fetchListens();
-    }
+  );
+
+  // sundial event handlers
+  function handleSundialCalibratedToDay() {
+    userSubmittedListenToday() ? fetchListens() : setLoading(false);
+  }
+  
+  function handleSundialCalibratedToNight() {
+    fetchListens();
   }
 
-  sundialCalibratedToNight = () => {
-    this.fetchListens();
+  function handleSundialSunrise() {
+    setListens([]);
+    setMoreListensToFetch(null);
   }
 
-  sundialTurnedToNightFromDay = async () => {
-    if (this.state.listens.length === 0) {
-      await this.fetchListens();
-      this.setState({ selectedSong: null });
+  function handleSundialSunset() {
+    if (listens.length === 0) {
+      fetchListens();
+      setSelectedSong(null);
     }
   }
 
-  sundialTurnedToDayFromNight = async () => {
-    this.setState({ listens: [], moreListensToFetch: null });
+  // morningcd api handlers
+  async function fetchListens(setLoadingWhileFetching = true) {
+    setLoadingWhileFetching && setLoading(true);
+    const after = sundial.lastSunrise;
+    const before = (listens.length > 0) ? listens[0].listenTimeUtc : new Date();
+    const { hasPreviousPage, listens: fetchedListens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
+    const nextListens = [ ...fetchedListens, ...(listens.length > 0 ? listens : []) ];
+    setListens(nextListens);
+    setLoading(false);
+    setMoreListensToFetch(hasPreviousPage);
   }
 
-  componentDidUpdate = async (prevProps, prevState) => {
-    const sundialEvent = sundialEventFromUpdate(prevProps.sundial, this.props.sundial);
-    if (sundialEvent) {
-      switch (sundialEvent) {
-        case SUNDIAL_CALIBRATED_TO_DAY:
-          this.sundialCalibratedToDay();
-          break;
-
-        case SUNDIAL_CALIBRATED_TO_NIGHT:
-          this.sundialCalibratedToNight();
-          break;
-
-        case SUNDIAL_TURNED_TO_NIGHT_FROM_DAY:
-          this.sundialTurnedToNightFromDay();
-          break;
-
-        case SUNDIAL_TURNED_TO_DAY_FROM_NIGHT:
-          this.sundialTurnedToDayFromNight();
-          break;
-
-        default:
-          break;
-      }
-    }
+  function handleSongSelected(song) {
+    setSelectedSong(song);
   }
 
-  handleSongSelected = song => {
-    this.setState({ selectedSong: song });
-  };
-
-  handleSongSubmitted = async ({ name, note }) => {
-    this.setState({ loading: true });
-    const { sundial } = this.props;
-    const song = this.state.selectedSong;
-    const submittedListen = await api.submitListen(song.id, name, note, getTimezone());
+  async function handleSongSubmitted({ name, note }) {
+    setLoading(true);
+    const submittedListen = await api.submitListen(selectedSong.id, name, note, USER_TIMEZONE);
     const { listens, hasPreviousPage } = await api.fetchListens(
       sundial.lastSunrise,
       submittedListen.listenTimeUtc,
       LISTENS_PAGE_SIZE
-    );
-    this.setState({
-      listens: [ ...listens, submittedListen ],
-      hasPreviousPage,
-      selectedSong: null,
-      loading: false
-    });
-    localStorage.setItem(LAST_SUBMIT_LOCAL_STORAGE, new Date());
-  };
+    )
+    const submitTime = new Date(); // this can come from listentimeutc
+    setListens([...listens, submittedListen]);
+    setMoreListensToFetch(hasPreviousPage);
+    setSelectedSong(null);
+    setLoading(false);
+    setLastSubmit(submitTime);
+    localStorage.setItem('lastSubmit', submitTime);
+  }
 
-  userSubmittedListenToday = () => (
-    this.state.lastSubmit
-      && this.props.sundial.isDay
-      && this.state.lastSubmit > this.props.sundial.lastSunrise
-  );
+  function userSubmittedListenToday() {
+    return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise;
+  }
 
-  handleLastListenVisible = () => {
-    if (this.state.moreListensToFetch) {
-      this.fetchListens(false);
+  function handleLastListenVisible() {
+    if (moreListensToFetch) {
+      fetchListens(false);
     }
-  };
+  }
 
-  // functions to determine if certain components are visible
-  showLoading = () => this.state.loading || this.props.sundial.calibrating;
-  showListensPage = () => (
-    !this.showLoading() && (this.state.listens.length > 0 || !this.props.sundial.isDay)
-  );
-  showQuestionPage = () => (
-    !this.showLoading() &&
-      this.props.sundial.isDay &&
-      !this.state.selectedSong &&
-      this.state.listens.length === 0
-  )
-  showSubmitSongPage = () => (
-    !this.showLoading() && this.props.sundial.isDay && this.state.selectedSong
-  );
+  // render helpers
+  function showLoading() {
+    return loading || sundial.calibrating;
+  }
+  function showListensPage() {
+    return !showLoading() && (listens.length > 0 || !sundial.isDay);
+  }
+  function showQuestionPage() {
+    return !showLoading() && sundial.isDay && !selectedSong && listens.length === 0;
+  }
+  function showSubmitSongPage() {
+    return !showLoading() && sundial.isDay && selectedSong;
+  }
 
-  render = () => {
-    const { sundial } = this.props;
-    const { selectedSong, listens } = this.state;
-    return (
-      <div>
-        <SundialProvider value={sundial}>
-          <DayNightFrame>
-            <HelpModal />
-            <FadeInFadeOut visible={this.showLoading()} >
-              <WindLoadingPage />
-            </FadeInFadeOut>
-            <FadeInFadeOut visible={this.showListensPage()}>
-              <ListensPage listens={listens} onLastListenVisible={this.handleLastListenVisible} />
-            </FadeInFadeOut>
-            <FadeInFadeOut visible={this.showQuestionPage()} >
-              <QuestionPage onSongSelected={this.handleSongSelected} />
-            </FadeInFadeOut>
-            <FadeInFadeOut visible={this.showSubmitSongPage()}>
+  return (
+    <div>
+      <SundialContext.Provider value={sundial}>
+        <DayNightFrame>
+          <HelpModal />
+          <FadeInFadeOut visible={showLoading()} >
+            <WindLoadingPage />
+          </FadeInFadeOut>
+          <FadeInFadeOut visible={showListensPage()}>
+            <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} />
+          </FadeInFadeOut>
+          <FadeInFadeOut visible={showQuestionPage()} >
+            <QuestionPage onSongSelected={handleSongSelected} />
+          </FadeInFadeOut>
+          <FadeInFadeOut visible={showSubmitSongPage()}>
             <SubmitSongPage
               song={selectedSong}
-              onSongSubmitted={this.handleSongSubmitted}
-              />
-            </FadeInFadeOut>
-          </DayNightFrame>
-        </SundialProvider>
-      </div>
-    );
-  };
+              onSongSubmitted={handleSongSubmitted}
+            />
+          </FadeInFadeOut>
+        </DayNightFrame>
+      </SundialContext.Provider>
+    </div>
+  )
 }
 
-export default withSundial(date =>
-  api.fetchSunlightWindows(
-    date,
-    getTimezone()
-  )
-)(App);
+function getDateFromLocalStorage(fieldName) {
+  return (localStorage.getItem(fieldName) &&
+    Date.parse(localStorage.getItem(fieldName)));
+}

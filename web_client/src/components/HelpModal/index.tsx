@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import HelpButton from './HelpButton';
-import { SundialContext } from '../withSundial/context';
+import SundialContext from '../../hooks/useSundial/context';
 import {
   ModalBody,
   SectionDivider,
