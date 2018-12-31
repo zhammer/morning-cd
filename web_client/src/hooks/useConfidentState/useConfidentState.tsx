@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
  * @param initialState Initial state.
  * @param msUntilConfident Milliseconds after which state is considered confident if state is the same.
  */
-export default function useConfidentState<T>(initialState: T | null, msUntilConfident: number) {
-  const [value, setValue] = useState<T | null>(initialState);
-  const [checkValue, setCheckValue] = useState<T | null>(initialState);
+export default function useConfidentState<T>(initialState: T, msUntilConfident: number): UseConfidentStateReturnType<T> {
+  const [value, setValue] = useState<T>(initialState);
+  const [checkValue, setCheckValue] = useState<T>(initialState);
   const [confident, setConfident] = useState<boolean>(true);
 
   useEffect(() => {
@@ -24,3 +24,5 @@ export default function useConfidentState<T>(initialState: T | null, msUntilConf
 
   return [value, confident, handleValueChanged];
 }
+
+type UseConfidentStateReturnType<T> = [ T, boolean, (value: T) => void];
