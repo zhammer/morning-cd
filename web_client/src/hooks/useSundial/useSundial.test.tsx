@@ -17,6 +17,7 @@ describe('component using useSundial', () => {
     expect(message).not.toBeUndefined();
     message && expect(message.textContent).toBe('calibrating...');
     await waitForElement(() => getByText(container, 'Day. Last Sunrise: ' + augustFourth.sunrise));
+    await new Promise(resolve => setTimeout(resolve, 50));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToDay']);
   });
 
@@ -31,6 +32,7 @@ describe('component using useSundial', () => {
     expect(message).not.toBeUndefined();
     message && expect(message.textContent).toBe('calibrating...');
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustThird.sunrise));
+    await new Promise(resolve => setTimeout(resolve, 50));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight']);
   });
 
@@ -45,6 +47,7 @@ describe('component using useSundial', () => {
     expect(message).not.toBeUndefined();
     message && expect(message.textContent).toBe('calibrating...');
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourth.sunrise));
+    await new Promise(resolve => setTimeout(resolve, 50));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight']);
   });
 
@@ -68,7 +71,7 @@ describe('component using useSundial', () => {
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));    
     await waitForElement(() => getByText(container, 'Day. Last Sunrise: ' + augustFifthRapid.sunrise));
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFifthRapid.sunrise));
-    await new Promise(resolve => setTimeout(resolve, 250));
+    await new Promise(resolve => setTimeout(resolve, 50));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight', 'onNewDay', 'onSunrise', 'onSunset']);
   })
 

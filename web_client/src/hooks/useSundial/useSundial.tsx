@@ -7,7 +7,7 @@ import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEvent
  * @param fetchSunlightWindows Asynchronous function that fetches yesterday, today and tomorrow sunlight windows given today's date.
  * @param callbacks Some callbacks that will be invoked as the sundial calibrates and changes phase of day.
  */
-export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
+export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks): Sundial {
   const [sunlightWindows, setSunlightWindows] = useState(initialSunlightWindows);
   const [timeOfDay, setTimeOfDay] = useState(TimeOfDay.Day);
   const [calibrated, setCalibrated] = useState(false);
