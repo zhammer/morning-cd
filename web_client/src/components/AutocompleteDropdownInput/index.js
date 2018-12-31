@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import AutocompleteDropdownInputOld from './AutocompleteDropdownInput';
 import useConfidentState from '../../hooks/useConfidentState';
+import { FlexColumn } from './AutocompleteDropdownInput.styles';
 
 export default function AutocompleteDropdownInput(props) {
   const [input, confident, setInput] = useConfidentState('', 2000);
@@ -28,7 +28,8 @@ export default function AutocompleteDropdownInput(props) {
     inputRef.current.focus();
   }
 
-  function handleInputChange(newInput) {
+  function handleInputChange(e) {
+    const newInput = e.target.value;
     setInput(newInput);
     if (newInput !== '') {
       setLoading(true);
@@ -39,30 +40,20 @@ export default function AutocompleteDropdownInput(props) {
     }
   }
 
-  const {
-    ClearButtonComponent,
-    InputComponent,
-    OptionComponent,
-    LoadingComponent,
-    className,
-    onOptionSelected,
-    mapOptionToProps = option => option
-  } = props;
+  const mapOptionToProps = props.mapOptionToProps || (option => option);
   return (
-    <AutocompleteDropdownInputOld
-      ClearButtonComponent={ClearButtonComponent}
-      InputComponent={InputComponent}
-      OptionComponent={OptionComponent}
-      LoadingComponent={LoadingComponent}
-      onInputChange={handleInputChange}
-      options={options}
-      inputValue={input}
-      className={className}
-      onClearButtonClicked={handleClearButtonClicked}
-      onOptionSelected={onOptionSelected}
-      mapOptionToProps={mapOptionToProps}
-      loading={loading}
-      inputRef={inputRef}
-      />
+    <FlexColumn className={props.className}>
+      <props.InputComponent
+        ref={inputRef}
+        value={input}
+        onChange={handleInputChange}
+        spellCheck={false} /* <-- temporary */ >
+      </props.InputComponent>
+      {loading && <props.LoadingComponent />}
+      {input && !loading && <props.ClearButtonComponent onClick={handleClearButtonClicked} />}
+      {options.map((option, index) => (
+        <props.OptionComponent key={index} onClick={() => props.onOptionSelected(option)} {...mapOptionToProps(option)} />
+      ))}
+    </FlexColumn>
   );
 }
