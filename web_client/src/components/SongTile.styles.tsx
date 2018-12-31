@@ -1,22 +1,26 @@
 import styled from '@emotion/styled/macro';
 
-export const Main = styled('div')`
+export const Main = styled.div`
   font-size: .7em;
 `;
 
-export const Sub = styled('div')`
+export const Sub = styled.div`
   font-size: .5em;
 `;
 
-export const Columns = styled('div')`
+export const Columns = styled.div`
   display: flex;
 `;
 
-export const Italic = styled('span')`
+export const Italic = styled.span`
   font-style: italic;
 `;
 
-export const CoverArt = styled('img')`
+type MaxHeightProps = {
+  maxHeight: string;
+}
+
+export const CoverArt = styled.img<MaxHeightProps>`
   align-self: center;
   margin-right: .25em;
   border-radius: .1em;
