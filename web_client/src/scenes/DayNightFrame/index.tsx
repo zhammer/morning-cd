@@ -6,10 +6,10 @@ import Stars from './Stars';
 import useIsDaySundialConsumer from '../../components/util/useIsDaySundialConsumer';
 
 interface DayFrameProps {
-  children: Array<React.ComponentType>;
+  children: JSX.Element[] | JSX.Element;
 }
 
-function DayFrame({ children }: DayFrameProps) {
+function DayFrame ({ children }: DayFrameProps) {
   const isDay = useIsDaySundialConsumer();
 
   return (
