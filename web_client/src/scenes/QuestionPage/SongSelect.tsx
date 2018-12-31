@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import colors from '../../../theme';
-import { Song as SongInterface } from '../../../types';
+import colors from '../../theme';
+import { Song as SongInterface } from '../../types';
 import {
   ClearButton,
   FlexColumn,
@@ -9,7 +9,7 @@ import {
   SongInput,
   SpinningSun,
 } from './SongSelect.styles';
-import useAutocomplete from '../../../hooks/useAutocomplete';
+import useAutocomplete from '../../hooks/useAutocomplete';
 
 export interface SongSelectProps {
   fetchSongs: (query: string) => Promise<Array<SongInterface>>;
