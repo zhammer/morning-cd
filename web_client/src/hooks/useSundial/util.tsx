@@ -11,7 +11,7 @@ function setTimedEvent(callback: Callback, eventDatetime: Date) {
   const now = new Date();
   const millisecondsUntilEvent = eventDatetime.getTime() - now.getTime();
   if (millisecondsUntilEvent <= 0) {
-    throw new Error('Must set timed event for an `eventDateTime` in the future.');
+    throw new Error(`Must set timed event for an 'eventDateTime' in the future. Now: ${now}. eventDateTime(${eventDatetime})`);
   }
   return setTimeout(callback, millisecondsUntilEvent);
 }
