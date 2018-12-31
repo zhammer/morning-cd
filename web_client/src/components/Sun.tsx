@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SvgSun = props => (
+const SvgSun = (props: any) => (
   <svg viewBox='0 0 64 64' {...props}>
     <path
       fillRule='evenodd'

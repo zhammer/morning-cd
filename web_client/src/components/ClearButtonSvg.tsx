@@ -1,7 +1,7 @@
 import React from 'react';
-import colors from 'theme';
+import colors from '../theme';
 
-const ClearButtonSvg = props => (
+const ClearButtonSvg = (props: any) => (
   <svg viewBox='0 0 100 100' {...props}>
     <circle fill={colors.lightGray} cx={50} cy={50} r={40} />
     <g stroke='#fff' strokeWidth={3}>
