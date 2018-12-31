@@ -63,17 +63,12 @@ describe('component using useSundial', () => {
     expect(message).not.toBeUndefined();
     message && expect(message.textContent).toBe('calibrating...');
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));
-    expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight']);
-
     delorean.zoomTo(new Date('August 5, 2001 00:00:00'));
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));
-    expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight', 'onNewDay']);
-    
+    await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));    
     await waitForElement(() => getByText(container, 'Day. Last Sunrise: ' + augustFifthRapid.sunrise));
-    expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight', 'onNewDay', 'onSunrise']);
-
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFifthRapid.sunrise));
+    await new Promise(resolve => setTimeout(resolve, 250));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight', 'onNewDay', 'onSunrise', 'onSunset']);
   })
 
