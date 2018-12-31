@@ -6,7 +6,7 @@ import { Question } from './QuestionPage.styles';
 const QuestionPage = ({ onSongSelected }) => (
   <div>
     <Question>What was the first piece of music you listened to this morning?</Question>
-    <SongSelect fetchOptions={api.searchTracks} onOptionSelected={onSongSelected} />
+    <SongSelect fetchSongs={api.searchTracks} onSongSelected={onSongSelected} />
   </div>
 );
 
