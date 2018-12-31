@@ -2,7 +2,7 @@ import React from 'react';
 import colors from 'theme';
 import Sun from 'components/Sun';
 import { DayBackdrop, NightBackdrop, SunContainer } from './DayNightFrame.styles';
-import Stars from './components/Stars';
+import Stars from './Stars';
 
 const DayFrame = ({ children }) => (
   <div>
