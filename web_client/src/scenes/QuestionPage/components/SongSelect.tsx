@@ -16,7 +16,7 @@ export interface SongSelectProps {
   onSongSelected: (song: SongInterface) => void;
 }
 
-export default function ({ fetchSongs, onSongSelected}: SongSelectProps) {
+export default function ({ fetchSongs, onSongSelected }: SongSelectProps) {
   const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(fetchSongs, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
