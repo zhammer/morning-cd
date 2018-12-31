@@ -9,13 +9,13 @@ import {
 } from './SongTile.styles';
 
 export interface SongTileProps extends Song {
-  imageSize: 'small' | 'medium' | 'large';
-  imageMaxHeight: string;
-  className: string;
+  imageSize?: 'small' | 'medium' | 'large';
+  imageMaxHeight?: string;
+  className?: string;
   onClick: () => void;
 }
 
-const SongTile = ({ name, artist, album, images, imageSize='small', imageMaxHeight='100%', className, onClick }: SongTileProps) => (
+const SongTile = ({ name, artist, album, images, imageSize='small', imageMaxHeight='100%', className='', onClick }: SongTileProps) => (
   <div className={className} onClick={onClick}>
     <Columns>
       <CoverArt alt='coverart' src={images[imageSize].url} maxHeight={imageMaxHeight}/>
