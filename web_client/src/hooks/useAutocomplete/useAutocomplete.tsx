@@ -10,6 +10,11 @@ type UseAutocompleteReturnType<T> = [
   boolean
 ];
 
+/**
+ * Hook for fetching autocomplete options based on a user's input. Options are fetched after input remains the same for `msUntilConfident`.
+ * @param fetchOptionsCallback Asynchronous function to fetch autocomplete options given user's current input.
+ * @param msUntilConfident Milliseconds after which user's input is considered 'confident' and fetchOptionsCallback is invoked. See useConfidentState hook.
+ */
 export default function useAutocomplete<T>(fetchOptionsCallback: FetchOptionsCallback<T>, msUntilConfident: number): UseAutocompleteReturnType<T> {
   const [input, confident, setInput] = useConfidentState('', msUntilConfident);
   const [loading, setLoading] = useState(false);
