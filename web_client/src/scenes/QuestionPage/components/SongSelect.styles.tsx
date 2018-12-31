@@ -1,12 +1,20 @@
 import styled from '@emotion/styled/macro';
 import { keyframes } from '@emotion/core';
 import { isMobile } from 'react-device-detect';
-import ClearButtonSvg from 'components/ClearButtonSvg';
-import SongTile from 'components/SongTile';
-import Sun from 'components/Sun';
-import colors from 'theme';
+import ClearButtonSvg from '../../../components/ClearButtonSvg';
+import SongTile from '../../../components/SongTile';
+import Sun from '../../../components/Sun';
+import colors from '../../../theme';
 
-export const SongInput = styled('input')`
+export const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+`;
+
+export const SongInput = styled.input`
   width: 70%;
   margin: .5em auto .25em;
   padding-left: .5em;
@@ -31,7 +39,7 @@ export const Song = styled(SongTile)`
 
 // TODO: figure out a less hacky width. maybe it's the scaling option on the svg?
 // or the different input component on my phone?
-export const RightAbsolute = styled('div')`
+export const RightAbsolute = styled.div`
   position: absolute;
   width: ${isMobile ? '1.5em' : '1em'};
   top: ${isMobile ? '.75em' : '.55em'};
