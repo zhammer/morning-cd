@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import util from './util';
 import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEventCallbacks } from './types';
 
+/**
+ * A sundial that is aware of the current time of day. The sundial is valid once `calibrated` is true.
+ * @param fetchSunlightWindows Asynchronous function that fetches yesterday, today and tomorrow sunlight windows given today's date.
+ * @param callbacks Some callbacks that will be invoked as the sundial calibrates and changes phase of day.
+ */
 export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
   const [sunlightWindows, setSunlightWindows] = useState(initialSunlightWindows);
   const [timeOfDay, setTimeOfDay] = useState(TimeOfDay.Day);
