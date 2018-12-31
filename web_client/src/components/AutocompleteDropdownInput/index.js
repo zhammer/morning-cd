@@ -1,68 +1,68 @@
-import React, { Component } from 'react';
-import AutocompleteDropdownInput from './AutocompleteDropdownInput';
+import React, { useEffect, useState, useRef } from 'react';
+import AutocompleteDropdownInputOld from './AutocompleteDropdownInput';
+import useConfidentState from '../../hooks/useConfidentState';
 
-class AutocompleteDropdownInputContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.inputRef = React.createRef();
+export default function AutocompleteDropdownInput(props) {
+  const [input, confident, setInput] = useConfidentState('', 2000);
+  const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+  const inputRef = useRef();
+
+  useEffect(() => {
+    if (confident && input !== '') {
+      fetchOptions(input);
+    }
+  }, [confident]);
+
+  async function fetchOptions(value) {
+    setLoading(true);
+    const newOptions = await props.fetchOptions(value);
+    setOptions(newOptions);
+    setLoading(false);
   }
 
-  state = {
-    options: [],
-    value: '',
-    loading: false
+  function handleClearButtonClicked() {
+    setInput('');
+    setOptions([]);
+    setLoading(false);
+    inputRef.current.focus();
   }
 
-  handleInputChange = (value) => {
-    this.setState({ value });
-    if (!value) {
-      this.setState({ loading: false, options: [] });
+  function handleInputChange(newInput) {
+    setInput(newInput);
+    if (newInput !== '') {
+      setLoading(true);
     }
     else {
-      this.setState({ loading: true });
-      setTimeout(() => {
-        if (this.state.value === value) {
-          this.props.fetchOptions(value)
-            .then(options => this.setState({ options, loading: false }));
-        }
-      }, this.props.fetchDelay || 2000);
+      setOptions([]);
+      setLoading(false);
     }
-  };
-
-  handleClearButtonClicked = () => {
-    this.handleInputChange('');
-    this.inputRef.current.focus();
-  };
-
-  render = () => {
-    const {
-      ClearButtonComponent,
-      InputComponent,
-      OptionComponent,
-      LoadingComponent,
-      className,
-      onOptionSelected,
-      mapOptionToProps = option => option
-    } = this.props;
-    const { options, value, loading } = this.state;
-    return (
-      <AutocompleteDropdownInput
-        ClearButtonComponent={ClearButtonComponent}
-        InputComponent={InputComponent}
-        OptionComponent={OptionComponent}
-        LoadingComponent={LoadingComponent}
-        onInputChange={this.handleInputChange}
-        options={options}
-        inputValue={value}
-        className={className}
-        onClearButtonClicked={this.handleClearButtonClicked}
-        onOptionSelected={onOptionSelected}
-        mapOptionToProps={mapOptionToProps}
-        loading={loading}
-        inputRef={this.inputRef}
-        />
-    );
   }
-}
 
-export default AutocompleteDropdownInputContainer;
+  const {
+    ClearButtonComponent,
+    InputComponent,
+    OptionComponent,
+    LoadingComponent,
+    className,
+    onOptionSelected,
+    mapOptionToProps = option => option
+  } = props;
+  return (
+    <AutocompleteDropdownInputOld
+      ClearButtonComponent={ClearButtonComponent}
+      InputComponent={InputComponent}
+      OptionComponent={OptionComponent}
+      LoadingComponent={LoadingComponent}
+      onInputChange={handleInputChange}
+      options={options}
+      inputValue={input}
+      className={className}
+      onClearButtonClicked={handleClearButtonClicked}
+      onOptionSelected={onOptionSelected}
+      mapOptionToProps={mapOptionToProps}
+      loading={loading}
+      inputRef={inputRef}
+      />
+  );
+}
