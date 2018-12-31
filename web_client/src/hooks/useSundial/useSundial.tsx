@@ -3,9 +3,9 @@ import util from './util';
 import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEventCallbacks } from './types';
 
 export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
-  const [sunlightWindows, setSunlightWindows] = useState<SunlightWindows>(initialSunlightWindows);
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(TimeOfDay.Day);
-  const [calibrated, setCalibrated] = useState<boolean>(false);
+  const [sunlightWindows, setSunlightWindows] = useState(initialSunlightWindows);
+  const [timeOfDay, setTimeOfDay] = useState(TimeOfDay.Day);
+  const [calibrated, setCalibrated] = useState(false);
 
   useEffect(() => {
     calibrateSundial();
