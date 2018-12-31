@@ -1,53 +1,51 @@
 import { useEffect, useState } from 'react';
 import util from './util';
 import { FetchSunlightWindows, SunlightWindows, TimeOfDay, Sundial, SundialEventCallbacks } from './types';
-import usePrevious from '../usePrevious';
 
 export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, callbacks: SundialEventCallbacks) {
   const [sunlightWindows, setSunlightWindows] = useState<SunlightWindows>(initialSunlightWindows);
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(TimeOfDay.Day);
-  const [calibrated, setCalibrated] = useState<Boolean>(false);
-  
-  const prevCalibrated = usePrevious(calibrated);
+  const [calibrated, setCalibrated] = useState<boolean>(false);
 
   useEffect(() => {
     calibrateSundial();
   }, [])
 
-  const { onSunrise, onSunset, onNewDay, onCalibrateToDay, onCalibrateToNight } = callbacks;
-
   useEffect(() => {
-    if (!prevCalibrated && calibrated) {
+    if (calibrated) {
       if (timeOfDay === TimeOfDay.Day) {
-        onCalibrateToDay && onCalibrateToDay();
+        callbacks.onCalibrateToDay && callbacks.onCalibrateToDay();
       }
       else {
-        onCalibrateToNight && onCalibrateToNight();
+        callbacks.onCalibrateToNight && callbacks.onCalibrateToNight();
       }
     }
-    else if (prevCalibrated) {
-      timeOfDay === TimeOfDay.BeforeSunrise && onNewDay && onNewDay();
-      timeOfDay === TimeOfDay.Day && onSunrise && onSunrise();
-      timeOfDay === TimeOfDay.AfterSunset && onSunset && onSunset();
+  }, [calibrated])
+
+  useEffect(() => {
+    if (calibrated) {
+      handleNewSundialPhase();
     }
-  }, [calibrated, timeOfDay])
+  }, [timeOfDay])
 
-  function letThereBeLight(sunlightWindows: SunlightWindows) {
-    setTimeOfDay(TimeOfDay.Day);
-    util.setTimedEvent(() => goGentlyIntoThatGoodNight(sunlightWindows), sunlightWindows.today.sunset);
-  }
-
-  function goGentlyIntoThatGoodNight(sunlightWindows: SunlightWindows) {
-    setTimeOfDay(TimeOfDay.AfterSunset);
-    util.setTimedEvent(() => brandNewDay(sunlightWindows), util.midnightAfter(sunlightWindows.today.sunset));
-  }
-
-  async function brandNewDay(sunlightWindows: SunlightWindows) {
-    const todaysDate = new Date();
-    const newSunlightWindows = await fetchSunlightWindows(todaysDate);
-    setSunlightWindows(newSunlightWindows);
-    setTimeOfDay(TimeOfDay.BeforeSunrise);
-    util.setTimedEvent(() => letThereBeLight(newSunlightWindows), newSunlightWindows.today.sunrise);
+  async function handleNewSundialPhase() {
+    switch (timeOfDay) {
+      case TimeOfDay.BeforeSunrise:
+        callbacks.onNewDay && callbacks.onNewDay();
+        const todaysDate = new Date();
+        const newSunlightWindows = await fetchSunlightWindows(todaysDate);
+        setSunlightWindows(newSunlightWindows);
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.Day), newSunlightWindows.today.sunrise);
+        break;
+      case TimeOfDay.Day:
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.AfterSunset), sunlightWindows.today.sunset);
+        callbacks.onSunrise && callbacks.onSunrise();
+        break;
+      case TimeOfDay.AfterSunset:
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.BeforeSunrise), util.midnightAfter(sunlightWindows.today.sunset));
+        callbacks.onSunset && callbacks.onSunset();
+        break;
+    }
   }
 
   async function calibrateSundial() {
@@ -59,13 +57,13 @@ export default function useSundial(fetchSunlightWindows: FetchSunlightWindows, c
     setCalibrated(true);
     switch (timeOfDay) {
       case TimeOfDay.BeforeSunrise:
-        util.setTimedEvent(() => letThereBeLight(sunlightWindows), sunlightWindows.today.sunrise);
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.Day), sunlightWindows.today.sunrise);
         break;
       case TimeOfDay.Day:
-        util.setTimedEvent(() => goGentlyIntoThatGoodNight(sunlightWindows), sunlightWindows.today.sunset);
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.AfterSunset), sunlightWindows.today.sunset);
         break;
       case TimeOfDay.AfterSunset:
-        util.setTimedEvent(() => brandNewDay(sunlightWindows), util.midnightAfter(sunlightWindows.today.sunset));
+        util.setTimedEvent(() => setTimeOfDay(TimeOfDay.BeforeSunrise), util.midnightAfter(sunlightWindows.today.sunset));
         break;
     }
   }
