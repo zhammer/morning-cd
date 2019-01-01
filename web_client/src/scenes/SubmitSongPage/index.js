@@ -1,5 +1,5 @@
 import React from 'react';
-import SongSubmitForm from './components/SongSubmitForm';
+import SongSubmitForm from './SongSubmitForm';
 import { Column, Song } from './SubmitSongPage.styles';
 
 const SubmitSongPage = ({ song, onSongSubmitted }) => (

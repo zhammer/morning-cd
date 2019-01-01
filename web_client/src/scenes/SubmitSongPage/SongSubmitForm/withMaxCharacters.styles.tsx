@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import colors from 'theme';
+import colors from '../../../theme';
 
 export const Container = styled('div')`
   position: relative;
