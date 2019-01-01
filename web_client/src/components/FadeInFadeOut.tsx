@@ -8,20 +8,22 @@ const fixedOnLeaveStyles = {
   right: '0'
 };
 
-interface FadeInFadeOutProps  {
+interface FadeInFadeOutProps {
   children: React.ReactNode;
   visible: boolean;
   fixedOnLeave?: boolean;
 }
 
-const FadeInFadeOut = ({ children, visible, fixedOnLeave = true}: FadeInFadeOutProps) => (
-  <Transition
-    from={{opacity: 0}}
-    enter={{opacity: 1}}
-    leave={{opacity: 0, ...(fixedOnLeave ? fixedOnLeaveStyles : {})}}
-    config={config.molasses}>
-    {visible && (styles => <div style={styles}>{children}</div>)}
-  </Transition>
-);
+function FadeInFadeOut({ children, visible, fixedOnLeave = true }: FadeInFadeOutProps) {
+  return (
+    <Transition
+      from={{ opacity: 0 }}
+      enter={{ opacity: 1 }}
+      leave={{ opacity: 0, ...(fixedOnLeave ? fixedOnLeaveStyles : {}) }}
+      config={config.molasses}>
+      {visible && (styles => <div style={styles}>{children}</div>)}
+    </Transition>
+  );
+}
 
 export default FadeInFadeOut;

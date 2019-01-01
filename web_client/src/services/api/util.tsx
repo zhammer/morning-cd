@@ -1,11 +1,21 @@
 import { AccessTokenExpiredError } from './definitions';
 
-export const makeBearer = token => 'Bearer ' + token;
+export function makeBearer(token: string) {
+  return `Bearer ${token}`;
+}
 
-const objectFromKeyValueList = keyValueList => keyValueList.reduce((obj, [key, value]) => {
+/**
+ * Convert a list of [key, value] pairs to an object.
+ * @param keyValueList List of [key, value] pairs.
+ */
+const objectFromKeyValueList = (keyValueList: Array<[string, any]>) => keyValueList.reduce((obj: { [key: string]: any }, [key, value]) => {
   obj[key] = value;
   return obj;
 }, {});
+
+interface ApiFunctionByName {
+  [key: string]: (accessToken: string) => (...args: any[]) => Promise<any>;
+}
 
 /**
  *  Given an object of apiFunctions where all api functions have a `apiFunction(accessToken)(...args)
@@ -13,11 +23,11 @@ const objectFromKeyValueList = keyValueList => keyValueList.reduce((obj, [key, v
  *  `accessToken` for the api functions using `fetchAccessToken` on first call or if calling a function
  *  raises an `AccessTokenExpiredError`.
  */
-export const withFetchAccessToken = (fetchAccessToken, apiFunctionByName) => {
-  let accessToken;
+export function withFetchAccessToken (fetchAccessToken: () => Promise<string>, apiFunctionByName: ApiFunctionByName) {
+  let accessToken: string;
 
   const apiFunctionWithFetchAccessTokenByNameList = Object.entries(apiFunctionByName).map(
-    ([name, apiFunction]) => [name, async (...args) => {
+    ([name, apiFunction]): [string, (...args: any[]) => Promise<any>] => [name, async (...args: any[]) => {
       if (!accessToken) {
         accessToken = await fetchAccessToken();
       }

@@ -13,6 +13,7 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-visibility-sensor": "^5.0.0",
     "@types/reactstrap": "^6.4.3",
+    "@types/superagent": "^3.8.5",
     "bootstrap": "4",
     "emotion": "^9.2.12",
     "graphql-request": "^1.8.2",
