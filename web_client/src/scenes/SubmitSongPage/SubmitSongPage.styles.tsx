@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import SongTile from 'components/SongTile';
+import SongTile from '../../components/SongTile';
 
 export const Column = styled('div')`
   margin: .5em auto;

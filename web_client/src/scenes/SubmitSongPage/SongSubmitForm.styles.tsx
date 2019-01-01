@@ -1,8 +1,8 @@
 import styled from '@emotion/styled/macro';
 import css from '@emotion/css/macro';
-import colors from 'theme';
+import colors from '../../theme';
 
-export const QuestionContainer = styled('div')`
+export const QuestionContainer = styled.div`
   margin-bottom: .5rem;
 `;
 
@@ -14,24 +14,24 @@ const inputCss = css`
   padding-left: .25rem;
 `;
 
-export const Input = styled('input')`
+export const Input = styled.input`
   ${inputCss};
 `;
 
-export const TextArea = styled('textarea')`
+export const TextArea = styled.textarea`
   ${inputCss};
   resize: none;
 `;
 
-export const ColoredSpan = styled('span')`
+export const ColoredSpan = styled.span`
   color: ${props => props.color};
 `;
 
-export const Prompt = styled('div')`
+export const Prompt = styled.div`
   font-size: .7rem;
 `;
 
-export const SubmitButton = styled('button')`
+export const SubmitButton = styled.button`
   border-radius: 1em;
   width: 100%;
   color: ${colors.darkGray};

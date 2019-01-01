@@ -4,6 +4,12 @@ declare module '@emotion/styled/macro' {
     export default styled;
 }
 
+declare module '@emotion/css/macro' {
+  import css from '@emotion/css';
+  export * from '@emotion/css';
+  export default css;
+}
+
 declare module 'react-social-icons' {
     export function SocialIcon(props: any): any;
 }

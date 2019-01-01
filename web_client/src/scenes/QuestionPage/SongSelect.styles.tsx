@@ -1,10 +1,10 @@
 import styled from '@emotion/styled/macro';
 import { keyframes } from '@emotion/core';
 import { isMobile } from 'react-device-detect';
-import ClearButtonSvg from '../../../components/ClearButtonSvg';
-import SongTile from '../../../components/SongTile';
-import Sun from '../../../components/Sun';
-import colors from '../../../theme';
+import ClearButtonSvg from '../../components/ClearButtonSvg';
+import SongTile from '../../components/SongTile';
+import Sun from '../../components/Sun';
+import colors from '../../theme';
 
 export const FlexColumn = styled.div`
   display: flex;

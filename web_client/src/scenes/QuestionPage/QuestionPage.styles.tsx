@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 
-export const Question = styled('div')`
+export const Question = styled.div`
   width: 70%;
   margin: 0 auto;
   text-align: center;

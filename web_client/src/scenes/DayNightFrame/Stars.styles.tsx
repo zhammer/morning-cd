@@ -1,14 +1,13 @@
 import styled from '@emotion/styled/macro';
-import withIsDaySundialConsumer from 'components/util/withIsDaySundialConsumer';
-import Star from 'components/Star';
+import Star from '../../components/Star';
 
-const NightStar = withIsDaySundialConsumer(styled(Star)`
+const NightStar = styled(Star)`
   opacity: ${props => props.isDay ? '0' : '1'};
   transition: opacity 5s linear;
   height: 5%;
   position: fixed;
   z-index: -1;
-`);
+`;
 
 export const Star1 = styled(NightStar)`
   left: 2%;
