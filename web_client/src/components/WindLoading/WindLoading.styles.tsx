@@ -17,13 +17,18 @@ const lefttoright = keyframes`
   to   { transform: translateX(50%) scaleX(-1);  }
 `;
 
-export const Container = styled('div')`
+export const Container = styled.div`
   position: relative;
   height: 75%;
   width: 75%;
 `;
 
-export const Wind = styled(WindSvg)`
+interface WindProps {
+  top: string;
+  delay?: number;
+}
+
+export const Wind = styled(WindSvg)<WindProps>`
   position: absolute;
   height: 50%;
   width: 50%;
