@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import colors from '../../../theme';
 import artistNames from './artistNames';
-import useRandomState from './useRandomState';
+import useRandomState from '../../../hooks/useRandomState';
 import withMaxCharacters from './withMaxCharacters';
 import {
   ColoredSpan,
