@@ -12,7 +12,7 @@ export interface SongTileProps extends Song {
   imageSize?: 'small' | 'medium' | 'large';
   imageMaxHeight?: string;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const SongTile = ({ name, artist, album, images, imageSize='small', imageMaxHeight='100%', className='', onClick }: SongTileProps) => (
