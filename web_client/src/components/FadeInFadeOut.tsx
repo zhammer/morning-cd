@@ -8,7 +8,13 @@ const fixedOnLeaveStyles = {
   right: '0'
 };
 
-const FadeInFadeOut = ({ children, visible, fixedOnLeave = true}) => (
+interface FadeInFadeOutProps  {
+  children: React.ReactNode;
+  visible: boolean;
+  fixedOnLeave?: boolean;
+}
+
+const FadeInFadeOut = ({ children, visible, fixedOnLeave = true}: FadeInFadeOutProps) => (
   <Transition
     from={{opacity: 0}}
     enter={{opacity: 1}}
