@@ -1,12 +1,21 @@
 import React from 'react';
-import SongTile from 'components/SongTile';
+import SongTile from '../../../components/SongTile';
 import { Container, SimpleRow, Row, Text, SongLink } from './Listen.styles';
 import Location from './Location.svg';
 import Note from './Note.svg';
 import Person from './Person.svg';
+import { Listen as ListenInterface } from '../../../types';
+import useIsDaySundialConsumer from '../../../components/util/useIsDaySundialConsumer';
 
-const Listen = ({ listen }) => (
-  <Container>
+interface ListenProps {
+  listen: ListenInterface;
+}
+
+function Listen({ listen }: ListenProps) {
+  const isDay = useIsDaySundialConsumer();
+
+  return (
+    <Container isDay={isDay}>
     <SimpleRow>
       <SongLink href={`https://open.spotify.com/track/${listen.song.id}`} target='_blank'>
         <SongTile {...listen.song} />
@@ -27,7 +36,7 @@ const Listen = ({ listen }) => (
       <Text>{listen.ianaTimezone}</Text>
     </Row>
   </Container>
-
-);
+  )
+}
 
 export default Listen;
