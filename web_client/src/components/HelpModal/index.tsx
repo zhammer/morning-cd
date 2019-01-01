@@ -19,16 +19,10 @@ const JODY_TWEET_2 = 'https://twitter.com/jodyavirgan/status/1063779363244654593
 const JODY_TWEET_3 = 'https://twitter.com/jodyavirgan/status/1071420384220655616';
 const JODY_TWEET_4 = 'https://twitter.com/jodyavirgan/status/1076483891429543937';
 
-type Sundial = {
-  isDay: boolean;
-  calibrating: boolean;
-}
-
-
-const HelpModal = () => {
+function HelpModal() {
   const [open, setOpen] = useState(false);
   const toggleOpen = () => setOpen(!open);
-  const sundial: Sundial = useContext(SundialContext);
+  const sundial = useContext(SundialContext);
   const isDay = sundial.isDay || sundial.calibrating;
   return (
     <>
