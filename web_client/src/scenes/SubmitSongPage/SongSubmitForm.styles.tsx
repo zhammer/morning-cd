@@ -1,6 +1,6 @@
 import styled from '@emotion/styled/macro';
 import css from '@emotion/css/macro';
-import colors from '../../../theme';
+import colors from '../../theme';
 
 export const QuestionContainer = styled.div`
   margin-bottom: .5rem;
