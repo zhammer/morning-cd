@@ -23,7 +23,7 @@ export const throwAccessTokenExpired = (apiFunction: (...args: any[]) => Promise
   }
 };
 
-export const searchTracks = (accessToken: string) => throwAccessTokenExpired(async (query, market = 'US', limit = '5'): Promise<Song[]> => {
+export const searchSongs = (accessToken: string) => throwAccessTokenExpired(async (query, market = 'US', limit = '5'): Promise<Song[]> => {
   const response = await request.get(SPOTIFY_BASE_URL + '/search')
         .query({ q: query })
         .query({ market })
@@ -33,7 +33,7 @@ export const searchTracks = (accessToken: string) => throwAccessTokenExpired(asy
   return pluckSearchTracks(response.body);
 });
 
-export const pluckTracks = (rawTracks: any[]): Song[] => rawTracks.map(
+export const pluckSongs = (rawSongs: any[]): Song[] => rawSongs.map(
   ({ id, name, artists, album }) => ({
     id,
     name,
@@ -48,4 +48,4 @@ export const pluckTracks = (rawTracks: any[]): Song[] => rawTracks.map(
 );
 
 
-export const pluckSearchTracks = ({ tracks: { items: rawTracks } }: { tracks: any }): Song[] => pluckTracks(rawTracks);
+export const pluckSearchTracks = ({ tracks: { items: rawSongs } }: { tracks: any }): Song[] => pluckSongs(rawSongs);
