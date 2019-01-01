@@ -22,3 +22,14 @@ export interface Listen {
   ianaTimezone: string;
   song: Song;
 }
+
+export interface SunlightWindow {
+  sunrise: Date;
+  sunset: Date;
+}
+
+export interface SunlightWindows {
+  yesterday: SunlightWindow;
+  today: SunlightWindow;
+  tomorrow: SunlightWindow;
+}
