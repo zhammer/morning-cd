@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Global } from '@emotion/core';
 import api from './services/api';
 import HelpModal from './components/HelpModal';
@@ -22,6 +22,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
   const [moreListensToFetch, setMoreListensToFetch] = useState(false);
+
   const sundial = useSundial(
     date => api.fetchSunlightWindows(date, USER_TIMEZONE),
     {
@@ -32,9 +33,29 @@ export default function App() {
     }
   );
 
+  const userSubmittedListenToday = useMemo(() => {
+    return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise
+  }, [lastSubmit, sundial]);
+
+  const showLoading = useMemo(() => {
+    return loading || sundial.calibrating
+  }, [loading, sundial]);
+
+  const showListensPage = useMemo(() => {
+    return !showLoading && (listens.length > 0 || !sundial.isDay)
+  }, [showLoading, listens, sundial]);
+
+  const showQuestionPage = useMemo(() => {
+    return !showLoading && sundial.isDay && !selectedSong && listens.length === 0;
+  }, [showLoading, sundial, selectedSong, listens]);
+
+  const showSubmitSongPage = useMemo(() => {
+    return !showLoading && sundial.isDay && !!selectedSong;
+  }, [showLoading, sundial, selectedSong]);
+
   // sundial event handlers
   function handleSundialCalibratedToDay() {
-    userSubmittedListenToday() ? fetchListens() : setLoading(false);
+    userSubmittedListenToday ? fetchListens() : setLoading(false);
   }
   
   function handleSundialCalibratedToNight() {
@@ -89,28 +110,10 @@ export default function App() {
     localStorage.setItem('lastSubmit', submitTime.toString());
   }
 
-  function userSubmittedListenToday() {
-    return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise;
-  }
-
   function handleLastListenVisible() {
     if (moreListensToFetch) {
       fetchListens(false);
     }
-  }
-
-  // render helpers
-  function showLoading(): boolean {
-    return loading || sundial.calibrating;
-  }
-  function showListensPage(): boolean {
-    return !showLoading() && (listens.length > 0 || !sundial.isDay);
-  }
-  function showQuestionPage(): boolean {
-    return !showLoading() && sundial.isDay && !selectedSong && listens.length === 0;
-  }
-  function showSubmitSongPage(): boolean {
-    return !showLoading() && sundial.isDay && !!selectedSong;
   }
 
   return (
@@ -119,16 +122,16 @@ export default function App() {
       <SundialContext.Provider value={sundial}>
         <DayNightFrame>
           <HelpModal />
-          <FadeInFadeOut visible={showLoading()} >
+          <FadeInFadeOut visible={showLoading} >
             <WindLoadingPage />
           </FadeInFadeOut>
-          <FadeInFadeOut visible={showListensPage()}>
+          <FadeInFadeOut visible={showListensPage}>
             <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} />
           </FadeInFadeOut>
-          <FadeInFadeOut visible={showQuestionPage()} >
+          <FadeInFadeOut visible={showQuestionPage} >
             <QuestionPage searchSongs={api.searchSongs} onSongSelected={handleSongSelected} />
           </FadeInFadeOut>
-          <FadeInFadeOut visible={showSubmitSongPage()}>
+          <FadeInFadeOut visible={showSubmitSongPage}>
             <SubmitSongPage
               song={selectedSong as Song} // hacky, cause FadeInFadeOut wont render if selectedSong is null
               onSongSubmitted={handleSongSubmitted}
