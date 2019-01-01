@@ -4,15 +4,15 @@ import {
   fetchListens,
   submitListen
 } from './morningCd';
-import { searchTracks } from './spotify';
+import { searchSongs } from './spotify';
 import { withFetchAccessToken } from './util';
 import { Song } from '../../types';
 
 interface SpotifyApi { // still need to figure out withFetchAccessToken decorator typing
-  searchTracks: (query: string) => Promise<Song[]>;
+  searchSongs: (query: string) => Promise<Song[]>;
 }
 
-const spotifyApi = withFetchAccessToken(fetchSpotifyAccessToken, { searchTracks }) as SpotifyApi;
+const spotifyApi = withFetchAccessToken(fetchSpotifyAccessToken, { searchSongs }) as SpotifyApi;
 
 const morningCdApi = {
   fetchListens,
