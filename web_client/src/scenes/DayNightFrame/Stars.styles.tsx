@@ -6,7 +6,7 @@ function shouldForwardProp(prop: string) {
   return prop !== 'isDay';
 }
 
-const NightStar = styled(Star, { shouldForwardProp  })`
+const NightStar = styled(Star, { shouldForwardProp })`
   opacity: ${props => props.isDay ? '0' : '1'};
   transition: opacity 5s linear;
   height: 5%;
