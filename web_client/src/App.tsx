@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Global } from '@emotion/core';
 import api from './services/api';
 import HelpModal from './components/HelpModal';
 import FadeInFadeOut from './components/FadeInFadeOut';
@@ -10,6 +11,7 @@ import WindLoadingPage from './scenes/WindLoadingPage';
 import useSundial from './hooks/useSundial';
 import SundialContext from './hooks/useSundial/context';
 import { Listen, Song } from './types';
+import { globalStyles } from './App.styles';
 
 const LISTENS_PAGE_SIZE = 10;
 const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -113,6 +115,7 @@ export default function App() {
 
   return (
     <div>
+      <Global styles={globalStyles} />
       <SundialContext.Provider value={sundial}>
         <DayNightFrame>
           <HelpModal />
