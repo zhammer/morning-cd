@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Location(props: any) {
+function Location(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 64 64" {...props}>
       <g fillRule="evenodd" clipRule="evenodd">

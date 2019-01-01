@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Circle(props: any) {
+function Circle(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox='0 0 64 64'
