@@ -1,6 +1,7 @@
 import request from 'superagent';
 import { AccessTokenExpiredError } from './definitions';
 import { makeBearer } from './util';
+import { Song } from '../../types';
 
 const SPOTIFY_BASE_URL = 'https://api.spotify.com/v1';
 
@@ -8,7 +9,7 @@ const SPOTIFY_BASE_URL = 'https://api.spotify.com/v1';
  *  Decorator for spotify api functions that throws AccessTokenExpiredErrors if the access token
  *  has expired.
  */
-export const throwAccessTokenExpired = apiFunction => async (...args) => {
+export const throwAccessTokenExpired = (apiFunction: (...args: any[]) => Promise<any>) => async (...args: any[]) => {
   try {
     return await apiFunction(...args);
   }
@@ -22,7 +23,7 @@ export const throwAccessTokenExpired = apiFunction => async (...args) => {
   }
 };
 
-export const searchTracks = accessToken => throwAccessTokenExpired( async (query, market = 'US', limit = '5') => {
+export const searchTracks = (accessToken: string) => throwAccessTokenExpired(async (query, market = 'US', limit = '5'): Promise<Song[]> => {
   const response = await request.get(SPOTIFY_BASE_URL + '/search')
         .query({ q: query })
         .query({ market })
@@ -32,7 +33,7 @@ export const searchTracks = accessToken => throwAccessTokenExpired( async (query
   return pluckSearchTracks(response.body);
 });
 
-export const pluckTracks = rawTracks => rawTracks.map(
+export const pluckTracks = (rawTracks: any[]): Song[] => rawTracks.map(
   ({ id, name, artists, album }) => ({
     id,
     name,
@@ -47,4 +48,4 @@ export const pluckTracks = rawTracks => rawTracks.map(
 );
 
 
-export const pluckSearchTracks = ({ tracks: { items: rawTracks } }) => pluckTracks(rawTracks);
+export const pluckSearchTracks = ({ tracks: { items: rawTracks } }: { tracks: any }): Song[] => pluckTracks(rawTracks);
