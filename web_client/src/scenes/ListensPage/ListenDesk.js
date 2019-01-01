@@ -1,6 +1,6 @@
 import React from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
-import Listen from '../Listen';
+import Listen from './Listen';
 import { Container, Separater } from './ListenDeck.styles';
 
 const ListenDeck = ({ listens, onLastListenVisible }) => (

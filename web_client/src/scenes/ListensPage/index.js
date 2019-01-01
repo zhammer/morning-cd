@@ -1,6 +1,6 @@
 import React from 'react';
 import { Column } from 'components/styles';
-import ListenDeck from './components/ListenDeck';
+import ListenDeck from './ListenDesk';
 import { Header, Sub, SubRow } from './ListensPage.styles';
 
 const HEADER_TEXT = 'Here are the first pieces of music people listened to today, from all over the world.';
