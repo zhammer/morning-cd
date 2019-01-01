@@ -1,7 +1,7 @@
 import styled from '@emotion/styled/macro';
-import colors from 'theme';
+import colors from '../../theme';
 
-export const Separater = styled('hr')`
+export const Separater = styled.hr`
   border: 0;
   height: 1.5px;
   @media (min-width: 35em) {
@@ -13,6 +13,6 @@ export const Separater = styled('hr')`
 `;
 
 
-export const Container = styled('div')`
+export const Container = styled.div`
   margin-bottom: .75em;
 `;
