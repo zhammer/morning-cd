@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
-import api from 'services/api';
-import HelpModal from 'components/HelpModal';
-import FadeInFadeOut from 'components/FadeInFadeOut';
-import DayNightFrame from 'scenes/DayNightFrame';
-import ListensPage from 'scenes/ListensPage';
-import QuestionPage from 'scenes/QuestionPage';
-import SubmitSongPage from 'scenes/SubmitSongPage';
-import WindLoadingPage from 'scenes/WindLoadingPage';
+import api from './services/api';
+import HelpModal from './components/HelpModal';
+import FadeInFadeOut from './components/FadeInFadeOut';
+import DayNightFrame from './scenes/DayNightFrame';
+import ListensPage from './scenes/ListensPage';
+import QuestionPage from './scenes/QuestionPage';
+import SubmitSongPage from './scenes/SubmitSongPage';
+import WindLoadingPage from './scenes/WindLoadingPage';
 import useSundial from './hooks/useSundial';
 import SundialContext from './hooks/useSundial/context';
+import { Listen, Song } from './types';
 
 const LISTENS_PAGE_SIZE = 10;
 const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export default function App() {
-  const [selectedSong, setSelectedSong] = useState(null);
-  const [listens, setListens] = useState([]);
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const [listens, setListens] = useState<Listen[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
-  const [moreListensToFetch, setMoreListensToFetch] = useState(null);
+  const [moreListensToFetch, setMoreListensToFetch] = useState(false);
   const sundial = useSundial(
     date => api.fetchSunlightWindows(date, USER_TIMEZONE),
     {
@@ -40,7 +41,7 @@ export default function App() {
 
   function handleSundialSunrise() {
     setListens([]);
-    setMoreListensToFetch(null);
+    setMoreListensToFetch(false);
   }
 
   function handleSundialSunset() {
@@ -62,11 +63,14 @@ export default function App() {
     setMoreListensToFetch(hasPreviousPage);
   }
 
-  function handleSongSelected(song) {
+  function handleSongSelected(song: Song) {
     setSelectedSong(song);
   }
 
-  async function handleSongSubmitted({ name, note }) {
+  async function handleSongSubmitted({ name, note }: { name: string, note: string }) {
+    if (!selectedSong) {
+      throw new Error('Attempted to submit a song, but no song was selected');
+    }
     setLoading(true);
     const submittedListen = await api.submitListen(selectedSong.id, name, note, USER_TIMEZONE);
     const { listens, hasPreviousPage } = await api.fetchListens(
@@ -80,7 +84,7 @@ export default function App() {
     setSelectedSong(null);
     setLoading(false);
     setLastSubmit(submitTime);
-    localStorage.setItem('lastSubmit', submitTime);
+    localStorage.setItem('lastSubmit', submitTime.toString());
   }
 
   function userSubmittedListenToday() {
@@ -94,17 +98,17 @@ export default function App() {
   }
 
   // render helpers
-  function showLoading() {
+  function showLoading(): boolean {
     return loading || sundial.calibrating;
   }
-  function showListensPage() {
+  function showListensPage(): boolean {
     return !showLoading() && (listens.length > 0 || !sundial.isDay);
   }
-  function showQuestionPage() {
+  function showQuestionPage(): boolean {
     return !showLoading() && sundial.isDay && !selectedSong && listens.length === 0;
   }
-  function showSubmitSongPage() {
-    return !showLoading() && sundial.isDay && selectedSong;
+  function showSubmitSongPage(): boolean {
+    return !showLoading() && sundial.isDay && !!selectedSong;
   }
 
   return (
@@ -123,7 +127,7 @@ export default function App() {
           </FadeInFadeOut>
           <FadeInFadeOut visible={showSubmitSongPage()}>
             <SubmitSongPage
-              song={selectedSong}
+              song={selectedSong as Song} // hacky, cause FadeInFadeOut wont render if selectedSong is null
               onSongSubmitted={handleSongSubmitted}
             />
           </FadeInFadeOut>
@@ -133,7 +137,11 @@ export default function App() {
   )
 }
 
-function getDateFromLocalStorage(fieldName) {
-  return (localStorage.getItem(fieldName) &&
-    Date.parse(localStorage.getItem(fieldName)));
+function getDateFromLocalStorage(fieldName: string): Date | null {
+  const date = localStorage.getItem(fieldName);
+  if (!date) {
+    return null;
+  }
+  const dateTimeStamp = Date.parse(date);
+  return new Date(dateTimeStamp);
 }
