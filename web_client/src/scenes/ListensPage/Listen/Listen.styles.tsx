@@ -1,7 +1,6 @@
 import styled from '@emotion/styled/macro';
 import { keyframes } from 'emotion';
-import colors from 'theme';
-import withIsDaySundialConsumer from 'components/util/withIsDaySundialConsumer';
+import colors from '../../../theme';
 
 const glowing = keyframes`
   0%   { color: ${colors.lightGray}; }
@@ -9,7 +8,11 @@ const glowing = keyframes`
   100% { color: ${colors.lightGray}; }
 `;
 
-export const Container = withIsDaySundialConsumer(styled('div')`
+interface IsDayProps {
+  isDay: boolean;
+}
+
+export const Container = styled.div<IsDayProps>`
   & div {
     color: ${props => props.isDay ? colors.darkGray : colors.lightGray};
     transition: color 5s linear;
@@ -19,7 +22,7 @@ export const Container = withIsDaySundialConsumer(styled('div')`
     fill: ${props => props.isDay ? colors.darkGray : colors.lightGray};
     transition: color 5s linear;
   }
-`);
+`;
 
 export const Text = styled('div')`
   margin-left: .25em;

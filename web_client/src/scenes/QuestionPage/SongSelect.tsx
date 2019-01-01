@@ -12,12 +12,12 @@ import {
 import useAutocomplete from '../../hooks/useAutocomplete';
 
 export interface SongSelectProps {
-  fetchSongs: (query: string) => Promise<Array<SongInterface>>;
+  searchSongs: (query: string) => Promise<Array<SongInterface>>;
   onSongSelected: (song: SongInterface) => void;
 }
 
-export default function ({ fetchSongs, onSongSelected }: SongSelectProps) {
-  const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(fetchSongs, 2000);
+export default function ({ searchSongs, onSongSelected }: SongSelectProps) {
+  const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(searchSongs, 2000);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {

@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import CircleSvg from './Circle.svg';
 import colors from '../../theme';
-import withIsDaySundialConsumer from '../util/withIsDaySundialConsumer';
 
+interface IsDayProps {
+  isDay: boolean;
+}
 
-export const Container = withIsDaySundialConsumer(styled.div`
+export const Container = styled.div<IsDayProps>`
   position: fixed;
   height: 2.5em;
   width: 2.5em;
@@ -19,7 +21,7 @@ export const Container = withIsDaySundialConsumer(styled.div`
   &:hover {
     opacity: 1;
   }
-`);
+`;
 
 
 export const Circle = styled(CircleSvg)`

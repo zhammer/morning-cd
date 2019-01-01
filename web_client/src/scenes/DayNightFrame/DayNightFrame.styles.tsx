@@ -5,7 +5,7 @@ const nightBackgroundColor = `linear-gradient(${colors.obsidian}, ${colors.deepT
 const dayBackgroundColor = colors.eggWhite;
 
 interface SundialProps {
-  isDay?: boolean;
+  isDay: boolean;
 }
 
 // as far as i know, you can't smoothly transition between a solid background (day background) and

@@ -3,7 +3,7 @@ import { ModalBody as BootstrapModalBody } from 'reactstrap';
 import colors from '../../theme';
 
 type SundialProps = {
-  isDay?: boolean;
+  isDay: boolean;
 }
 
 export const ModalBody = styled(BootstrapModalBody)<SundialProps>`

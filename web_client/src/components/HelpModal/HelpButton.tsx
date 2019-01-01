@@ -1,16 +1,20 @@
 import React from 'react';
 import { Circle, Container, Text } from './HelpButton.styles';
-import colors from '../../theme';
+import useIsDaySundialConsumer from '../util/useIsDaySundialConsumer';
 
 interface HelpButtonProps {
-    onClick(): void;
+  onClick(): void;
 }
 
-const HelpButton = (props: HelpButtonProps) => (
-  <Container onClick={props.onClick} >
-    <Text>?</Text>
-    <Circle />
-  </Container>
-);
+function HelpButton({ onClick }: HelpButtonProps) {
+  const isDay = useIsDaySundialConsumer();
+
+  return (
+    <Container isDay={isDay} onClick={onClick} >
+      <Text>?</Text>
+      <Circle />
+    </Container>
+  );
+}
 
 export default HelpButton;

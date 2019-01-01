@@ -119,7 +119,7 @@ export default function App() {
             <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showQuestionPage()} >
-            <QuestionPage onSongSelected={handleSongSelected} />
+            <QuestionPage searchSongs={api.searchTracks} onSongSelected={handleSongSelected} />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showSubmitSongPage()}>
             <SubmitSongPage
