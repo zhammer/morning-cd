@@ -8,6 +8,7 @@ import {
   Song,
   SongInput,
   SpinningSun,
+  SongInputContainer,
 } from './SongSelect.styles';
 import useAutocomplete from '../../hooks/useAutocomplete';
 
@@ -31,21 +32,23 @@ export default function ({ searchSongs, onSongSelected }: SongSelectProps) {
 
   return (
     <FlexColumn>
-      <SongInput
-        ref={inputRef}
-        value={input}
-        onChange={handleInputChange}
-        spellCheck={false} />
-      {loading && (
-        <RightAbsolute>
-          <SpinningSun fill={colors.orange} />
-        </RightAbsolute>
-      )}
-      {input && !loading && (
-        <RightAbsolute>
-          <ClearButton onClick={handleClearButtonClicked} />
-        </RightAbsolute>
-      )}
+      <SongInputContainer>
+        <SongInput
+          ref={inputRef}
+          value={input}
+          onChange={handleInputChange}
+          spellCheck={false} />
+        {loading && (
+          <RightAbsolute>
+            <SpinningSun fill={colors.orange} />
+          </RightAbsolute>
+        )}
+        {input && !loading && (
+          <RightAbsolute>
+            <ClearButton onClick={handleClearButtonClicked} />
+          </RightAbsolute>
+        )}
+      </SongInputContainer>
       {songs.map(song => (
         <Song
           key={song.id}
