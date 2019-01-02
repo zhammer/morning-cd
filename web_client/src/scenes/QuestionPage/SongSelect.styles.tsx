@@ -11,12 +11,16 @@ export const FlexColumn = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+export const SongInputContainer = styled.div`
+  width: 70%;
+  margin: .5em auto;
   position: relative;
 `;
 
 export const SongInput = styled.input`
-  width: 70%;
-  margin: .5em auto .25em;
+  width: 100%;
   padding-left: .5em;
   padding-right: .5em;
   font-family: inherit;
@@ -37,13 +41,12 @@ export const Song = styled(SongTile)`
   }
 `;
 
-// TODO: figure out a less hacky width. maybe it's the scaling option on the svg?
-// or the different input component on my phone?
+// Some tinkering on `top` here as I'm having issues vertically centering.
 export const RightAbsolute = styled.div`
   position: absolute;
   width: ${isMobile ? '1.5em' : '1em'};
-  top: ${isMobile ? '.75em' : '.55em'};
-  right: 16%;
+  top: ${isMobile ? '13.5%' : '3.5%'};
+  right: 1.5%;
 `;
 
 const spinning = keyframes`
