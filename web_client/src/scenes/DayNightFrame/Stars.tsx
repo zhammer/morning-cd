@@ -9,9 +9,9 @@ function Stars() {
     <Fragment>
       <Star1 isDay={isDay} />
       <Star2 isDay={isDay} />
-      <Star3 isDay={isDay} dull={true} />
-      <Star4 isDay={isDay} dull={true} />
-      <Star5 isDay={isDay} dull={true} />
+      <Star3 isDay={isDay} dim={true} />
+      <Star4 isDay={isDay} dim={true} />
+      <Star5 isDay={isDay} dim={true} />
       <Star6 isDay={isDay} />
       <Star7 isDay={isDay} />
       <Star8 isDay={isDay} />
