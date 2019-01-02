@@ -1,13 +1,18 @@
 import styled from '@emotion/styled/macro';
 import Star from '../../components/Star';
 
-// Not sure how to actually update the typing of props sent to child.
-function shouldForwardProp(prop: string) {
-  return prop !== 'isDay';
+interface StarProps {
+  dull?: boolean;
+  isDay: boolean;
 }
 
-const NightStar = styled(Star, { shouldForwardProp })`
-  opacity: ${props => props.isDay ? '0' : '1'};
+// Not sure how to actually update the typing of props sent to child.
+function shouldForwardProp(prop: string) {
+  return prop !== 'isDay' && prop !== 'dull';
+}
+
+const NightStar = styled(Star, { shouldForwardProp })<StarProps>`
+  opacity: ${props => props.isDay ? '0' : props.dull ? '.25' : '1'};
   transition: opacity 5s linear;
   height: 5%;
   position: fixed;
