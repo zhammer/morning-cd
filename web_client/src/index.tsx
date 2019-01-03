@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Global, css } from '@emotion/core';
 import App from './App';
 import * as Sentry from '@sentry/browser';
 
