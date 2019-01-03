@@ -83,7 +83,6 @@ export default function App() {
     const cachedSunlightWindows = localStorage.getItem(cacheKey);
     if (cachedSunlightWindows) {
       try {
-        console.log('cache hit!');
         return pluckCachedSunlightWindows(cachedSunlightWindows);;
       } catch(err) {
         console.warn(`Error plucking cachedSunlightWindows from cache. (key: ${cacheKey}, value: ${cachedSunlightWindows})`);
