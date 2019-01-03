@@ -18,7 +18,7 @@ export interface SongSelectProps {
 }
 
 export default function ({ searchSongs, onSongSelected }: SongSelectProps) {
-  const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(searchSongs, 1000);
+  const [input, setInput, songs, loading, onSubmit] = useAutocomplete<SongInterface>(searchSongs, 1000);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,10 +30,17 @@ export default function ({ searchSongs, onSongSelected }: SongSelectProps) {
     inputRef && inputRef.current && inputRef.current.focus();
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
+    if (e.key === 'Enter') {
+      onSubmit();
+    }
+  }
+
   return (
     <FlexColumn>
       <SongInputContainer>
         <SongInput
+          onKeyDown={handleKeyDown}
           ref={inputRef}
           value={input}
           onChange={handleInputChange}
