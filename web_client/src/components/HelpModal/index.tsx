@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import HelpButton from './HelpButton';
 import SundialContext from '../../hooks/useSundial/context';
@@ -21,7 +21,7 @@ const JODY_TWEET_4 = 'https://twitter.com/jodyavirgan/status/1076483891429543937
 
 function HelpModal() {
   const [open, setOpen] = useState(false);
-  const toggleOpen = () => setOpen(!open);
+  const toggleOpen = useCallback(() => setOpen(!open), [open]);
   const sundial = useContext(SundialContext);
   const isDay = sundial.isDay || sundial.calibrating;
   return (
