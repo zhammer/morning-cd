@@ -13,7 +13,7 @@ import {
 import useAutocomplete from '../../hooks/useAutocomplete';
 
 export interface SongSelectProps {
-  searchSongs: (query: string) => Promise<Array<SongInterface>>;
+  searchSongs: (query: string) => Promise<SongInterface[]>;
   onSongSelected: (song: SongInterface) => void;
 }
 

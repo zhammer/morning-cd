@@ -5,7 +5,7 @@ import Location from './Location.svg';
 import Note from './Note.svg';
 import Person from './Person.svg';
 import { Listen as ListenInterface } from '../../../types';
-import useIsDaySundialConsumer from '../../../components/util/useIsDaySundialConsumer';
+import useIsDaySundialConsumer from '../../../util/useIsDaySundialConsumer';
 
 interface ListenProps {
   listen: ListenInterface;

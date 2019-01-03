@@ -5,14 +5,16 @@ import { Question } from './QuestionPage.styles';
 
 interface QuestionPageProps {
   onSongSelected: (song: SongInterface) => void;
-  searchSongs: (query: string) => Promise<Array<SongInterface>>;
+  searchSongs: (query: string) => Promise<SongInterface[]>;
 }
 
-const QuestionPage = ({ onSongSelected, searchSongs }: QuestionPageProps) => (
-  <div>
-    <Question>What was the first piece of music you listened to this morning?</Question>
-    <SongSelect searchSongs={searchSongs} onSongSelected={onSongSelected} />
-  </div>
-);
+function QuestionPage({ onSongSelected, searchSongs }: QuestionPageProps) {
+  return (
+    <div>
+      <Question>What was the first piece of music you listened to this morning?</Question>
+      <SongSelect searchSongs={searchSongs} onSongSelected={onSongSelected} />
+    </div>
+  );
+}
 
 export default QuestionPage;

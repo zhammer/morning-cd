@@ -5,7 +5,7 @@ import Listen from './Listen';
 import { Container, Separater } from './ListenDeck.styles';
 
 interface ListenDeckProps {
-  listens: Array<ListenInterface>;
+  listens: ListenInterface[];
   onLastListenVisible: () => void;
 }
 

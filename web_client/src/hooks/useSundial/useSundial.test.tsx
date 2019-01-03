@@ -150,11 +150,11 @@ const augustFifthRapid: SunlightWindow = {
 
 interface SundialCallbackMock {
   callbacks: SundialEventCallbacks;
-  calls: Array<string>;
+  calls: string[];
 }
 
 function createSundialCallbackMock(): SundialCallbackMock {
-  let calls: Array<string> = [];
+  let calls: string[] = [];
   const callbacks: SundialEventCallbacks = {
     onSunrise: () => calls.push('onSunrise'),
     onSunset: () => calls.push('onSunset'),
