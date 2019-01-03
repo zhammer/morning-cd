@@ -7,7 +7,8 @@ type UseAutocompleteReturnType<T> = [
   string,
   (newInput: string) => void,
   T[],
-  boolean
+  boolean,
+  () => void
 ];
 
 /**
@@ -16,7 +17,7 @@ type UseAutocompleteReturnType<T> = [
  * @param msUntilConfident Milliseconds after which user's input is considered 'confident' and fetchOptionsCallback is invoked. See useConfidentState hook.
  */
 export default function useAutocomplete<T>(fetchOptionsCallback: FetchOptionsCallback<T>, msUntilConfident: number): UseAutocompleteReturnType<T> {
-  const [input, confident, setInput] = useConfidentState('', msUntilConfident);
+  const [input, confident, setInput, forceSetConfident] = useConfidentState('', msUntilConfident);
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<T[]>([]);
 
@@ -44,5 +45,11 @@ export default function useAutocomplete<T>(fetchOptionsCallback: FetchOptionsCal
     }
   }
 
-  return [input, handleInputChange, options, loading];
+  function handleSubmit() {
+    if (!confident) {
+      forceSetConfident();
+    }
+  }
+
+  return [input, handleInputChange, options, loading, handleSubmit];
 }
