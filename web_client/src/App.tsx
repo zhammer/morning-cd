@@ -10,7 +10,7 @@ import SubmitSongPage from './scenes/SubmitSongPage';
 import WindLoadingPage from './scenes/WindLoadingPage';
 import useSundial from './hooks/useSundial';
 import SundialContext from './hooks/useSundial/context';
-import { Listen, Song } from './types';
+import { Listen, Song, SunlightWindows } from './types';
 import { globalStyles } from './App.styles';
 
 const LISTENS_PAGE_SIZE = 10;
@@ -24,7 +24,7 @@ export default function App() {
   const [moreListensToFetch, setMoreListensToFetch] = useState(false);
 
   const sundial = useSundial(
-    date => api.fetchSunlightWindows(date, USER_TIMEZONE),
+    fetchSunlightWindows,
     {
       onSunrise: handleSundialSunrise,
       onSunset: handleSundialSunset,
@@ -72,6 +72,26 @@ export default function App() {
       fetchListens();
       setSelectedSong(null);
     }
+  }
+
+  /**
+   * Caches api.fetchSunlightWindows responses in localStorage.
+   */
+  async function fetchSunlightWindows(date: Date) {
+    const isoDate = date.toISOString().substring(0, 10); // YYYY-mm-DD
+    const cacheKey = `'sunlightWindows-${isoDate}-${USER_TIMEZONE}`;
+    const cachedSunlightWindows = localStorage.getItem(cacheKey);
+    if (cachedSunlightWindows) {
+      try {
+        console.log('cache hit!');
+        return pluckCachedSunlightWindows(cachedSunlightWindows);;
+      } catch(err) {
+        console.warn(`Error plucking cachedSunlightWindows from cache. (key: ${cacheKey}, value: ${cachedSunlightWindows})`);
+      }
+    }
+    const sunlightWindows = await api.fetchSunlightWindows(date, USER_TIMEZONE);
+    localStorage.setItem(cacheKey, JSON.stringify(sunlightWindows));
+    return sunlightWindows;
   }
 
   // morningcd api handlers
@@ -143,6 +163,22 @@ export default function App() {
   )
 }
 
+function pluckCachedSunlightWindows(cachedString: string): SunlightWindows {
+  const { yesterday, today, tomorrow } = JSON.parse(cachedString);
+  return {
+    yesterday: pluckCachedSunlightWindow(yesterday),
+    today: pluckCachedSunlightWindow(today),
+    tomorrow: pluckCachedSunlightWindow(tomorrow)
+  }
+}
+
+function pluckCachedSunlightWindow(sunlightWindow: { sunrise: string, sunset: string }) {
+  return {
+    sunrise: dateFromUtcString(sunlightWindow.sunrise),
+    sunset: dateFromUtcString(sunlightWindow.sunset)
+  }
+}
+
 function getDateFromLocalStorage(fieldName: string): Date | null {
   const date = localStorage.getItem(fieldName);
   if (!date) {
@@ -151,3 +187,12 @@ function getDateFromLocalStorage(fieldName: string): Date | null {
   const dateTimeStamp = Date.parse(date);
   return new Date(dateTimeStamp);
 }
+
+function dateFromUtcString(utcString: string): Date {
+  const [dateString, timeString] = utcString.split('T');
+  const [fullYear, month, date] = dateString.split('-');
+  const [hour, minute, second] = timeString.split(':');
+
+  const utcDate = Date.UTC(parseInt(fullYear), parseInt(month) - 1, parseInt(date), parseInt(hour), parseInt(minute), parseInt(second));
+  return new Date(utcDate);
+};
