@@ -15,16 +15,18 @@ export interface SongTileProps extends Song {
   onClick?: () => void;
 }
 
-const SongTile = ({ name, artist, album, images, imageSize='small', imageMaxHeight='100%', className='', onClick }: SongTileProps) => (
-  <div className={className} onClick={onClick}>
-    <Columns>
-      <CoverArt alt='coverart' src={images[imageSize].url} maxHeight={imageMaxHeight}/>
-      <div>
-        <Main>{name}</Main>
-        <Sub>{artist} - <Italic>{album}</Italic></Sub>
-      </div>
-    </Columns>
-  </div>
-);
+function SongTile({ name, artist, album, images, imageSize = 'small', imageMaxHeight = '100%', className = '', onClick }: SongTileProps) {
+  return (
+    <div className={className} onClick={onClick}>
+      <Columns>
+        <CoverArt alt='coverart' src={images[imageSize].url} maxHeight={imageMaxHeight} />
+        <div>
+          <Main>{name}</Main>
+          <Sub>{artist} - <Italic>{album}</Italic></Sub>
+        </div>
+      </Columns>
+    </div>
+  );
+}
 
 export default SongTile;
