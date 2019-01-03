@@ -3,7 +3,7 @@ import { Column } from '../../components/styles';
 import { Listen as ListenInterface } from '../../types';
 import ListenDeck from './ListenDesk';
 import { Header, Sub, SubRow } from './ListensPage.styles';
-import useIsDaySundialConsumer from '../../components/util/useIsDaySundialConsumer';
+import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
 
 const HEADER_TEXT = 'Here are the first pieces of music people listened to today, from all over the world.';
 const HEADER_TEXT_NO_LISTENS = 'Nobody posted a listen to morning.cd today. Check back here later tonight. Morning.cd works all around the world, and it’s daytime somewhere.';

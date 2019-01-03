@@ -3,7 +3,7 @@ import colors from '../../theme';
 import Sun from '../../components/Sun';
 import { DayBackdrop, NightBackdrop, SunContainer } from './DayNightFrame.styles';
 import Stars from './Stars';
-import useIsDaySundialConsumer from '../../components/util/useIsDaySundialConsumer';
+import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
 
 interface DayFrameProps {
   children: React.ReactNode;

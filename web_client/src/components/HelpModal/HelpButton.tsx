@@ -1,6 +1,6 @@
 import React from 'react';
 import { Circle, Container, Text } from './HelpButton.styles';
-import useIsDaySundialConsumer from '../util/useIsDaySundialConsumer';
+import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
 
 interface HelpButtonProps {
   onClick(): void;
