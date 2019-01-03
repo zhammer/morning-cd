@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Hook to check if state has remained the same for a given period of time.
@@ -9,7 +9,6 @@ export default function useConfidentState<T>(initialState: T, msUntilConfident: 
   const [value, setValue] = useState<T>(initialState);
   const [checkValue, setCheckValue] = useState<T>(initialState);
   const [confident, setConfident] = useState<boolean>(true);
-  const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (value === checkValue) {
@@ -20,11 +19,10 @@ export default function useConfidentState<T>(initialState: T, msUntilConfident: 
   function handleValueChanged(newValue: T) {
     setValue(newValue);
     setConfident(false);
-    timeoutId.current = setTimeout(() => setCheckValue(newValue), msUntilConfident);
+    setTimeout(() => setCheckValue(newValue), msUntilConfident);
   }
 
   function handleConfidentForceSet() {
-    timeoutId.current && clearTimeout(timeoutId.current);
     setConfident(true);
   }
 
