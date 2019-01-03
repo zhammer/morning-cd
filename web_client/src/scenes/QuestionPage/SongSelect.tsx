@@ -18,7 +18,7 @@ export interface SongSelectProps {
 }
 
 export default function ({ searchSongs, onSongSelected }: SongSelectProps) {
-  const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(searchSongs, 2000);
+  const [input, setInput, songs, loading] = useAutocomplete<SongInterface>(searchSongs, 1000);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
