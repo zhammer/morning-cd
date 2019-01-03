@@ -11,7 +11,7 @@ const PLAYLIST_TEXT = '[Listen to today\'s spotify playlist]';
 const PLAYLIST_TEXT_NO_LISTENS = '[Listen to previous spotify playlists]';
 
 interface ListensPageProps {
-  listens: Array<ListenInterface>;
+  listens: ListenInterface[];
   onLastListenVisible: () => void;
 }
 

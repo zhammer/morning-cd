@@ -5,7 +5,7 @@ import { Question } from './QuestionPage.styles';
 
 interface QuestionPageProps {
   onSongSelected: (song: SongInterface) => void;
-  searchSongs: (query: string) => Promise<Array<SongInterface>>;
+  searchSongs: (query: string) => Promise<SongInterface[]>;
 }
 
 const QuestionPage = ({ onSongSelected, searchSongs }: QuestionPageProps) => (
