@@ -222,7 +222,7 @@ function pluckSong({ imageLargeUrl, imageMediumUrl, imageSmallUrl, ...graphQlSon
 function pluckListen({ song: graphQlSong, ...graphQlListen }: RawListen): Listen {
   return {
     ...graphQlListen,
-    listenTimeUtc: dateFromUtcString(graphQlListen.listenTimeUtc),
+    listenTime: dateFromUtcString(graphQlListen.listenTimeUtc),
     song: pluckSong(graphQlSong)
   }
 }

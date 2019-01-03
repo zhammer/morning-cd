@@ -78,7 +78,7 @@ export default function App() {
   async function fetchListens(setLoadingWhileFetching = true) {
     setLoadingWhileFetching && setLoading(true);
     const after = sundial.lastSunrise;
-    const before = (listens.length > 0) ? listens[0].listenTimeUtc : new Date();
+    const before = (listens.length > 0) ? listens[0].listenTime : new Date();
     const { hasPreviousPage, listens: fetchedListens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
     const nextListens = [ ...fetchedListens, ...(listens.length > 0 ? listens : []) ];
     setListens(nextListens);
@@ -98,10 +98,10 @@ export default function App() {
     const submittedListen = await api.submitListen(selectedSong.id, name, note, USER_TIMEZONE);
     const { listens, hasPreviousPage } = await api.fetchListens(
       sundial.lastSunrise,
-      submittedListen.listenTimeUtc,
+      submittedListen.listenTime,
       LISTENS_PAGE_SIZE
     )
-    const submitTime = new Date(); // this can come from listentimeutc
+    const submitTime = new Date(); // this can come from listentime
     setListens([...listens, submittedListen]);
     setMoreListensToFetch(hasPreviousPage);
     setSelectedSong(null);
