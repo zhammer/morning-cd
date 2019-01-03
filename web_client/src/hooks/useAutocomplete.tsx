@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useConfidentState from '../useConfidentState';
+import useConfidentState from './useConfidentState';
 
 type FetchOptionsCallback<T> = (input: string) => Promise<Array<T>>;
 
