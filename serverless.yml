@@ -12,6 +12,10 @@ custom:
       index.html:
         - name: Cache-Control
           value: no-cache
+      service-worker.js:
+        - name: Cache-Control
+          value: no-cache
+
 
 plugins:
   - serverless-finch

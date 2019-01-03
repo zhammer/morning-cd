@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Global, css } from '@emotion/core';
 import App from './App';
+import * as serviceWorker from './serviceWorker';
 import * as Sentry from '@sentry/browser';
 
 if (process.env.NODE_ENV === 'production') {
@@ -9,3 +9,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
+serviceWorker.register();
