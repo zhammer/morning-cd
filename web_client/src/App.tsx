@@ -78,8 +78,7 @@ export default function App() {
    * Caches api.fetchSunlightWindows responses in localStorage.
    */
   async function fetchSunlightWindows(date: Date) {
-    const isoDate = date.toISOString().substring(0, 10); // YYYY-mm-DD
-    const cacheKey = `'sunlightWindows-${isoDate}-${USER_TIMEZONE}`;
+    const cacheKey = `'sunlightWindows-${date.toDateString()}-${USER_TIMEZONE}`;
     const cachedSunlightWindows = localStorage.getItem(cacheKey);
     if (cachedSunlightWindows) {
       try {
