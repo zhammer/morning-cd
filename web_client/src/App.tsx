@@ -22,6 +22,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
   const [moreListensToFetch, setMoreListensToFetch] = useState(false);
+  const [fetchingMoreListens, setFetchingMoreListens] = useState(false);
 
   const sundial = useSundial(
     fetchSunlightWindows,
@@ -128,9 +129,11 @@ export default function App() {
     localStorage.setItem('lastSubmit', submitTime.toString());
   }
 
-  function handleLastListenVisible() {
+  async function handleLastListenVisible() {
     if (moreListensToFetch) {
-      fetchListens(false);
+      setFetchingMoreListens(true);
+      await fetchListens(false);
+      setFetchingMoreListens(false);
     }
   }
 
@@ -144,7 +147,7 @@ export default function App() {
             <WindLoadingPage />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showListensPage}>
-            <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} />
+            <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} loadingMore={fetchingMoreListens} />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showQuestionPage} >
             <QuestionPage searchSongs={api.searchSongs} onSongSelected={handleSongSelected} />
