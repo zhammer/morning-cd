@@ -3,13 +3,15 @@ import VisibilitySensor from 'react-visibility-sensor';
 import { Listen as ListenInterface } from '../../types';
 import Listen from './Listen';
 import { Container, Separater } from './ListenDeck.styles';
+import DotLoading from '../../components/DotLoading';
 
 interface ListenDeckProps {
   listens: ListenInterface[];
   onLastListenVisible: () => void;
+  loadingMore: boolean;
 }
 
-function ListenDeck({ listens, onLastListenVisible }: ListenDeckProps) {
+function ListenDeck({ listens, onLastListenVisible, loadingMore }: ListenDeckProps) {
   return (
     <Container>
       {listens
@@ -27,6 +29,12 @@ function ListenDeck({ listens, onLastListenVisible }: ListenDeckProps) {
           </div>
         ))
       }
+      {loadingMore && (
+        <>
+          <Separater />
+          <DotLoading />
+        </>
+      )}
     </Container>
   );
 }

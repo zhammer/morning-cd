@@ -13,9 +13,10 @@ const PLAYLIST_TEXT_NO_LISTENS = '[Listen to previous spotify playlists]';
 interface ListensPageProps {
   listens: ListenInterface[];
   onLastListenVisible: () => void;
+  loadingMore: boolean;
 }
 
-function ListensPage({ listens, onLastListenVisible }: ListensPageProps) {
+function ListensPage({ listens, onLastListenVisible, loadingMore }: ListensPageProps) {
   const isDay = useIsDaySundialConsumer();
   
   return (
@@ -28,7 +29,7 @@ function ListensPage({ listens, onLastListenVisible }: ListensPageProps) {
           {listens.length > 0 ? PLAYLIST_TEXT : PLAYLIST_TEXT_NO_LISTENS}
         </Sub>
       </SubRow>
-      <ListenDeck listens={listens} onLastListenVisible={onLastListenVisible} />
+      <ListenDeck listens={listens} onLastListenVisible={onLastListenVisible} loadingMore={loadingMore} />
     </Column>
   );
 }
