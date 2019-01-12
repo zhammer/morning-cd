@@ -1,12 +1,6 @@
 import React from 'react';
 
-// temporary fix for shouldForwardProps not updating types
-interface WindSvgProps extends React.SVGProps<SVGSVGElement> {
-  delay?: number;
-  top?: string;
-}
-
-function WindSvg(props: WindSvgProps) {
+function WindSvg(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       fill='#C3C3C3'
