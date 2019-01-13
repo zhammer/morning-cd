@@ -44,14 +44,21 @@ interface RawListensResponse {
   }
 }
 
+interface PaginationArgs {
+  after?: Date;
+  before?: Date;
+  first?: number;
+  last?: number;
+}
+
 export async function fetchSpotifyAccessToken(): Promise<string> {
   const response = await request.get(BASE + '/accesstoken');
   return response.body.accessToken;
 };
 
 
-export async function fetchListens(after: Date, before: Date, last: number): Promise<{ listens: Listen[], hasPreviousPage: boolean }> {
-  const variables = buildFetchListensVariables(after, before, last);
+export async function fetchListens(paginationArgs: PaginationArgs): Promise<{ listens: Listen[], hasPreviousPage: boolean }> {
+  const variables = buildFetchListensVariables(paginationArgs);
   const response = await graphQlRequest(GRAPHQL_BASE, ALL_LISTENS_QUERY, variables) as RawListensResponse;
   return pluckRelayListens(response);
 };
@@ -80,8 +87,8 @@ export async function submitListen(songId: string, listenerName: string, note: s
 
 
 export const ALL_LISTENS_QUERY = `
-query allListens($after: DateTime, $before: DateTime, $last: Int) {
-  allListens(after: $after, before: $before, last: $last) {
+query allListens($after: DateTime, $before: DateTime, $last: Int, $first: Int) {
+  allListens(after: $after, before: $before, last: $last, first: $first) {
     pageInfo { hasPreviousPage }
     edges {
       listen: node {
@@ -175,11 +182,12 @@ function buildFetchSunlightWindowsVariables(today: Date, ianaTimezone: string) {
   };
 };
 
-function buildFetchListensVariables(after: Date, before: Date, last: number) {
+function buildFetchListensVariables({ before, after, first, last }: PaginationArgs) {
   return {
-    before: utcIsoDateString(before),
-    after: utcIsoDateString(after),
-    last
+    before: before && utcIsoDateString(before),
+    after: after && utcIsoDateString(millisecondAfter(after)),
+    last,
+    first
   }
 }
 
