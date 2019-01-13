@@ -163,6 +163,11 @@ export default function App() {
     }
   }
 
+  function showNewListens() {
+    setListens(allListens);
+    setNewListens([]);
+  }
+
   return (
     <div>
       <Global styles={globalStyles} />
@@ -173,7 +178,13 @@ export default function App() {
             <WindLoadingPage />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showListensPage}>
-            <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} loadingMore={fetchingMoreListens} />
+            <ListensPage
+              listens={listens}
+              newListens={newListens}
+              onLastListenVisible={handleLastListenVisible}
+              loadingMore={fetchingMoreListens}
+              onShowNewListensClicked={showNewListens}
+              />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showQuestionPage} >
             <QuestionPage searchSongs={api.searchSongs} onSongSelected={handleSongSelected} />
