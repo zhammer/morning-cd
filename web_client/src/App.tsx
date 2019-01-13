@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Global } from '@emotion/core';
 import api from './services/api';
 import HelpModal from './components/HelpModal';
@@ -13,6 +13,7 @@ import SundialContext from './hooks/useSundial/context';
 import { Listen, Song, SunlightWindows } from './types';
 import { globalStyles } from './App.styles';
 import usePollingFunction from './hooks/usePollingFunction';
+import useGetter from './hooks/useGetter';
 
 const LISTENS_PAGE_SIZE = 10;
 const LISTENS_POLL_SIZE = 100;
@@ -48,9 +49,11 @@ export default function App() {
   }, [allListens]);
 
   const lastListen = useMemo(() => {
-      const numListens = allListens.length;
-      return numListens > 0 ? allListens[numListens - 1] : null;
+    const numListens = allListens.length;
+    return numListens > 0 ? allListens[numListens - 1] : null;
   }, [allListens]);
+
+  const getLastListen = useGetter(lastListen);
 
   const userSubmittedListenToday = useMemo(() => {
     return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise
@@ -78,7 +81,7 @@ export default function App() {
   function handleSundialCalibratedToDay() {
     userSubmittedListenToday ? fetchListens() : setLoading(false);
   }
-  
+
   function handleSundialCalibratedToNight() {
     fetchListens();
   }
@@ -126,9 +129,13 @@ export default function App() {
   }
 
   async function fetchNewListens() {
+    const lastListen = getLastListen();
     const after = lastListen ? lastListen.listenTime : new Date();
     const { listens: polledListens } = await api.fetchListens({ after, first: LISTENS_POLL_SIZE });
-    setNewListens([ ...newListens, ...polledListens ]);
+    if (polledListens.length === 0) {
+      return;
+    }
+    setNewListens(prevNewListens => [...prevNewListens, ...polledListens]);
   }
 
   function handleSongSelected(song: Song) {
