@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro';
-import { keyframes } from 'emotion';
+import { keyframes } from '@emotion/core';
 import colors from '../../../theme';
 
 const glowing = keyframes`
