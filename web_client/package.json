@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/core": "^10.0.0-beta.6",
-    "@emotion/styled": "^10.0.0-beta.6",
+    "@emotion/core": "^10.0.6",
+    "@emotion/styled": "^10.0.6",
     "@sentry/browser": "^4.4.2",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.18",
@@ -15,7 +15,6 @@
     "@types/reactstrap": "^6.4.3",
     "@types/superagent": "^3.8.5",
     "bootstrap": "^4.1.2",
-    "emotion": "^9.2.12",
     "graphql-request": "^1.8.2",
     "react": "^16.7.0-alpha.2",
     "react-device-detect": "^1.5.9",
