@@ -1,12 +1,7 @@
 import React from 'react';
 import colors from '../theme';
 
-// temporary fix until shouldForwardProp typescript is updated
-interface SvgStarProps extends React.SVGProps<SVGSVGElement> {
-  isDay?: boolean;
-}
-
-function SvgStar(props: SvgStarProps) {
+function SvgStar(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 64 64" {...props}>
       <radialGradient id="star-gradient">

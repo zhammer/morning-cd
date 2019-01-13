@@ -1,21 +1,65 @@
-import React, { Fragment } from 'react';
-import { Star1, Star2, Star3, Star4, Star5, Star6, Star7, Star8 } from './Stars.styles';
-import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
+/** @jsx jsx */
+import React from 'react';
+import { css, jsx } from '@emotion/core';
+import { NightStar } from './Stars.styles';
+
+jsx; // https://github.com/emotion-js/emotion/issues/1112
 
 function Stars() {
-  const isDay = useIsDaySundialConsumer();
-  
   return (
-    <Fragment>
-      <Star1 isDay={isDay} />
-      <Star2 isDay={isDay} />
-      <Star3 isDay={isDay} dim={true} />
-      <Star4 isDay={isDay} dim={true} />
-      <Star5 isDay={isDay} dim={true} />
-      <Star6 isDay={isDay} />
-      <Star7 isDay={isDay} />
-      <Star8 isDay={isDay} />
-    </Fragment>
+    <div>
+      <NightStar
+        css={css`
+          left: 2%;
+          top: 5%;
+        `}
+      />
+      <NightStar
+        css={css`
+          right: 0%;
+          top: 8%;
+        `}
+      />
+      <NightStar
+        dim={true}
+        css={css`
+          right: 25%;
+          top: 15%;
+        `}
+      />
+      <NightStar
+        dim={true}
+        css={css`
+          left: 20%;
+          top: 30%;
+        `}
+      />
+      <NightStar
+        dim={true}
+        css={css`
+          bottom: 30%;
+          left: 30%;
+        `}
+      />
+      <NightStar
+        css={css`
+          bottom: 25%;
+          right: 5%;
+        `}
+      />
+      <NightStar
+        css={css`
+          bottom: 2%;
+          left: 5%;
+        `}
+      />
+      <NightStar
+        css={css`
+          right: 20%;
+          bottom: 5%;
+        `}
+      />
+    </div>
   );
 }
 
