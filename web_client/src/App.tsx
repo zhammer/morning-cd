@@ -12,7 +12,7 @@ import useSundial from './hooks/useSundial';
 import SundialContext from './hooks/useSundial/context';
 import { Listen, Song, SunlightWindows } from './types';
 import { globalStyles } from './App.styles';
-import usePollingFunction from './hooks/usePollingFunction';
+import useOnOffInterval from './hooks/useOnOffInterval';
 import useGetter from './hooks/useGetter';
 
 const LISTENS_PAGE_SIZE = 10;
@@ -75,7 +75,7 @@ export default function App() {
     return !showLoading && sundial.isDay && !!selectedSong;
   }, [showLoading, sundial, selectedSong]);
 
-  usePollingFunction(fetchNewListens, LISTENS_POLL_INTERVAL, showListensPage);
+  useOnOffInterval(fetchNewListens, LISTENS_POLL_INTERVAL, showListensPage);
 
   // sundial event handlers
   function handleSundialCalibratedToDay() {
