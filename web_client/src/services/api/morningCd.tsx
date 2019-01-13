@@ -68,7 +68,6 @@ export async function fetchSunlightWindows(today: Date, ianaTimezone: string): P
   const variables = buildFetchSunlightWindowsVariables(today, ianaTimezone);
   const response = await graphQlRequest(GRAPHQL_BASE, SUNLIGHT_WINDOWS_QUERY, variables) as RawSunlightWindows;
   return pluckSunlightWindows(response);
-
 };
 
 
@@ -195,9 +194,17 @@ export function dateFromUtcString(utcString: string): Date {
   const [dateString, timeString] = utcString.split('T');
   const [fullYear, month, date] = dateString.split('-');
   const [hour, minute, secondString] = timeString.split(':');
-  const [second, microSecond] = secondString.split('.');
+  const [second, microsecond] = secondString.split('.');
 
-  const utcDate = Date.UTC(parseInt(fullYear), parseInt(month) - 1, parseInt(date), parseInt(hour), parseInt(minute), parseInt(second), parseInt(microSecond) / 1000);
+  const utcDate = Date.UTC(
+    parseInt(fullYear),
+    parseInt(month) - 1,
+    parseInt(date),
+    parseInt(hour),
+    parseInt(minute),
+    parseInt(second),
+    microsecond ? (parseInt(microsecond) / 1000) : 0
+  );
   return new Date(utcDate);
 };
 
