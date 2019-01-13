@@ -238,3 +238,7 @@ function pluckRelayListens(response: RawListensResponse): { listens: Listen[], h
     hasPreviousPage: response.allListens.pageInfo.hasPreviousPage
   };
 };
+
+function millisecondAfter(date: Date) {
+  return new Date(date.getTime() + 1);
+}
