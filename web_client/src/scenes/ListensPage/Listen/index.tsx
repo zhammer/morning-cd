@@ -12,10 +12,8 @@ interface ListenProps {
 }
 
 function Listen({ listen }: ListenProps) {
-  const isDay = useIsDaySundialConsumer();
-
   return (
-    <Container isDay={isDay}>
+    <Container>
     <SimpleRow>
       <SongLink href={`https://open.spotify.com/track/${listen.song.id}`} target='_blank'>
         <SongTile {...listen.song} />
