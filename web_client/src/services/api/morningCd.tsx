@@ -44,14 +44,21 @@ interface RawListensResponse {
   }
 }
 
+interface PaginationArgs {
+  after?: Date;
+  before?: Date;
+  first?: number;
+  last?: number;
+}
+
 export async function fetchSpotifyAccessToken(): Promise<string> {
   const response = await request.get(BASE + '/accesstoken');
   return response.body.accessToken;
 };
 
 
-export async function fetchListens(after: Date, before: Date, last: number): Promise<{ listens: Listen[], hasPreviousPage: boolean }> {
-  const variables = buildFetchListensVariables(after, before, last);
+export async function fetchListens(paginationArgs: PaginationArgs): Promise<{ listens: Listen[], hasPreviousPage: boolean }> {
+  const variables = buildFetchListensVariables(paginationArgs);
   const response = await graphQlRequest(GRAPHQL_BASE, ALL_LISTENS_QUERY, variables) as RawListensResponse;
   return pluckRelayListens(response);
 };
@@ -61,7 +68,6 @@ export async function fetchSunlightWindows(today: Date, ianaTimezone: string): P
   const variables = buildFetchSunlightWindowsVariables(today, ianaTimezone);
   const response = await graphQlRequest(GRAPHQL_BASE, SUNLIGHT_WINDOWS_QUERY, variables) as RawSunlightWindows;
   return pluckSunlightWindows(response);
-
 };
 
 
@@ -80,8 +86,8 @@ export async function submitListen(songId: string, listenerName: string, note: s
 
 
 export const ALL_LISTENS_QUERY = `
-query allListens($after: DateTime, $before: DateTime, $last: Int) {
-  allListens(after: $after, before: $before, last: $last) {
+query allListens($after: DateTime, $before: DateTime, $last: Int, $first: Int) {
+  allListens(after: $after, before: $before, last: $last, first: $first) {
     pageInfo { hasPreviousPage }
     edges {
       listen: node {
@@ -175,20 +181,30 @@ function buildFetchSunlightWindowsVariables(today: Date, ianaTimezone: string) {
   };
 };
 
-function buildFetchListensVariables(after: Date, before: Date, last: number) {
+function buildFetchListensVariables({ before, after, first, last }: PaginationArgs) {
   return {
-    before: utcIsoDateString(before),
-    after: utcIsoDateString(after),
-    last
+    before: before && utcIsoDateString(before),
+    after: after && utcIsoDateString(millisecondAfter(after)),
+    last,
+    first
   }
 }
 
-function dateFromUtcString(utcString: string): Date {
+export function dateFromUtcString(utcString: string): Date {
   const [dateString, timeString] = utcString.split('T');
   const [fullYear, month, date] = dateString.split('-');
-  const [hour, minute, second] = timeString.split(':');
+  const [hour, minute, secondString] = timeString.split(':');
+  const [second, microsecond] = secondString.split('.');
 
-  const utcDate = Date.UTC(parseInt(fullYear), parseInt(month) - 1, parseInt(date), parseInt(hour), parseInt(minute), parseInt(second));
+  const utcDate = Date.UTC(
+    parseInt(fullYear),
+    parseInt(month) - 1,
+    parseInt(date),
+    parseInt(hour),
+    parseInt(minute),
+    parseInt(second),
+    microsecond ? (parseInt(microsecond) / 1000) : 0
+  );
   return new Date(utcDate);
 };
 
@@ -237,3 +253,7 @@ function pluckRelayListens(response: RawListensResponse): { listens: Listen[], h
     hasPreviousPage: response.allListens.pageInfo.hasPreviousPage
   };
 };
+
+function millisecondAfter(date: Date) {
+  return new Date(date.getTime() + 1);
+}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Global } from '@emotion/core';
 import api from './services/api';
 import HelpModal from './components/HelpModal';
@@ -12,13 +12,18 @@ import useSundial from './hooks/useSundial';
 import SundialContext from './hooks/useSundial/context';
 import { Listen, Song, SunlightWindows } from './types';
 import { globalStyles } from './App.styles';
+import useOnOffInterval from './hooks/useOnOffInterval';
+import useGetter from './hooks/useGetter';
 
 const LISTENS_PAGE_SIZE = 10;
+const LISTENS_POLL_SIZE = 100;
+const LISTENS_POLL_INTERVAL = 10000;
 const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export default function App() {
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [listens, setListens] = useState<Listen[]>([]);
+  const [newListens, setNewListens] = useState<Listen[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
   const [moreListensToFetch, setMoreListensToFetch] = useState(false);
@@ -33,6 +38,22 @@ export default function App() {
       onCalibrateToNight: handleSundialCalibratedToNight
     }
   );
+
+  const allListens = useMemo(() => {
+    return [...listens, ...newListens];
+  }, [listens, newListens]);
+
+  const firstListen = useMemo(() => {
+      const numListens = allListens.length;
+      return numListens > 0 ? allListens[0] : null;
+  }, [allListens]);
+
+  const lastListen = useMemo(() => {
+    const numListens = allListens.length;
+    return numListens > 0 ? allListens[numListens - 1] : null;
+  }, [allListens]);
+
+  const getLastListen = useGetter(lastListen);
 
   const userSubmittedListenToday = useMemo(() => {
     return lastSubmit && sundial.isDay && lastSubmit > sundial.lastSunrise
@@ -54,11 +75,13 @@ export default function App() {
     return !showLoading && sundial.isDay && !!selectedSong;
   }, [showLoading, sundial, selectedSong]);
 
+  useOnOffInterval(fetchNewListens, LISTENS_POLL_INTERVAL, showListensPage);
+
   // sundial event handlers
   function handleSundialCalibratedToDay() {
     userSubmittedListenToday ? fetchListens() : setLoading(false);
   }
-  
+
   function handleSundialCalibratedToNight() {
     fetchListens();
   }
@@ -97,12 +120,22 @@ export default function App() {
   async function fetchListens(setLoadingWhileFetching = true) {
     setLoadingWhileFetching && setLoading(true);
     const after = sundial.lastSunrise;
-    const before = (listens.length > 0) ? listens[0].listenTime : new Date();
-    const { hasPreviousPage, listens: fetchedListens } = await api.fetchListens(after, before, LISTENS_PAGE_SIZE);
+    const before = firstListen ? firstListen.listenTime : new Date();
+    const { hasPreviousPage, listens: fetchedListens } = await api.fetchListens({ after, before, last: LISTENS_PAGE_SIZE });
     const nextListens = [ ...fetchedListens, ...(listens.length > 0 ? listens : []) ];
     setListens(nextListens);
     setLoading(false);
     setMoreListensToFetch(hasPreviousPage);
+  }
+
+  async function fetchNewListens() {
+    const lastListen = getLastListen();
+    const after = lastListen ? lastListen.listenTime : new Date();
+    const { listens: polledListens } = await api.fetchListens({ after, first: LISTENS_POLL_SIZE });
+    if (polledListens.length === 0) {
+      return;
+    }
+    setNewListens(prevNewListens => [...prevNewListens, ...polledListens]);
   }
 
   function handleSongSelected(song: Song) {
@@ -115,11 +148,11 @@ export default function App() {
     }
     setLoading(true);
     const submittedListen = await api.submitListen(selectedSong.id, name, note, USER_TIMEZONE);
-    const { listens, hasPreviousPage } = await api.fetchListens(
-      sundial.lastSunrise,
-      submittedListen.listenTime,
-      LISTENS_PAGE_SIZE
-    )
+    const { listens, hasPreviousPage } = await api.fetchListens({
+      after: sundial.lastSunrise,
+      before: submittedListen.listenTime,
+      last: LISTENS_PAGE_SIZE
+    });
     const submitTime = new Date(); // this can come from listentime
     setListens([...listens, submittedListen]);
     setMoreListensToFetch(hasPreviousPage);
@@ -137,6 +170,11 @@ export default function App() {
     }
   }
 
+  function showNewListens() {
+    setListens(allListens);
+    setNewListens([]);
+  }
+
   return (
     <div>
       <Global styles={globalStyles} />
@@ -147,7 +185,13 @@ export default function App() {
             <WindLoadingPage />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showListensPage}>
-            <ListensPage listens={listens} onLastListenVisible={handleLastListenVisible} loadingMore={fetchingMoreListens} />
+            <ListensPage
+              listens={listens}
+              newListens={newListens}
+              onLastListenVisible={handleLastListenVisible}
+              loadingMore={fetchingMoreListens}
+              onShowNewListensClicked={showNewListens}
+              />
           </FadeInFadeOut>
           <FadeInFadeOut visible={showQuestionPage} >
             <QuestionPage searchSongs={api.searchSongs} onSongSelected={handleSongSelected} />
