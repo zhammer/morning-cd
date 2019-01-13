@@ -183,12 +183,13 @@ function buildFetchListensVariables(after: Date, before: Date, last: number) {
   }
 }
 
-function dateFromUtcString(utcString: string): Date {
+export function dateFromUtcString(utcString: string): Date {
   const [dateString, timeString] = utcString.split('T');
   const [fullYear, month, date] = dateString.split('-');
-  const [hour, minute, second] = timeString.split(':');
+  const [hour, minute, secondString] = timeString.split(':');
+  const [second, microSecond] = secondString.split('.');
 
-  const utcDate = Date.UTC(parseInt(fullYear), parseInt(month) - 1, parseInt(date), parseInt(hour), parseInt(minute), parseInt(second));
+  const utcDate = Date.UTC(parseInt(fullYear), parseInt(month) - 1, parseInt(date), parseInt(hour), parseInt(minute), parseInt(second), parseInt(microSecond) / 1000);
   return new Date(utcDate);
 };
 
