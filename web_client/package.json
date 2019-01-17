@@ -24,6 +24,7 @@
     "react-social-icons": "^3.1.0",
     "react-spring": "^5.9.2",
     "react-visibility-sensor": "^5.0.2",
+    "react-with-gesture": "^4.0.2",
     "reactstrap": "^6.5.0",
     "superagent": "^3.8.3",
     "typescript": "^3.2.2"

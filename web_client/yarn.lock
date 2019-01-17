@@ -8402,6 +8402,11 @@ react-visibility-sensor@^5.0.2:
   dependencies:
     prop-types "^15.6.2"
 
+react-with-gesture@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-with-gesture/-/react-with-gesture-4.0.2.tgz#fe547b7497e7fa6bd1671aff515092aa974e4163"
+  integrity sha512-aCUw0sq0lPZk7Mf+duUZmvc0qCO5NSImUg8wEXK4Dca08te8HPBAgkrEVR6HNtggeu16gu2DmxQQ7gCkAXVulA==
+
 react@16.8.0-alpha.0:
   version "16.8.0-alpha.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.8.0-alpha.0.tgz#8545eb79534cce5ba99ed40085f7f955e8857a19"
