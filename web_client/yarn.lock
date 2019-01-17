@@ -8371,10 +8371,10 @@ react-social-icons@^3.1.0:
     babel-runtime "^6.11.6"
     classnames "^2.2.5"
 
-react-spring@^5.9.2:
-  version "5.9.2"
-  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-5.9.2.tgz#4c4e048ffce24755eaa60acd2f3fe4a3d686ef16"
-  integrity sha512-ZDCBm4OaYuuSER3k7EELn9AKGs98HI23qMRL93zUUw6AlyBmqoU+eAfouGRx47gVkZkH+hArJXBHf4UGYpH9Og==
+react-spring@^7.2.8:
+  version "7.2.8"
+  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-7.2.8.tgz#a1f49653393332bf84431a898993eda2f3212e42"
+  integrity sha512-wgK0eXjWR5yT12kAd0b6CXF73qcoisTJF7vt8qw/IZmeYcPm/GA3zGV5MQ8R2hicbVwc5oV6FGFPSbkAFJ6pdA==
   dependencies:
     "@babel/runtime" "^7.0.0"
 

@@ -17,11 +17,12 @@ interface FadeInFadeOutProps {
 function FadeInFadeOut({ children, visible, fixedOnLeave = true }: FadeInFadeOutProps) {
   return (
     <Transition
+      items={visible}
       from={{ opacity: 0 }}
       enter={{ opacity: 1 }}
       leave={{ opacity: 0, ...(fixedOnLeave ? fixedOnLeaveStyles : {}) }}
       config={config.molasses}>
-      {visible && (styles => <div style={styles}>{children}</div>)}
+      {visible => visible && (styles => <div style={styles}>{children}</div>)}
     </Transition>
   );
 }
