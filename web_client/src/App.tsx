@@ -88,6 +88,7 @@ export default function App() {
 
   function handleSundialSunrise() {
     setListens([]);
+    setNewListens([]);
     setMoreListensToFetch(false);
   }
 
