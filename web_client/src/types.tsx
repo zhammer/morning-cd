@@ -17,7 +17,7 @@ export interface Song {
 export interface Listen {
   id: string;
   listenerName: string;
-  listenTime: Date; // this should not be called UTC.
+  listenTime: Date;
   note?: string;
   ianaTimezone: string;
   song: Song;
