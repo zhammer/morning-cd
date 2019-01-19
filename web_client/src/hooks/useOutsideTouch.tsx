@@ -13,6 +13,11 @@ export default function useOutsideTouch<T extends HTMLElement>(ref: MutableRefOb
   useEffect(() => {
     document.addEventListener('touchstart', listener);
     document.addEventListener('touchend', listener);
+
+    return () => {
+      document.removeEventListener('touchstart', listener);
+      document.removeEventListener('touchend', listener);
+    }
   }, []);
 
   function listener(event: TouchEvent) {

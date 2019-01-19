@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect } from "react";
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import { isMobile } from 'react-device-detect';
 import useOutsideTouch from "./useOutsideTouch";
 
@@ -24,6 +24,12 @@ export default function useBodyTouchScrollLock(ref: MutableRefObject<HTMLElement
       disableBodyScroll(ref.current);
     }
   }, [ref]);
+
+  useEffect(() => {
+    return () => {
+      clearAllBodyScrollLocks();
+    }
+  }, []);
 
   useOutsideTouch(ref, {
     onOutsideTouchStart: handleOutsideTouchStart,
