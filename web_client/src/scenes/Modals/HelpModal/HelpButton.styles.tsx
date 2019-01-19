@@ -2,8 +2,8 @@
 import { css, jsx } from '@emotion/core'
 import styled from '@emotion/styled';
 import CircleSvg from './Circle.svg';
-import colors from '../../theme';
-import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
+import colors from '../../../theme';
+import useIsDaySundialConsumer from '../../../util/useIsDaySundialConsumer';
 
 jsx; // https://github.com/emotion-js/emotion/issues/1112
 

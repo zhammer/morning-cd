@@ -7,10 +7,10 @@ import {
   SectionDivider,
   SectionBody,
   SectionTitle,
-} from '../Modal';
+} from '../../../components/Modal';
 import { Modal, Button } from 'reactstrap';
 import { SocialIcon } from 'react-social-icons';
-import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
+import useIsDaySundialConsumer from '../../../util/useIsDaySundialConsumer';
 
 const MORNING_CD_SPOTIFY = 'https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx';
 const SKETCHY = 'https://thenounproject.com/ralfschmitzer/collection/sketchy/';

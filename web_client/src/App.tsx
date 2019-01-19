@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Global } from '@emotion/core';
 import api from './services/api';
-import HelpModal from './components/HelpModal';
+import { HelpModal } from './scenes/Modals';
 import FadeInFadeOut from './components/FadeInFadeOut';
 import DayNightFrame from './scenes/DayNightFrame';
 import ListensPage from './scenes/ListensPage';
