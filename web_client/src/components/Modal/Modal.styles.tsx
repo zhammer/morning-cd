@@ -46,7 +46,7 @@ export const SectionBody = (props: React.HTMLAttributes<HTMLDivElement>) => {
         line-height: 1.5em;
         font-family: 'Open Sans Condensed', sans-serif;
 
-        & > a {
+        & a {
           color: ${colors.teal};
         }
       `}

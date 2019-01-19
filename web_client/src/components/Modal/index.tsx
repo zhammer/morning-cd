@@ -1,13 +1,16 @@
+import Modal, { ModalProps as _ModalProps } from './Modal';
 import {
-  ModalBody,
   SectionDivider,
   SectionTitle,
   SectionBody
 } from './Modal.styles';
 
+export default Modal;
+
+export interface ModalProps extends _ModalProps {};
+
 export {
-  ModalBody,
   SectionDivider,
   SectionTitle,
-  SectionBody
+  SectionBody,
 };
