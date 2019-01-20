@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Container } from './PushNotification.styles';
 import { useGesture } from 'react-with-gesture';
-import { useSpring, animated } from 'react-spring/hooks';
+import { useSpring, animated } from 'react-spring/hooks.cjs';
 import useBodyTouchScrollLock from '../../hooks/useBodyTouchScrollLock';
 
 type Coordinates = [number, number];
