@@ -2,7 +2,7 @@ import React from 'react';
 import { Column } from '../../components/styles';
 import { Listen as ListenInterface } from '../../types';
 import ListenDeck from './ListenDesk';
-import { Header, Sub, SubRow } from './ListensPage.styles';
+import { Header, PlaylistLink, SubRow } from './ListensPage.styles';
 import useIsDaySundialConsumer from '../../util/useIsDaySundialConsumer';
 
 const HEADER_TEXT = 'Here are the first pieces of music people listened to today, from all over the world.';
@@ -19,17 +19,15 @@ interface ListensPageProps {
 }
 
 function ListensPage({ listens, newListens, onLastListenVisible, loadingMore, onShowNewListensClicked }: ListensPageProps) {
-  const isDay = useIsDaySundialConsumer();
-  
   return (
     <Column>
-      <Header isDay={isDay}>{listens.length > 0 ? HEADER_TEXT : HEADER_TEXT_NO_LISTENS}</Header>
+      <Header>{listens.length > 0 ? HEADER_TEXT : HEADER_TEXT_NO_LISTENS}</Header>
       <SubRow>
-        <Sub href='https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx'
-          target='_blank'
-          isDay={isDay} >
+        <PlaylistLink
+          href='https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx'
+          target='_blank' >
           {listens.length > 0 ? PLAYLIST_TEXT : PLAYLIST_TEXT_NO_LISTENS}
-        </Sub>
+        </PlaylistLink>
       </SubRow>
       <ListenDeck
         onShowNewListensClicked={onShowNewListensClicked}
