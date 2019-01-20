@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Global } from '@emotion/core';
 import api from './services/api';
-import HelpModal from './components/HelpModal';
+import { HelpModal, AddToHomescreeniOSModal } from './scenes/Modals';
 import FadeInFadeOut from './components/FadeInFadeOut';
 import DayNightFrame from './scenes/DayNightFrame';
 import ListensPage from './scenes/ListensPage';
@@ -14,6 +14,9 @@ import { Listen, Song, SunlightWindows } from './types';
 import { globalStyles } from './App.styles';
 import useOnOffInterval from './hooks/useOnOffInterval';
 import useGetter from './hooks/useGetter';
+import PushNotification from './components/PushNotification';
+import { isStandaloneiOS } from './util/device';
+import { isIOS } from 'react-device-detect';
 
 const LISTENS_PAGE_SIZE = 10;
 const LISTENS_POLL_SIZE = 100;
@@ -28,6 +31,8 @@ export default function App() {
   const [lastSubmit, setLastSubmit] = useState(getDateFromLocalStorage('lastSubmit'))
   const [moreListensToFetch, setMoreListensToFetch] = useState(false);
   const [fetchingMoreListens, setFetchingMoreListens] = useState(false);
+  const [showAddToHomescreenIOSNotification, setShowAddToHomescreenIOSNotification] = useState(false);
+  const [showAddToHomescreenModal, setShowAddToHomescreenModal] = useState(false);
 
   const sundial = useSundial(
     fetchSunlightWindows,
@@ -75,7 +80,22 @@ export default function App() {
     return !showLoading && sundial.isDay && !!selectedSong;
   }, [showLoading, sundial, selectedSong]);
 
+  useEffect(() => {
+    if (showListensPage) {
+      if (isIOS && !isStandaloneiOS) {
+        setTimeout(() => {
+          setShowAddToHomescreenIOSNotification(true);
+        }, 5000);
+      }
+    }
+  }, [showListensPage]);
+
   useOnOffInterval(fetchNewListens, LISTENS_POLL_INTERVAL, showListensPage);
+
+  function handleAddToHomscreenIOSNotificationClick() {
+    setShowAddToHomescreenIOSNotification(false);
+    setShowAddToHomescreenModal(true);
+  }
 
   // sundial event handlers
   function handleSundialCalibratedToDay() {
@@ -203,6 +223,17 @@ export default function App() {
               onSongSubmitted={handleSongSubmitted}
             />
           </FadeInFadeOut>
+          <PushNotification
+            visible={showAddToHomescreenIOSNotification}
+            onSelect={handleAddToHomscreenIOSNotificationClick}
+            onDismiss={() => { setShowAddToHomescreenIOSNotification(false); }}
+            >
+            <span>📲</span> Add morning cd to your home screen.
+          </PushNotification>
+          <AddToHomescreeniOSModal
+            toggle={() => { setShowAddToHomescreenModal(!setShowAddToHomescreenModal); }}
+            isOpen={showAddToHomescreenModal}
+          />
         </DayNightFrame>
       </SundialContext.Provider>
     </div>
