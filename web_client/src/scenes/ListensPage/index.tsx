@@ -19,15 +19,12 @@ interface ListensPageProps {
 }
 
 function ListensPage({ listens, newListens, onLastListenVisible, loadingMore, onShowNewListensClicked }: ListensPageProps) {
-  const isDay = useIsDaySundialConsumer();
-  
   return (
     <Column>
-      <Header isDay={isDay}>{listens.length > 0 ? HEADER_TEXT : HEADER_TEXT_NO_LISTENS}</Header>
+      <Header>{listens.length > 0 ? HEADER_TEXT : HEADER_TEXT_NO_LISTENS}</Header>
       <SubRow>
         <Sub href='https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx'
-          target='_blank'
-          isDay={isDay} >
+          target='_blank' >
           {listens.length > 0 ? PLAYLIST_TEXT : PLAYLIST_TEXT_NO_LISTENS}
         </Sub>
       </SubRow>
