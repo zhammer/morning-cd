@@ -8,6 +8,9 @@ import Modal, {
   SectionTitle,
 } from '../../../components/Modal';
 import { SocialIcon } from 'react-social-icons';
+import { AddToHomescreenSection } from '../sections';
+import { isStandaloneiOS } from '../../../util/device';
+import { isIOS } from 'react-device-detect';
 
 const MORNING_CD_SPOTIFY = 'https://open.spotify.com/user/8fueir54qwc1v07r1cdl3k4rx';
 const SKETCHY = 'https://thenounproject.com/ralfschmitzer/collection/sketchy/';
@@ -32,6 +35,12 @@ function HelpModal() {
           a song.
         </SectionBody>
         <SectionDivider />
+        {isIOS && !isStandaloneiOS && (
+          <>
+            <AddToHomescreenSection />
+            <SectionDivider />
+          </>
+        )}
         <SectionTitle>🌟 Credits 🌟</SectionTitle>
         <SectionBody>
           Created by <a href='https://github.com/zhammer' target='_blank'>Zach Hammer</a>.
