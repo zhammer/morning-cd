@@ -31,7 +31,7 @@ const fadein = keyframes`
   to   { opacity: 1; }
 `;
 
-export const Sub = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+export const PlaylistLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const isDay = useIsDaySundialConsumer();
   const color = isDay ? colors.teal : colors.yellow;
   return (
