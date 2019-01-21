@@ -17,6 +17,7 @@ import useGetter from './hooks/useGetter';
 import PushNotification from './components/PushNotification';
 import { isStandaloneiOS } from './util/device';
 import { isIOS } from 'react-device-detect';
+import useDocumentTitle from './hooks/useDocumentTitle';
 
 const LISTENS_PAGE_SIZE = 10;
 const LISTENS_POLL_SIZE = 100;
@@ -43,6 +44,12 @@ export default function App() {
       onCalibrateToNight: handleSundialCalibratedToNight
     }
   );
+
+  const documentTitle = useMemo(() => {
+    const prefix = newListens.length > 0 ? `(${newListens.length}) ` : '';
+    return prefix + 'MorningCd';
+  }, [newListens]);
+  useDocumentTitle(documentTitle);
 
   const allListens = useMemo(() => {
     return [...listens, ...newListens];
