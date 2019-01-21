@@ -4,6 +4,8 @@
 
 ![image](https://s3.amazonaws.com/morning-cd-readme-static-content/la-luna-hero.jpeg)
 
+---
+
 ### microservices
 - #### [front](https://github.com/zhammer/morning-cd-front) - GraphQL API for interacting with everything morning.cd.
 - #### [listens](https://github.com/zhammer/morning-cd-listens) - Home of all listens on morning.cd.
