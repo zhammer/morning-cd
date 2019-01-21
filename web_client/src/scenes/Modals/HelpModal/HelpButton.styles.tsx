@@ -20,6 +20,7 @@ export const Container = (props: React.HTMLAttributes<HTMLDivElement>) => {
         bottom: .5em;
         opacity: .5;
         cursor: pointer;
+        z-index: 100;
         color: ${isDay ? colors.mediumGray : colors.lightGray};
         fill: ${isDay ? colors.mediumGray : colors.lightGray};
         transition: color 5s linear, fill 5s linear, opacity .5s linear;
