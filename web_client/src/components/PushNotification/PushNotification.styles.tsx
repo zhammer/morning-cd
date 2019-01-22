@@ -28,6 +28,7 @@ export const Container = React.forwardRef((props: React.HTMLAttributes<HTMLDivEl
         padding: .5em .5em 2em;
         transition: color 5s linear,
                     background 5s linear;
+        z-index: 150;
       `}
       {...props}
     />
