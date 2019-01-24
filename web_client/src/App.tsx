@@ -84,7 +84,7 @@ export default function App() {
   }, [showLoading, sundial, selectedSong, listens]);
 
   const showSubmitSongPage = useMemo(() => {
-    return !showLoading && sundial.isDay && !!selectedSong;
+    return !showLoading && sundial.isDay && !!selectedSong && !showListensPage;
   }, [showLoading, sundial, selectedSong]);
 
   useEffect(() => {
@@ -184,7 +184,7 @@ export default function App() {
     const submitTime = new Date(); // this can come from listentime
     setListens([...listens, submittedListen]);
     setMoreListensToFetch(hasPreviousPage);
-    setSelectedSong(null);
+    setTimeout(() => { setSelectedSong(null); }, 5000);
     setLoading(false);
     setLastSubmit(submitTime);
     localStorage.setItem('lastSubmit', submitTime.toString());
