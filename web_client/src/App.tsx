@@ -182,12 +182,12 @@ export default function App() {
       last: LISTENS_PAGE_SIZE
     });
     const submitTime = new Date(); // this can come from listentime
+    localStorage.setItem('lastSubmit', submitTime.toString());
     setListens([...listens, submittedListen]);
     setMoreListensToFetch(hasPreviousPage);
     setTimeout(() => { setSelectedSong(null); }, 5000);
     setLoading(false);
     setLastSubmit(submitTime);
-    localStorage.setItem('lastSubmit', submitTime.toString());
   }
 
   async function handleLastListenVisible() {
