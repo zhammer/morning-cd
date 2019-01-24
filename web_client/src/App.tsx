@@ -185,7 +185,7 @@ export default function App() {
     localStorage.setItem('lastSubmit', submitTime.toString());
     setListens([...listens, submittedListen]);
     setMoreListensToFetch(hasPreviousPage);
-    setTimeout(() => { setSelectedSong(null); }, 5000);
+    setTimeout(() => { setSelectedSong(null); }, 5000);  // #123
     setLoading(false);
     setLastSubmit(submitTime);
   }
