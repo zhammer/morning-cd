@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Global } from '@emotion/core';
+import { useIdle } from 'react-use';
 import api from './services/api';
 import { HelpModal, AddToHomescreeniOSModal } from './scenes/Modals';
 import FadeInFadeOut from './components/FadeInFadeOut';
@@ -21,7 +22,8 @@ import useDocumentTitle from './hooks/useDocumentTitle';
 
 const LISTENS_PAGE_SIZE = 10;
 const LISTENS_POLL_SIZE = 100;
-const LISTENS_POLL_INTERVAL = 10000;
+const LISTENS_POLL_INTERVAL = 10e3;
+const LISTENS_POLL_IDLE_INTERVAL = 60e4;
 const USER_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export default function App() {
@@ -97,7 +99,11 @@ export default function App() {
     }
   }, [showListensPage]);
 
-  useOnOffInterval(fetchNewListens, LISTENS_POLL_INTERVAL, showListensPage);
+  const isIdle = useIdle(10e3);
+  const pollInterval = useMemo(() => (
+    isIdle ? LISTENS_POLL_IDLE_INTERVAL : LISTENS_POLL_INTERVAL
+  ), [isIdle]);
+  useOnOffInterval(fetchNewListens, pollInterval, showListensPage);
 
   function handleAddToHomscreenIOSNotificationClick() {
     setShowAddToHomescreenIOSNotification(false);
