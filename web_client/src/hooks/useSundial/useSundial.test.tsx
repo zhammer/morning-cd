@@ -4,7 +4,7 @@ import MockDate from 'mockdate';
 import useSundial from './useSundial';
 import { FetchSunlightWindows, SundialEventCallbacks, SunlightWindows, SunlightWindow } from './types';
 
-describe('component using useSundial', () => {
+describe('useSundial', () => {
 
   it('calibrates to day during the day', async () => {
     const delorean = createDelorean(new Date('August 4, 2001 12:30:00'));
@@ -68,17 +68,113 @@ describe('component using useSundial', () => {
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));
     delorean.zoomTo(new Date('August 5, 2001 00:00:00'));
     await new Promise(resolve => setTimeout(resolve, 1000));
-    await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));    
+    await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourthRapid.sunrise));
     await waitForElement(() => getByText(container, 'Day. Last Sunrise: ' + augustFifthRapid.sunrise));
     await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFifthRapid.sunrise));
     await new Promise(resolve => setTimeout(resolve, 50));
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight', 'onNewDay', 'onSunrise', 'onSunset']);
   })
 
+  describe('callback handlers run after state has been updated', () => {
+    it('when calibrating to day', async () => {
+      const delorean = createDelorean(new Date('August 4, 2001 12:30:00'));
+      const callbacks = {
+        onCalibrateToDay: jest.fn(onCalibrateToDay)
+      }
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...')
+      function onCalibrateToDay() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Day. Last Sunrise: ' + augustFourth.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(callbacks.onCalibrateToDay).toBeCalledTimes(1);
+    });
+
+    it('when calibrating to before sunrise', async () => {
+      const delorean = createDelorean(new Date('August 4, 2001 4:30:00'));
+      const callbacks = { onCalibrateToNight: jest.fn(onCalibrateToNight) };
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...')
+      function onCalibrateToNight() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustThird.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(callbacks.onCalibrateToNight).toBeCalledTimes(1);
+    });
+
+    it('when calibrating to after sunset', async () => {
+      const delorean = createDelorean(new Date('August 4, 2001 20:30:00'));
+      const callbacks = { onCalibrateToNight: jest.fn(onCalibrateToNight) };
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...')
+      function onCalibrateToNight() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 50));
+      expect(callbacks.onCalibrateToNight).toBeCalledTimes(1);
+    });
+
+    it('when sun rises', async () => {
+      const delorean = createDelorean(secondBefore(augustFourth.sunrise));
+      const callbacks = { onSunrise: jest.fn(onSunrise) };
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...');
+      await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustThird.sunrise));
+      function onSunrise() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Day. Last Sunrise: ' + augustFourth.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 1050));
+      expect(callbacks.onSunrise).toBeCalledTimes(1);
+    });
+
+    it('when sun sets', async () => {
+      const delorean = createDelorean(secondBefore(augustFourth.sunset));
+      const callbacks = { onSunset: jest.fn(onSunset) };
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...');
+      await waitForElement(() => getByText(container, 'Day. Last Sunrise: ' + augustFourth.sunrise));
+      function onSunset() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 1050));
+      expect(callbacks.onSunset).toBeCalledTimes(1);
+    });
+
+    it.skip('when new day begins', async () => {
+      const delorean = createDelorean(new Date('August 4, 2001 23:59:59'));
+      const callbacks = { onNewDay: jest.fn(onNewDay) };
+      const { container } = render(
+        <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
+      );
+      expect(container.firstChild && container.firstChild.textContent).toEqual('calibrating...');
+      await waitForElement(() => getByText(container, 'Night. Last Sunrise: ' + augustFourth.sunrise));
+      function onNewDay() {
+        expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
+      }
+      await new Promise(resolve => setTimeout(resolve, 1050));
+      expect(callbacks.onNewDay).toBeCalledTimes(1);
+    });
+
+
+  })
 })
 
+function secondBefore(date: Date): Date {
+  return new Date(date.getTime() - 1e3);
+}
+
 async function fetchSunlightWindowsRapid(today: Date): Promise<SunlightWindows> {
-  
+
   if (today.toString().startsWith('Sat Aug 04')) {
     return {
       yesterday: augustThird,
