@@ -8,7 +8,7 @@ describe('useSundial', () => {
 
   it('calibrates to day during the day', async () => {
     const delorean = createDelorean(new Date('August 4, 2001 12:30:00'));
-    const sundialCallbackMock = createSundialCallbackMock();
+    const sundialCallbackMock = createSundialCallbackMock({});
 
     const { container } = render(
       <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={sundialCallbackMock.callbacks} />
@@ -23,7 +23,7 @@ describe('useSundial', () => {
 
   it('calibrates to night before sunrise', async () => {
     const delorean = createDelorean(new Date('August 4, 2001 05:30:00'));
-    const sundialCallbackMock = createSundialCallbackMock();
+    const sundialCallbackMock = createSundialCallbackMock({});
 
     const { container } = render(
       <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={sundialCallbackMock.callbacks} />
@@ -38,7 +38,7 @@ describe('useSundial', () => {
 
   it('calibrates to night after sunset', async () => {
     const delorean = createDelorean(new Date('August 4, 2001 21:30:00'));
-    const sundialCallbackMock = createSundialCallbackMock();
+    const sundialCallbackMock = createSundialCallbackMock({});
 
     const { container } = render(
       <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={sundialCallbackMock.callbacks} />
@@ -57,7 +57,7 @@ describe('useSundial', () => {
     // at the moment i'm just doing a hack where the day cycles super quickly (1 window a second).
     // unfortunately, this means the test tkes ~5 seconds to run.
     const delorean = createDelorean(new Date('August 4, 2001 23:59:59'));
-    const sundialCallbackMock = createSundialCallbackMock();
+    const sundialCallbackMock = createSundialCallbackMock({});
 
     const { container } = render(
       <SundialUser fetchSunlightWindows={fetchSunlightWindowsRapid} sundialCallbacks={sundialCallbackMock.callbacks} />
@@ -78,9 +78,7 @@ describe('useSundial', () => {
   describe('callback handlers run after state has been updated', () => {
     it('when calibrating to day', async () => {
       const delorean = createDelorean(new Date('August 4, 2001 12:30:00'));
-      const callbacks = {
-        onCalibrateToDay: jest.fn(onCalibrateToDay)
-      }
+      const { calls, callbacks } = createSundialCallbackMock({ onCalibrateToDay });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -89,12 +87,12 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Day. Last Sunrise: ' + augustFourth.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 50));
-      expect(callbacks.onCalibrateToDay).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToDay']);
     });
 
     it('when calibrating to before sunrise', async () => {
       const delorean = createDelorean(new Date('August 4, 2001 4:30:00'));
-      const callbacks = { onCalibrateToNight: jest.fn(onCalibrateToNight) };
+      const { calls, callbacks } = createSundialCallbackMock({ onCalibrateToNight });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -103,12 +101,12 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustThird.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 50));
-      expect(callbacks.onCalibrateToNight).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToNight']);
     });
 
     it('when calibrating to after sunset', async () => {
       const delorean = createDelorean(new Date('August 4, 2001 20:30:00'));
-      const callbacks = { onCalibrateToNight: jest.fn(onCalibrateToNight) };
+      const { calls, callbacks } = createSundialCallbackMock({ onCalibrateToNight });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -117,12 +115,12 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 50));
-      expect(callbacks.onCalibrateToNight).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToNight']);
     });
 
     it('when sun rises', async () => {
       const delorean = createDelorean(secondBefore(augustFourth.sunrise));
-      const callbacks = { onSunrise: jest.fn(onSunrise) };
+      const { calls, callbacks } = createSundialCallbackMock({ onSunrise });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -132,12 +130,12 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Day. Last Sunrise: ' + augustFourth.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 1050));
-      expect(callbacks.onSunrise).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToNight', 'onSunrise']);
     });
 
     it('when sun sets', async () => {
       const delorean = createDelorean(secondBefore(augustFourth.sunset));
-      const callbacks = { onSunset: jest.fn(onSunset) };
+      const { calls, callbacks } = createSundialCallbackMock({ onSunset });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -147,12 +145,12 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 1050));
-      expect(callbacks.onSunset).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToDay', 'onSunset']);
     });
 
     it.skip('when new day begins', async () => {
       const delorean = createDelorean(new Date('August 4, 2001 23:59:59'));
-      const callbacks = { onNewDay: jest.fn(onNewDay) };
+      const { calls, callbacks } = createSundialCallbackMock({ onNewDay });
       const { container } = render(
         <SundialUser fetchSunlightWindows={fetchSunlightWindows} sundialCallbacks={callbacks} />
       );
@@ -162,7 +160,7 @@ describe('useSundial', () => {
         expect(container.firstChild && container.firstChild.textContent).toEqual('Night. Last Sunrise: ' + augustFourth.sunrise)
       }
       await new Promise(resolve => setTimeout(resolve, 1050));
-      expect(callbacks.onNewDay).toBeCalledTimes(1);
+      expect(calls).toEqual(['onCalibrateToNight', 'onNewDay']);
     });
 
 
@@ -249,14 +247,14 @@ interface SundialCallbackMock {
   calls: string[];
 }
 
-function createSundialCallbackMock(): SundialCallbackMock {
+function createSundialCallbackMock(input: SundialEventCallbacks): SundialCallbackMock {
   let calls: string[] = [];
   const callbacks: SundialEventCallbacks = {
-    onSunrise: () => calls.push('onSunrise'),
-    onSunset: () => calls.push('onSunset'),
-    onNewDay: () => calls.push('onNewDay'),
-    onCalibrateToDay: () => calls.push('onCalibrateToDay'),
-    onCalibrateToNight: () => calls.push('onCalibrateToNight')
+    onSunrise: () => { calls.push('onSunrise'); input.onSunrise && input.onSunrise(); },
+    onSunset: () => { calls.push('onSunset'); input.onSunset && input.onSunset(); },
+    onNewDay: () => { calls.push('onNewDay'); input.onNewDay && input.onNewDay(); },
+    onCalibrateToDay: () => { calls.push('onCalibrateToDay'); input.onCalibrateToDay && input.onCalibrateToDay(); },
+    onCalibrateToNight: () => { calls.push('onCalibrateToNight'); input.onCalibrateToNight && input.onCalibrateToNight(); }
   }
   return { calls, callbacks }
 }
