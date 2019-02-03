@@ -36,7 +36,7 @@ describe('useSundial', () => {
     expect(sundialCallbackMock.calls).toEqual(['onCalibrateToNight']);
   });
 
-  it('calibrates to night after sunrise', async () => {
+  it('calibrates to night after sunset', async () => {
     const delorean = createDelorean(new Date('August 4, 2001 21:30:00'));
     const sundialCallbackMock = createSundialCallbackMock();
 
