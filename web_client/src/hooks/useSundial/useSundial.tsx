@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import util from './util';
 import {
   FetchSunlightWindows,
@@ -19,53 +19,33 @@ const sundialMachine = Machine<SundialMachineContext>({
   initial: 'calibrating',
   states: {
     calibrating: {
-      initial: 'fetchingSunlightWindows',
-      states: {
-        fetchingSunlightWindows: {
-          invoke: {
-            src: 'fetchSunlightWindows',
-            onDone: {
-              target: 'fetchedSunlightWindows',
-              actions: assign<SundialMachineContext>({sunlightWindows: (_, event) => event.data}),
-            }
-          },
-        },
-        fetchedSunlightWindows: {
-          onEntry: send(ctx => {
-            switch (util.timeOfDay(new Date(), ctx.sunlightWindows.today)) {
-              case TimeOfDay.BeforeSunrise:
-                return 'CALIBRATE_TO_BEFORE_SUNRISE';
-              case TimeOfDay.Day:
-                return 'CALIBRATE_TO_DAY';
-              case TimeOfDay.AfterSunset:
-                return 'CALIBRATE_TO_AFTER_SUNSET';
-            }
-          }),
-          on: {
-            CALIBRATE_TO_BEFORE_SUNRISE: '#sundial.calibrated.beforeSunrise.fromCalibrate',
-            CALIBRATE_TO_DAY: '#sundial.calibrated.day.fromCalibrate',
-            CALIBRATE_TO_AFTER_SUNSET: '#sundial.calibrated.afterSunset.fromCalibrate',
-          }
-        },
+      invoke: {
+        src: 'fetchSunlightWindows',
+        onDone: {
+          actions: [
+            assign<SundialMachineContext>({sunlightWindows: (_, event) => event.data}),
+            send(ctx => {
+              switch (util.timeOfDay(new Date(), ctx.sunlightWindows.today)) {
+                case TimeOfDay.BeforeSunrise:
+                  return 'CALIBRATE_TO_BEFORE_SUNRISE';
+                case TimeOfDay.Day:
+                  return 'CALIBRATE_TO_DAY';
+                case TimeOfDay.AfterSunset:
+                  return 'CALIBRATE_TO_AFTER_SUNSET';
+              }
+            })
+          ],
+        }
+      },
+      on: {
+        CALIBRATE_TO_BEFORE_SUNRISE: {target: '#sundial.calibrated.beforeSunrise', actions: 'onCalibrateToNight'},
+        CALIBRATE_TO_DAY: {target: '#sundial.calibrated.day', actions: 'onCalibrateToDay'},
+        CALIBRATE_TO_AFTER_SUNSET: {target: '#sundial.calibrated.afterSunset'},
       }
     },
     calibrated: {
       states: {
         beforeSunrise: {
-          initial: 'fromPreviousPhase',
-          onEntry: send('SEND_CALLBACK', { delay: 0 }),
-          states: {
-            fromCalibrate: {
-              on: {
-                SEND_CALLBACK: { actions: 'onCalibrateToNight' }
-              }
-            },
-            fromPreviousPhase: {
-              on: {
-                SEND_CALLBACK: { actions: 'onNewDay' }
-              }
-            }
-          },
           invoke: {
             src: 'fetchSunlightWindows',
             onDone: {
@@ -78,55 +58,28 @@ const sundialMachine = Machine<SundialMachineContext>({
             }
           },
           on: {
-            SUNRISE: 'day',
+            SUNRISE: {target: 'day', actions: 'onSunrise'},
           },
         },
         day: {
-          initial: 'fromPreviousPhase',
-          states: {
-            fromCalibrate: {
-              on: {
-                SEND_CALLBACK: { actions: 'onCalibrateToDay' }
-              }
-            },
-            fromPreviousPhase: {
-              on: {
-                SEND_CALLBACK: { actions: 'onSunrise' }
-              }
-            }
-          },
           onEntry: [
             send('SUNSET', {
               delay: (ctx, _) => ctx.sunlightWindows.today.sunset.getTime() - (new Date()).getTime()
-            }),
-            send('SEND_CALLBACK', { delay: 0 })
+            })
           ],
           on: {
-            SUNSET: 'afterSunset',
+            SUNSET: {target: 'afterSunset', actions: 'onSunset'},
           }
         },
         afterSunset: {
-          initial: 'fromPreviousPhase',
-          states: {
-            fromCalibrate: {
-              on: {
-                SEND_CALLBACK: { actions: 'onCalibrateToNight' }
-              }
-            },
-            fromPreviousPhase: {
-              on: {
-                SEND_CALLBACK: { actions: 'onSunset' }
-              }
-            }
-          },
           onEntry: [
             send('MIDNIGHT', {
               delay: (ctx, _) => util.midnightAfter(ctx.sunlightWindows.today.sunset).getTime() - (new Date()).getTime()
             }),
-            send('SEND_CALLBACK', { delay: 0 })
+            'onCalibrateToNight'
           ],
           on: {
-            MIDNIGHT: 'beforeSunrise',
+            MIDNIGHT: {target: 'beforeSunrise', actions: 'onNewDay'},
           }
         }
       }
@@ -145,14 +98,19 @@ export default function useSundial(
   fetchSunlightWindows: FetchSunlightWindows,
   callbacks: SundialEventCallbacks
 ): Sundial {
+  const callbacksRef = useRef(callbacks);
+  useEffect(() => {
+    console.log(callbacks);
+    callbacksRef.current = callbacks;
+  }, [callbacks])
   const [machine] = useMachine(
     sundialMachine.withConfig({
       actions: {
-        onSunrise: callbacks.onSunrise || noop,
-        onSunset: callbacks.onSunset || noop,
-        onNewDay: callbacks.onNewDay || noop,
-        onCalibrateToDay: callbacks.onCalibrateToDay || noop,
-        onCalibrateToNight: callbacks.onCalibrateToNight || noop
+        onSunrise: callbacksRef.current.onSunrise || noop,
+        onSunset: callbacksRef.current.onSunset || noop,
+        onNewDay: callbacksRef.current.onNewDay || noop,
+        onCalibrateToDay: callbacksRef.current.onCalibrateToDay || noop,
+        onCalibrateToNight: callbacksRef.current.onCalibrateToNight || noop
       },
       services: {
         fetchSunlightWindows: async () => await fetchSunlightWindows(new Date())

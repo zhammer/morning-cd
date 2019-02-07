@@ -11,12 +11,13 @@ export default function useMachine<
 
   // i think dan's tweeted that this isn't a proper use of useMemo
   const service = useMemo(() => {
-    return interpret(machine)
-      .onTransition(state => {
+    const service = interpret(machine, { execute: false });
+    return service.onTransition(state => {
         // Update the current machine state when a transition occurs
         setCurrent(state);
-      })
-      .start()
+        service.execute(state);
+    })
+    .start()
   }, []);
 
   useEffect(() => {
