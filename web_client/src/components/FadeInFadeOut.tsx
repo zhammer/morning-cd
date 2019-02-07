@@ -1,5 +1,5 @@
 import React from 'react';
-import { Transition, config } from 'react-spring';
+import { Transition, config } from 'react-spring/renderprops';
 
 const fixedOnLeaveStyles = {
   position: 'fixed',
