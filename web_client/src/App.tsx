@@ -135,18 +135,30 @@ export default function App() {
   /**
    * Caches api.fetchSunlightWindows responses in localStorage.
    */
-  async function fetchSunlightWindows(date: Date) {
-    const cacheKey = `'sunlightWindows-${date.toDateString()}-${USER_TIMEZONE}`;
-    const cachedSunlightWindows = localStorage.getItem(cacheKey);
-    if (cachedSunlightWindows) {
+  async function fetchSunlightWindows(date: Date): Promise<SunlightWindows> {
+    const rawCachedSunlightWindows = localStorage.getItem('sunlightWindows');
+    if (rawCachedSunlightWindows) {
+      let cachedSunlightWindows;
       try {
-        return pluckCachedSunlightWindows(cachedSunlightWindows);;
+        cachedSunlightWindows = pluckCachedSunlightWindows(rawCachedSunlightWindows);;
       } catch(err) {
-        console.warn(`Error plucking cachedSunlightWindows from cache. (key: ${cacheKey}, value: ${cachedSunlightWindows})`);
+        console.warn(`Error plucking cachedSunlightWindows from cache. (value: ${rawCachedSunlightWindows})`);
+      }
+      if (cachedSunlightWindows) {
+        if (cachedSunlightWindows.meta.dateString == date.toDateString() && cachedSunlightWindows.meta.ianaTimezone == USER_TIMEZONE) {
+          return cachedSunlightWindows.sunlightWindows;
+        }
       }
     }
     const sunlightWindows = await api.fetchSunlightWindows(date, USER_TIMEZONE);
-    localStorage.setItem(cacheKey, JSON.stringify(sunlightWindows));
+    const sunlightWindowsCacheValue: SunlightWindowsCacheValue = {
+      sunlightWindows,
+      meta: {
+        dateString: date.toDateString(),
+        ianaTimezone: USER_TIMEZONE
+      }
+    }
+    localStorage.setItem('sunlightWindows', JSON.stringify(sunlightWindowsCacheValue));
     return sunlightWindows;
   }
 
@@ -253,12 +265,23 @@ export default function App() {
   )
 }
 
-function pluckCachedSunlightWindows(cachedString: string): SunlightWindows {
-  const { yesterday, today, tomorrow } = JSON.parse(cachedString);
+interface SunlightWindowsCacheValue {
+  sunlightWindows: SunlightWindows;
+  meta: {
+    dateString: string;  // in form of: (new Date()).toDateString()
+    ianaTimezone: string;
+  }
+}
+
+function pluckCachedSunlightWindows(cachedString: string): SunlightWindowsCacheValue {
+  const { sunlightWindows, meta } = JSON.parse(cachedString);
   return {
-    yesterday: pluckCachedSunlightWindow(yesterday),
-    today: pluckCachedSunlightWindow(today),
-    tomorrow: pluckCachedSunlightWindow(tomorrow)
+    sunlightWindows: {
+      yesterday: pluckCachedSunlightWindow(sunlightWindows.yesterday),
+      today: pluckCachedSunlightWindow(sunlightWindows.today),
+      tomorrow: pluckCachedSunlightWindow(sunlightWindows.tomorrow)
+    },
+    meta
   }
 }
 
