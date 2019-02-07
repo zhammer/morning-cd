@@ -29,6 +29,6 @@ declare module 'body-scroll-lock' {
   export function clearAllBodyScrollLocks(): void;
 }
 
-declare module 'react-spring/hooks.cjs' {
-  export * from 'react-spring/hooks';
+declare module 'react-spring/renderprops.cjs' {
+  export * from 'react-spring/renderprops';
 }
