@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo } from 'react';
 import util from './util';
 import {
   FetchSunlightWindows,
@@ -40,23 +40,17 @@ const sundialMachine = Machine<SundialMachineContext>({
       on: {
         CALIBRATE_TO_BEFORE_SUNRISE: {target: '#sundial.calibrated.beforeSunrise', actions: 'onCalibrateToNight'},
         CALIBRATE_TO_DAY: {target: '#sundial.calibrated.day', actions: 'onCalibrateToDay'},
-        CALIBRATE_TO_AFTER_SUNSET: {target: '#sundial.calibrated.afterSunset'},
+        CALIBRATE_TO_AFTER_SUNSET: {target: '#sundial.calibrated.afterSunset', actions: 'onCalibrateToNight'},
       }
     },
     calibrated: {
       states: {
         beforeSunrise: {
-          invoke: {
-            src: 'fetchSunlightWindows',
-            onDone: {
-              actions: [
-                assign<SundialMachineContext>({sunlightWindows: (_, event) => event.data}),
-                send('SUNRISE', {
-                  delay: (ctx, _) => ctx.sunlightWindows.today.sunrise.getTime() - (new Date()).getTime()
-                }),
-              ]
-            }
-          },
+          onEntry: [
+            send('SUNRISE', {
+              delay: (ctx, _) => ctx.sunlightWindows.today.sunrise.getTime() - (new Date()).getTime()
+            }),
+          ],
           on: {
             SUNRISE: {target: 'day', actions: 'onSunrise'},
           },
@@ -72,15 +66,33 @@ const sundialMachine = Machine<SundialMachineContext>({
           }
         },
         afterSunset: {
-          onEntry: [
-            send('MIDNIGHT', {
-              delay: (ctx, _) => util.midnightAfter(ctx.sunlightWindows.today.sunset).getTime() - (new Date()).getTime()
-            }),
-            'onCalibrateToNight'
-          ],
-          on: {
-            MIDNIGHT: {target: 'beforeSunrise', actions: 'onNewDay'},
-          }
+          initial: 'default',
+          states: {
+            default: {
+              onEntry: [
+                send('MIDNIGHT', {
+                  delay: (ctx, _) => util.midnightAfter(ctx.sunlightWindows.today.sunset).getTime() - (new Date()).getTime()
+                })
+              ],
+              on: {
+                MIDNIGHT: 'midnight',
+              }
+            },
+            midnight: {
+              invoke: {
+                src: 'fetchSunlightWindows',
+                onDone: {
+                  actions: [
+                    assign<SundialMachineContext>({sunlightWindows: (_, event) => event.data}),
+                    send('BRAND_NEW_DAY')
+                  ]
+                }
+              },
+              on: {
+                BRAND_NEW_DAY: {target: '#sundial.calibrated.beforeSunrise', actions: 'onNewDay'}
+              }
+            }
+          },
         }
       }
     }
@@ -98,19 +110,14 @@ export default function useSundial(
   fetchSunlightWindows: FetchSunlightWindows,
   callbacks: SundialEventCallbacks
 ): Sundial {
-  const callbacksRef = useRef(callbacks);
-  useEffect(() => {
-    console.log(callbacks);
-    callbacksRef.current = callbacks;
-  }, [callbacks])
   const [machine] = useMachine(
     sundialMachine.withConfig({
       actions: {
-        onSunrise: callbacksRef.current.onSunrise || noop,
-        onSunset: callbacksRef.current.onSunset || noop,
-        onNewDay: callbacksRef.current.onNewDay || noop,
-        onCalibrateToDay: callbacksRef.current.onCalibrateToDay || noop,
-        onCalibrateToNight: callbacksRef.current.onCalibrateToNight || noop
+        onSunrise: callbacks.onSunrise || noop,
+        onSunset: callbacks.onSunset || noop,
+        onNewDay: callbacks.onNewDay || noop,
+        onCalibrateToDay: callbacks.onCalibrateToDay || noop,
+        onCalibrateToNight: callbacks.onCalibrateToNight || noop
       },
       services: {
         fetchSunlightWindows: async () => await fetchSunlightWindows(new Date())
@@ -156,7 +163,7 @@ interface SundialState {
 }
 
 function mapStateToSundial(state: SundialState): Sundial {
-  const { calibrated, timeOfDay, sunlightWindows: { yesterday, today, tomorrow } } = state;
+  const { calibrated, timeOfDay, sunlightWindows: { yesterday, today } } = state;
   return {
     calibrating: !calibrated,
     isDay: timeOfDay === TimeOfDay.Day,
